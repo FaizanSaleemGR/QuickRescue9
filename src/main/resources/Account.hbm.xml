@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"> 
+ 
+ <hibernate-mapping>
+ 
+	 <class name="com.jpa.entities.Account" table="account">
+	 	<meta attribute="class-description">
+	 		This class contains member/customer's accounts details.
+	 	</meta>
+	 	
+	 	<id name="accountId" type="int" column="accountId">
+	 		<generator class="native"></generator>
+	 	</id>
+	 	
+	 	<property name="emailDomain" type="string" column="email_domain"></property>
+	 	<property name="name" type="string" column="name" ></property>
+	 	<property name="timeZoneCity" type="string" column="time_zone_city"></property>
+	 	
+	 	<!-- One to many Relation between Account and Contact -->
+	 	<set name="contacts" table="contact" inverse="true" lazy="false" fetch="select">
+            <key>
+                <column name="accountId" not-null="true" />
+            </key>
+            <one-to-many class="com.jpa.entities.Contact" />
+        </set>
+	 	
+	 	<!-- One to many Relation between Account and AlertProfile -->
+	 	<set name="alertProfiles" table="alert_profile" inverse="true" lazy="false" fetch="select">
+            <key>
+                <column name="accountId" not-null="true" />
+            </key>
+            <one-to-many class="com.jpa.entities.AlertProfile" />
+        </set>
+	 	
+	 	
+	 	
+	 </class>
+ 
+ </hibernate-mapping>

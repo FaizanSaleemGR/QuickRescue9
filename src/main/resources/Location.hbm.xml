@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"> 
+ 
+ <hibernate-mapping>
+ 
+	 <class name="com.jpa.entities.Location" table="location">
+	 	<meta attribute="class-description">
+	 		This class contains location details of an alert profile.
+	 	</meta>
+	 	
+	 	<id name="locationId" type="int" column="locationId">
+	 		<generator class="native"></generator>
+	 	</id>
+	 	
+	 	<property name="city" type="string" column="city" />
+	 	<property name="country" type="string" column="country" />
+ 
+         <!-- Many to Many relation between Location and AlertProfile -->
+        <set name="profiles" table="alert_profile"
+			inverse="true" lazy="true" fetch="select">
+			<key column="profileId" />
+			<many-to-many column="locationId" class="com.jpa.entities.Location" />
+		</set>
+        
+	 </class>
+ </hibernate-mapping>

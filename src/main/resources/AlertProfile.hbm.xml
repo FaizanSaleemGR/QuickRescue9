@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"> 
+ 
+ <hibernate-mapping>
+ 
+	 <class name="com.jpa.entities.AlertProfile" table="alert_profile">
+	 	<meta attribute="class-description">
+	 		This class contains alert profile details of an account.
+	 	</meta>
+	 	
+	 	<id name="profileId" type="int" column="profileId">
+	 		<generator class="native"></generator>
+	 	</id>
+	 	
+	 	<property name="profileName" type="string" column="profile_name"></property>
+
+        <!-- Many to One relation between AlertProfile and Account -->
+        <many-to-one name="account" class="com.jpa.entities.Account" fetch="select">
+            <column name="accountId" not-null="true" />
+        </many-to-one>
+        
+        
+        <!-- Many to Many relation between AlertProfile and Location -->
+        <set name="locations" table="profile_location"
+			inverse="false" lazy="false" fetch="select" cascade="all">
+			<key column="profileId" />
+			<many-to-many column="locationId" class="com.jpa.entities.Location" />
+		</set>
+     
+        
+        
+	 </class>
+ </hibernate-mapping>
