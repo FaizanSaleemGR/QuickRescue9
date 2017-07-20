@@ -47,7 +47,4 @@ public class ContactLoginController {
 	public void loginContact() {
 		System.out.println("in loginContact()");
 	}
-
-	
-
 }

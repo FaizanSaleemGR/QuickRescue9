@@ -1,9 +1,14 @@
 package com.jpa.entities;
 
+import java.io.Serializable;
 import java.util.Set;
 
-public class AlertProfile {
+public class AlertProfile implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int locationId;
 	private int profileId;
 	private String profileName;

@@ -1,9 +1,14 @@
 package com.jpa.entities;
 
+import java.io.Serializable;
 import java.util.Set;
 
-public class Account {
+public class Account implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int accountId;
 	private String name;
 	private String emailDomain;

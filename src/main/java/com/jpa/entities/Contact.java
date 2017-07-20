@@ -1,10 +1,16 @@
 package com.jpa.entities;
 
+import java.io.Serializable;
+
 import com.dao.AccountDao;
 import com.dao.impl.AccountDaoImpl;
 
-public class Contact {
+public class Contact implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int contactLoginId;
 	private int contactId;
 	private String firstName;

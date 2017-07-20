@@ -1,7 +1,13 @@
 package com.jpa.entities;
 
-public class ContactLoginDetails {
+import java.io.Serializable;
+
+public class ContactLoginDetails implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int contactLoginId;
 	private String username;
 	private String password;
