@@ -3,21 +3,21 @@ package com.jpa.entities;
 import java.io.Serializable;
 
 public class ContactLoginDetails implements Serializable {
-	
+
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	private int contactLoginId;
+	private Integer contactLoginId;
 	private String username;
 	private String password;
-	private int contactId;
+	private Integer contactId;
 	private Contact contact;
-	
-	public int getContactLoginId() {
+
+	public Integer getContactLoginId() {
 		return contactLoginId;
 	}
-	public void setContactLoginId(int contactLoginId) {
+	public void setContactLoginId(Integer contactLoginId) {
 		this.contactLoginId = contactLoginId;
 	}
 	public String getUsername() {
@@ -32,10 +32,10 @@ public class ContactLoginDetails implements Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public int getContactId() {
+	public Integer getContactId() {
 		return contactId;
 	}
-	public void setContactId(int contactId) {
+	public void setContactId(Integer contactId) {
 		this.contactId = contactId;
 	}
 	public Contact getContact() {
@@ -44,7 +44,7 @@ public class ContactLoginDetails implements Serializable {
 	public void setContact(Contact contact) {
 		this.contact = contact;
 	}
-	
-	
+
+
 
 }

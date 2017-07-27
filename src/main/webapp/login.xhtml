@@ -1,35 +1,98 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core">
-
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
 <h:head>
-        <title>Login :: Quick Rescue</title>
-    </h:head>
-    <h:body> 
-	<div>
-		<h:form>
-			<div>  
-				<h:outputLabel class="sr-only" value="Username" />
-				<h:inputText value="#{contactLoginController.contactUsername}"
-					name="form-username" placeholder="Username..." />
+	<title>Login :: Quick Rescue</title>
+	<meta name="author" content="Faizan Saleem"></meta>
+</h:head>
+<h:body>
 
-			</div> 
-			<div> 	   
-				<h:outputLabel class="sr-only" value="Password" />
-				<h:inputText value="#{contactLoginController.contactPassword}"
-					name="form-password" placeholder="Password..." />
-			</div>  
-			<h:commandButton value="Sign in!" action="#{contactLoginController.loginContact(contactLoginController.contactUsername, contactLoginController.contactPassword)}" />
-     		
-		</h:form>
-		
-	</div>
- 
- 
+
+	<!-- Top Navbar  -->
+	<b:navBar brand="QuickRescue" brandHref="#" static="true"
+		inverse="true">
+		<b:navbarLinks>
+			<b:navLink value="Link" href="#"></b:navLink>
+			<b:navLink value="Link" href="#"></b:navLink>
+			<b:dropMenu value="Dropdown" iconAwesome="birthday-cake">
+				<b:navLink value="Action" href="#"></b:navLink>
+				<b:navLink value="Another action" href="#"></b:navLink>
+				<b:navLink value="Something else here" href="#"></b:navLink>
+				<b:navLink></b:navLink>
+				<b:navLink header="Nav header"></b:navLink>
+				<b:navLink value="Separated link" href="#"></b:navLink>
+				<b:dropMenu value="Nested submenu" iconAwesome="birthday-cake"
+					iconAlign="right">
+					<b:navLink value="You can nest menus" href="#"></b:navLink>
+					<b:dropMenu value="Nested sub-submenu">
+						<b:navLink value="... as deep as ..." href="#"></b:navLink>
+						<b:dropMenu value="Nested sub-sub-submenu">
+							<b:navLink value="... you want!" href="#"></b:navLink>
+						</b:dropMenu>
+					</b:dropMenu>
+
+				</b:dropMenu>
+				<b:navLink value="One more separated link" href="#"></b:navLink>
+			</b:dropMenu>
+		</b:navbarLinks>
+		<form class="navbar-form navbar-left hidden-md hidden-sm hidden-xs"
+			role="search">
+			<div class="form-group">
+				<input type="text" class="form-control" />
+			</div>
+			<button type="submit" class="btn btn-default">Submit</button>
+		</form>
+		<!-- Following line is needed for TBS 3.0.1 (panel content overflow issue) -->
+		<b:navbarLinks pull="right">
+			<b:navLink value="    " href="#"></b:navLink>
+		</b:navbarLinks>
+		<b:navbarLinks pull="right" styleClass="hidden-xs">
+			<b:navLink value="Link" href="#"></b:navLink>
+			<b:dropMenu value="Dropdown">
+				<b:navLink value="Action" href="#"></b:navLink>
+				<b:navLink value="Another action" href="#"></b:navLink>
+				<b:navLink value="Something else here" href="#"></b:navLink>
+				<b:navLink></b:navLink>
+				<b:navLink header="Nav header"></b:navLink>
+				<b:navLink value="Separated link" href="#"></b:navLink>
+				<b:navLink value="One more separated link" href="#"></b:navLink>
+			</b:dropMenu>
+		</b:navbarLinks>
+	</b:navBar>
+
+
+
+
+
+
+	<b:container>
+		<b:form style="padding-top:150px">
+			<b:row>
+				<b:column span="4" offset="4">
+				<b:inputText placeholder="Username" required="true" value="#{contactLoginController.contactUsername}">
+					<f:facet name="prepend">
+						<b:icon name="user" />
+					</f:facet>
+				</b:inputText>
+
+				<b:inputText placeholder="Password" required="true" value="#{contactLoginController.contactPassword}">
+					<f:facet name="prepend">
+						<b:iconAwesome name="key" />
+					</f:facet>
+				</b:inputText>
+				</b:column>
+			</b:row>
+
+			<b:row>
+				<b:column span="2" offset="5">
+					<b:commandButton value="login" look="primary" style="width:100%" action="#{contactLoginController.loginContact(contactLoginController.contactUsername, contactLoginController.contactPassword)}" />
+				</b:column>
+			</b:row> 
+		</b:form>
+	</b:container>
+
 </h:body>
-
-</html> 
+</html>

@@ -6,35 +6,37 @@ import com.dao.AccountDao;
 import com.dao.impl.AccountDaoImpl;
 
 public class Contact implements Serializable {
-	
+
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	private int contactLoginId;
-	private int contactId;
+	private Integer contactLoginId;
+	private Integer contactId;
+
 	private String firstName;
 	private String lastName;
 	private String emailAddress;
 	private char gender;
 	private String phone;
-	private int status;
+	private Integer status;
 	private String streetAddress;
 	private String city;
 	private String state;
 	private String country;
+
 	private Integer accountId;
 	private Boolean hasLogin;
-	
+
 	public Account account;
 	private ContactLoginDetails loginDetails;
-	
+
 	public Contact() {
 		super();
 	}
-	
+
 	public Contact(String firstName, String lastName, String emailAddress, char gender, String phone,
-			int status, String streetAddress, String city, String state, String country, Account account) {
+			Integer status, String streetAddress, String city, String state, String country, Account account) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -48,9 +50,9 @@ public class Contact implements Serializable {
 		this.country = country;
 		this.account = account;
 	}
-	
+
 	public Contact(String firstName, String lastName, String emailAddress, char gender, String phone,
-			int status, String streetAddress, String city, String state, String country) {
+			Integer status, String streetAddress, String city, String state, String country) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -63,9 +65,9 @@ public class Contact implements Serializable {
 		this.state = state;
 		this.country = country;
 	}
-	
+
 	public Contact(String firstName, String lastName, String emailAddress, char gender, String phone,
-			int status, String streetAddress, String city, String state, String country, String accountName) {
+			Integer status, String streetAddress, String city, String state, String country, String accountName) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -77,15 +79,15 @@ public class Contact implements Serializable {
 		this.city = city;
 		this.state = state;
 		this.country = country;
-		
+
 		AccountDao utils = new AccountDaoImpl();
 		this.account = utils.findAccountByName(accountName);
 	}
 
-	public int getContactId() {
+	public Integer getContactId() {
 		return contactId;
 	}
-	public void setContactId(int contactId) {
+	public void setContactId(Integer contactId) {
 		this.contactId = contactId;
 	}
 	public String getFirstName() {
@@ -118,10 +120,10 @@ public class Contact implements Serializable {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	public int getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
-	public void setStatus(int status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 	public String getStreetAddress() {
@@ -179,12 +181,12 @@ public class Contact implements Serializable {
 		this.loginDetails = loginDetails;
 	}
 
-	public int getContactLoginId() {
+	public Integer getContactLoginId() {
 		return contactLoginId;
 	}
 
-	public void setContactLoginId(int contactLoginId) {
+	public void setContactLoginId(Integer contactLoginId) {
 		this.contactLoginId = contactLoginId;
 	}
-	
+
 }

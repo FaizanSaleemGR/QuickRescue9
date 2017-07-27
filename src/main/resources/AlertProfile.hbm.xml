@@ -10,7 +10,7 @@
 	 		This class contains alert profile details of an account.
 	 	</meta>
 	 	
-	 	<id name="profileId" type="int" column="profileId">
+	 	<id name="profileId" type="java.lang.Integer" column="profileId">
 	 		<generator class="native"></generator>
 	 	</id>
 	 	

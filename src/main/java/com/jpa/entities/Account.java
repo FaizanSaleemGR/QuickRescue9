@@ -4,29 +4,43 @@ import java.io.Serializable;
 import java.util.Set;
 
 public class Account implements Serializable{
-	
+
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	private int accountId;
+	private Integer accountId;
 	private String name;
 	private String emailDomain;
 	private String timeZoneCity;
-	
+	private boolean canEdit = false;
+
 	private Set<Contact> contacts;
 	private Set<AlertProfile> alertProfiles;
-	
+
 	public Account() {
-		
+
 	}
-	
+
+	public Account(Integer accountId, String name, String emailDomain, String timeZoneCity, Set<Contact> contacts,
+			Set<AlertProfile> alertProfiles) {
+		super();
+		this.accountId = accountId;
+		this.name = name;
+		this.emailDomain = emailDomain;
+		this.timeZoneCity = timeZoneCity;
+		this.contacts = contacts;
+		this.alertProfiles = alertProfiles;
+	}
+
+
+
 	public Account(String name, String emailDomain, String timeZoneCity) {
 		this.name = name;
 		this.emailDomain = emailDomain;
 		this.timeZoneCity = timeZoneCity;
 	}
-	
+
 	public Set<Contact> getContacts() {
 		return contacts;
 	}
@@ -43,11 +57,11 @@ public class Account implements Serializable{
 		this.alertProfiles = alertProfiles;
 	}
 
-	public int getAccountId() {
+	public Integer getAccountId() {
 		return accountId;
 	}
 
-	public void setAccountId(int accountId) {
+	public void setAccountId(Integer accountId) {
 		this.accountId = accountId;
 	}
 
@@ -74,8 +88,16 @@ public class Account implements Serializable{
 	public void setTimeZoneCity(String timeZoneCity) {
 		this.timeZoneCity = timeZoneCity;
 	}
-	
-	
-	
+
+	public boolean isCanEdit() {
+		return canEdit;
+	}
+
+	public void setCanEdit(boolean canEdit) {
+		this.canEdit = canEdit;
+	}
+
+
+
 
 }

@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -70,8 +70,31 @@ public class AccountDaoImpl implements AccountDao {
     		entityManager.close();*/
 
 
-    		Query query = session.createSQLQuery("Select * from account");
-    		accountList = query.list();
+//    		Query query = session.createSQLQuery("Select * from account");
+//    		accountList = (List<Account>)query.list();
+
+
+
+/*			String sql = "select a.accountId as aaId, a.name, a.email_domain, a.time_zone_city,"
+					+ "c.contactId, c.first_name, c.last_name, c.email_address, c.gender, c.phone, c.status, c.street_address, c.city, c.state, c.country, c.hasLogin, c.contactLoginId"
+					+ " from account a, contact c where a.accountId = c.accountId";*/
+
+/*    		String sql = "Select a.accountId, a.name, a.email_domain, a.time_zone_city from account a";
+
+			SQLQuery query = session.createSQLQuery(sql);
+			query.setResultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP);
+			accountList = query.list();
+*/
+
+
+    		/*for ( Account event : (List<Account>) result ) {
+    		    System.out.println( "Event (" + event.getDate() + ") : " + event.getTitle() );
+    		}*/
+
+
+
+    		accountList = (List<Account>) session.createCriteria(Account.class)
+    			    .list();
 
     		tx.commit();
 
@@ -96,7 +119,7 @@ public class AccountDaoImpl implements AccountDao {
     	try {
     		tx = session.beginTransaction();
 
-    		Account checkAccount = (Account) session.load(Account.class, account.getAccountId());
+    		Account checkAccount = (Account) session.load(Account.class, account.getName());
 
     		if(checkAccount == null) {
 				check = false;
@@ -130,9 +153,7 @@ public class AccountDaoImpl implements AccountDao {
     	try {
     		tx = session.beginTransaction();
 
-    		if(!checkIfAccountExists(account)) {
 				accountId = (Integer) session.save(account);
-			}
     		tx.commit();
     	}
     	catch(HibernateException e) {
@@ -191,8 +212,76 @@ public class AccountDaoImpl implements AccountDao {
 
 	@Override
 	public Account findAccountById(Integer accountId) {
-		// TODO Auto-generated method stub
-		return null;
+
+		Session session = factory.openSession();
+    	Transaction tx = null;
+    	SQLQuery query = null;
+    	Account accountToReturn = null;
+
+    	try {
+
+    		tx = session.beginTransaction();
+
+    		query = session.createSQLQuery("Select * from account where accountId=:accountId ");
+    		query.setParameter("accountId", accountId);
+
+//			query.setResultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP);
+			query.addEntity(Account.class);
+
+			List<Account> l = (List<Account>)query.list();
+
+
+			if (l.size()>0) {
+			  accountToReturn=l.get(0);
+			}
+
+    		tx.commit();
+    	}
+    	catch(HibernateException e) {
+
+    		System.err.println(e.getMessage());
+
+
+    		if (tx != null) {
+				tx.rollback();
+			}
+    	}
+    	finally {
+    		session.close();
+    	}
+
+    	return accountToReturn;
+	}
+
+	@Override
+	public void deleteAccount(Account account) {
+
+		Session session = factory.openSession();
+    	Transaction tx = null;
+    	SQLQuery query = null;
+    	Account accountToReturn = null;
+
+    	try {
+
+    		tx = session.beginTransaction();
+
+    		session.delete(account);
+
+    		tx.commit();
+    	}
+    	catch(HibernateException e) {
+
+    		System.err.println(e.getMessage());
+
+
+    		if (tx != null) {
+				tx.rollback();
+			}
+    	}
+    	finally {
+    		session.close();
+    	}
+
 	}
 
 	@Override
@@ -209,9 +298,33 @@ public class AccountDaoImpl implements AccountDao {
 
 	@Override
 	public void updateAccount(Account account) {
-		// TODO Auto-generated method stub
+
+		Session session = factory.openSession();
+    	Transaction tx = null;
+
+    	try {
+
+    		tx = session.beginTransaction();
+
+    		session.update(account);
+    		tx.commit();
+    	}
+    	catch(HibernateException e) {
+
+    		System.err.println(e.getMessage());
+
+
+    		if (tx != null) {
+				tx.rollback();
+			}
+    	}
+    	finally {
+    		session.close();
+    	}
 
 	}
+
+
 
 
 }

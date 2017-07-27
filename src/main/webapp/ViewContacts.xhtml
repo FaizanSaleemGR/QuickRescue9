@@ -7,13 +7,13 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:composite="http://java.sun.com/jsf/composite">
 <h:head>
-	<title>Edit Contact :: Quick Rescue</title>
+	<title>View Contacts :: Quick Rescue</title>
 	<meta name="author" content="Faizan Saleem"></meta>
 </h:head>
 
 
 <f:metadata>
-    <f:event type="postAddToView" listener="#{accountController.editAccount()}" />
+    <f:event type="preRenderView" listener="#{accountController.getContacts()}" />
 </f:metadata>
 
 <h:body>
@@ -73,34 +73,23 @@
 	
 	<b:container> 
 	
-<h:form id="accountListForm" style="padding-top:50px">
-    <b:dataTable value="#{accountController.editedAccountsList}" var="account" page-length="5" page-length-menu="5,10,20" class="editableAccountTable">
-    
-        <b:dataTableColumn value="#{account.accountId}" label="ID" order="asc"  />
-        
-        <b:dataTableColumn label="Name">
-           	<b:inputText value="#{account.name}" />	
-        </b:dataTableColumn>
-        
-        <b:dataTableColumn label="Email Domain">
-        	<b:inputText value="#{account.emailDomain}" />
-        </b:dataTableColumn>
-        
-        <b:dataTableColumn label="Time Zone City">
-        	<b:inputText value="#{account.timeZoneCity}" />
-        </b:dataTableColumn>
-
-		<b:dataTableColumn label="">
-			<b:commandButton value="Update Account" look="success" action="#{accountController.saveAccount(account)}" />
-		</b:dataTableColumn>
-
-
-
+ <h:form id="contactListForm" style="padding-top:50px">
+ <h:panelGroup id="contactListDT">
+    <b:dataTable value="#{accountController.contactsList}" var="contact" page-length="5" page-length-menu="5,10,20">
+        <b:dataTableColumn value="#{contact.contactId}" label="Contact ID"  />
+        <b:dataTableColumn value="#{contact.firstName}" label="First Name"  />
+        <b:dataTableColumn value="#{contact.lastName}" label="Last Name"  />
+        <b:dataTableColumn value="#{contact.emailAddress}" label="Email Address"  />
+        <b:dataTableColumn value="#{contact.gender}" label="Gender"  />
+        <b:dataTableColumn value="#{contact.phone}" label="Phone"  />
+        <b:dataTableColumn value="#{contact.status}" label="Status"  />
+        <b:dataTableColumn value="#{contact.streetAddress}" label="Street"  />
+        <b:dataTableColumn value="#{contact.city}" label="City"  />
+        <b:dataTableColumn value="#{contact.state}" label="State"  />
+        <b:dataTableColumn value="#{contact.country}" label="Country"  />
+        <b:dataTableColumn value="#{contact.hasLogin}" label="hasLogin"  />
     </b:dataTable>
-
-
-
-    
+    </h:panelGroup>
 </h:form>
  
 	</b:container>

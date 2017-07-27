@@ -4,25 +4,25 @@ import java.io.Serializable;
 import java.util.Set;
 
 public class AlertProfile implements Serializable {
-	
+
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	private int locationId;
-	private int profileId;
+	private Integer locationId;
+	private Integer profileId;
 	private String profileName;
-	private int accountId;
+	private Integer accountId;
 	private Set<Location> locations;
 	private Account account;
-	
+
 	public AlertProfile() {
 		super();
 	}
-	public int getProfileId() {
+	public Integer getProfileId() {
 		return profileId;
 	}
-	public void setProfileId(int profileId) {
+	public void setProfileId(Integer profileId) {
 		this.profileId = profileId;
 	}
 	public String getProfileName() {
@@ -31,10 +31,10 @@ public class AlertProfile implements Serializable {
 	public void setProfileName(String profileName) {
 		this.profileName = profileName;
 	}
-	public int getAccountId() {
+	public Integer getAccountId() {
 		return accountId;
 	}
-	public void setAccountId(int accountId) {
+	public void setAccountId(Integer accountId) {
 		this.accountId = accountId;
 	}
 	public Set<Location> getLocations() {
@@ -49,10 +49,10 @@ public class AlertProfile implements Serializable {
 	public void setAccount(Account account) {
 		this.account = account;
 	}
-	public int getLocationId() {
+	public Integer getLocationId() {
 		return locationId;
 	}
-	public void setLocationId(int locationId) {
+	public void setLocationId(Integer locationId) {
 		this.locationId = locationId;
 	}
 }
