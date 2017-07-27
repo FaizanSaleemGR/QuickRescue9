@@ -8,7 +8,7 @@ import com.jpa.entities.Account;
 
 @Local
 public interface AccountDao {
-	
+
 	List<Account> getAllAccounts();
 	Integer addAccount(Account account);
 	Account findAccountByName(String accountName);
@@ -17,4 +17,5 @@ public interface AccountDao {
 	Boolean deleteAccountById(Integer accountId);
 	Boolean checkIfAccountExists(Account account);
 	void updateAccount(Account account);
+	void deleteAccount(Account account);
 }

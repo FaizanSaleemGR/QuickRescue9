@@ -10,7 +10,7 @@
 	 		This class contains member/customer's accounts details.
 	 	</meta>
 	 	
-	 	<id name="accountId" type="int" column="accountId">
+	 	<id name="accountId" type="java.lang.Integer" column="accountId">
 	 		<generator class="native"></generator>
 	 	</id>
 	 	

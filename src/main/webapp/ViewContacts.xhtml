@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+<h:head>
+	<title>View Contacts :: Quick Rescue</title>
+	<meta name="author" content="Faizan Saleem"></meta>
+</h:head>
+
+
+<f:metadata>
+    <f:event type="preRenderView" listener="#{accountController.getContacts()}" />
+</f:metadata>
+
+<h:body>
+
+
+	<!-- Top Navbar  -->
+	<b:navBar brand="QuickRescue" brandHref="#" static="true"
+		inverse="true">
+		<b:navbarLinks>
+			<b:navLink value="Link" href="#"></b:navLink>
+			<b:navLink value="Link" href="#"></b:navLink>
+			<b:dropMenu value="Dropdown" iconAwesome="birthday-cake">
+				<b:navLink value="Action" href="#"></b:navLink>
+				<b:navLink value="Another action" href="#"></b:navLink>
+				<b:navLink value="Something else here" href="#"></b:navLink>
+				<b:navLink></b:navLink>
+				<b:navLink header="Nav header"></b:navLink>
+				<b:navLink value="Separated link" href="#"></b:navLink>
+				<b:dropMenu value="Nested submenu" iconAwesome="birthday-cake"
+					iconAlign="right">
+					<b:navLink value="You can nest menus" href="#"></b:navLink>
+					<b:dropMenu value="Nested sub-submenu">
+						<b:navLink value="... as deep as ..." href="#"></b:navLink>
+						<b:dropMenu value="Nested sub-sub-submenu">
+							<b:navLink value="... you want!" href="#"></b:navLink>
+						</b:dropMenu>
+					</b:dropMenu>
+
+				</b:dropMenu>
+				<b:navLink value="One more separated link" href="#"></b:navLink>
+			</b:dropMenu>
+		</b:navbarLinks>
+		<form class="navbar-form navbar-left hidden-md hidden-sm hidden-xs"
+			role="search">
+			<div class="form-group">
+				<input type="text" class="form-control" />
+			</div>
+			<button type="submit" class="btn btn-default">Submit</button>
+		</form>
+		<!-- Following line is needed for TBS 3.0.1 (panel content overflow issue) -->
+		<b:navbarLinks pull="right">
+			<b:navLink value="    " href="#"></b:navLink>
+		</b:navbarLinks>
+		<b:navbarLinks pull="right" styleClass="hidden-xs">
+			<b:navLink value="Link" href="#"></b:navLink>
+			<b:dropMenu value="Dropdown">
+				<b:navLink value="Action" href="#"></b:navLink>
+				<b:navLink value="Another action" href="#"></b:navLink>
+				<b:navLink value="Something else here" href="#"></b:navLink>
+				<b:navLink></b:navLink>
+				<b:navLink header="Nav header"></b:navLink>
+				<b:navLink value="Separated link" href="#"></b:navLink>
+				<b:navLink value="One more separated link" href="#"></b:navLink>
+			</b:dropMenu>
+		</b:navbarLinks>
+	</b:navBar>
+	
+	<b:container> 
+	
+ <h:form id="contactListForm" style="padding-top:50px">
+ <h:panelGroup id="contactListDT">
+    <b:dataTable value="#{accountController.contactsList}" var="contact" page-length="5" page-length-menu="5,10,20">
+        <b:dataTableColumn value="#{contact.contactId}" label="Contact ID"  />
+        <b:dataTableColumn value="#{contact.firstName}" label="First Name"  />
+        <b:dataTableColumn value="#{contact.lastName}" label="Last Name"  />
+        <b:dataTableColumn value="#{contact.emailAddress}" label="Email Address"  />
+        <b:dataTableColumn value="#{contact.gender}" label="Gender"  />
+        <b:dataTableColumn value="#{contact.phone}" label="Phone"  />
+        <b:dataTableColumn value="#{contact.status}" label="Status"  />
+        <b:dataTableColumn value="#{contact.streetAddress}" label="Street"  />
+        <b:dataTableColumn value="#{contact.city}" label="City"  />
+        <b:dataTableColumn value="#{contact.state}" label="State"  />
+        <b:dataTableColumn value="#{contact.country}" label="Country"  />
+        <b:dataTableColumn value="#{contact.hasLogin}" label="hasLogin"  />
+    </b:dataTable>
+    </h:panelGroup>
+</h:form>
+ 
+	</b:container>
+
+</h:body>
+</html>

@@ -10,7 +10,7 @@
 	 		This class contains location details of an alert profile.
 	 	</meta>
 	 	
-	 	<id name="locationId" type="int" column="locationId">
+	 	<id name="locationId" type="java.lang.Integer" column="locationId">
 	 		<generator class="native"></generator>
 	 	</id>
 	 	

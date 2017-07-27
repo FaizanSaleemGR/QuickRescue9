@@ -6,13 +6,8 @@
         
 	<persistence-unit name="QuickRescue" transaction-type="JTA">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
-		<jta-data-source>java:jboss/datasources/quickrescue</jta-data-source>
+		<!-- <jta-data-source>java:jboss/datasources/quickrescue</jta-data-source> -->
 		<!-- map your classes. -->
-		<class>com.jpa.entities.Account</class>
-		<class>com.jpa.entities.AlertProfile</class>		
-		<class>com.jpa.entities.Contact</class>
-		<class>com.jpa.entities.ContactLoginDetails</class>
-		<class>com.jpa.entities.Location</class>
 		
 		<properties>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />

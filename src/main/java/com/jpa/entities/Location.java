@@ -1,25 +1,30 @@
 package com.jpa.entities;
 
+import java.io.Serializable;
 import java.util.Set;
 
-public class Location {
+public class Location implements Serializable {
 
-	private int locationId;
-	private int profileId;
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
+	private Integer locationId;
+	private Integer profileId;
 	private String city;
 	private String country;
-	
+
 	private Set<AlertProfile> profiles;
 
 	public Location() {
 		super();
 	}
 
-	public int getLocationId() {
+	public Integer getLocationId() {
 		return locationId;
 	}
 
-	public void setLocationId(int locationId) {
+	public void setLocationId(Integer locationId) {
 		this.locationId = locationId;
 	}
 
@@ -47,12 +52,12 @@ public class Location {
 		this.profiles = profiles;
 	}
 
-	public int getProfileId() {
+	public Integer getProfileId() {
 		return profileId;
 	}
 
-	public void setProfileId(int profileId) {
+	public void setProfileId(Integer profileId) {
 		this.profileId = profileId;
 	}
-	
+
 }

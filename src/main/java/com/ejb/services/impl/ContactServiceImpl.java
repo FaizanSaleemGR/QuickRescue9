@@ -1,15 +1,13 @@
 package com.ejb.services.impl;
 
-import java.io.IOException;
-import java.util.Set;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 
 import com.dao.ContactDao;
 import com.ejb.services.ContactService;
+import com.gui.controllers.UtilsBean;
 import com.jpa.entities.Account;
 import com.jpa.entities.Contact;
 import com.jpa.entities.ContactLoginDetails;
@@ -19,83 +17,77 @@ public class ContactServiceImpl implements ContactService {
 
 	@EJB
 	private ContactDao contactDao;
-	
+
 	public ContactServiceImpl() {
-		
+
 	}
-	
+
+	@Override
 	public Integer addContact(Account account, Contact contact) {
 		return contactDao.addContact(account, contact);
 	}
 
-	
+
+	@Override
 	public Contact findContactByName(String contactFirstName, String contactLastName) {
 		return contactDao.findContactByName(contactFirstName, contactLastName);
 	}
 
-	
+
+	@Override
 	public Contact findContactById(Integer contactId) {
 		return contactDao.findContactById(contactId);
 	}
 
-	
+
+	@Override
 	public Boolean deleteContactByName(String contactFirstName, String contactLastName) {
 		return contactDao.deleteContactByName(contactFirstName, contactLastName);
 	}
 
-	
+
+	@Override
 	public Boolean deleteContactById(Integer contactId) {
 		return contactDao.deleteContactById(contactId);
 	}
 
-	
-	public Set<Contact> getContactsOfAccount(Account account) {
+
+	@Override
+	public List<Contact> getContactsOfAccount(Account account) {
 		return contactDao.getContactsOfAccount(account);
 	}
 
-	
+
+	@Override
 	public void updateContact(Contact contact) {
 		contactDao.updateContact(contact);
 	}
 
 
-	public void redirectTo(String url) {
-//		FacesContext.getCurrentInstance().getApplication().getNavigationHandler().handleNavigation(FacesContext.getCurrentInstance(), null, url);
-		
-		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext(); 
-		try {
-			externalContext.redirect(url);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	
-	}
-
-	
-
+	@Override
 	public Boolean loginContact(String contactUsername, String contactPassword) {
-		
+
 		ContactLoginDetails contactLoginDetails = contactDao.getContactLogin(contactUsername, contactPassword);
 		Contact contact = contactLoginDetails.getContact();
-		
+
 		Boolean check = null;
-		
+
 		if(contact != null) {
 			check = false;
 			if(contact.getHasLogin()) {
 				check = false;
 				if(contactUsername.equals(contactLoginDetails.getUsername()) && contactPassword.equals(contactLoginDetails.getPassword())) {
 					check = true;
-					
-					if(contact.getAccount().getName().equals("QuickRescue"))
-						redirectTo("AllAccountsView.xhtml");
-					else
-						redirectTo("AllContactsView.xhtml");
+
+					if(contact.getAccount().getName().equals("QuickRescue")) {
+						UtilsBean.redirectTo("ViewAllAccounts.xhtml");
+					} else {
+						UtilsBean.redirectTo("ViewAllContacts.xhtml");
+					}
 				}
 			}
 		}
-		
+
 		return check;
 	}
 
