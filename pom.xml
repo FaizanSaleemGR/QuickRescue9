@@ -32,7 +32,7 @@
 		<version.ejb.plugin>2.3</version.ejb.plugin>
 		<jdk.version>1.8</jdk.version>
 		<version.arquillian_core>1.1.9.Final</version.arquillian_core>
-		<env.JBOSS_HOME>D:\Software\wildfly-9.0.1.Final</env.JBOSS_HOME>
+		<env.JBOSS_HOME>D:\installations\java\wildfly-9.0.1.Final</env.JBOSS_HOME>
 	</properties>
 
 	<dependencies>

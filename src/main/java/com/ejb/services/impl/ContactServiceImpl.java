@@ -1,9 +1,12 @@
 package com.ejb.services.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 
 import com.dao.ContactDao;
 import com.ejb.services.ContactService;
@@ -82,13 +85,21 @@ public class ContactServiceImpl implements ContactService {
 					if(contact.getAccount().getName().equals("QuickRescue")) {
 						UtilsBean.redirectTo("ViewAllAccounts.xhtml");
 					} else {
+						System.out.println("Contact is not member of QuickRescue Account");
+						ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+						Map<String, Object> sessionMap = externalContext.getSessionMap();
+						sessionMap.put("accountId", contact.getAccount().getAccountId());
 						UtilsBean.redirectTo("ViewAllContacts.xhtml");
 					}
 				}
 			}
 		}
-
 		return check;
 	}
+
+
+
+
+
 
 }

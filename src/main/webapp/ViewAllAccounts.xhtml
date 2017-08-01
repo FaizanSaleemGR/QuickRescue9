@@ -205,8 +205,7 @@
         </b:dataTableColumn>
         <b:dataTableColumn label="">
         	<b:commandButton value="Delete" icon="cross" action="#{accountController.deleteAccount(account.accountId)}" look="danger" />
-        	<h:commandButton value="Edit" icon="edit" look="warning" data-target="#EditAccountModal" data-toggle="modal" />
-        	<a href="#{request.contextPath}/EditAccount.xhtml?accountId=#{account.accountId}" target="_blank" class="btn btn-warning btn-small">View</a>
+        	<a href="#{request.contextPath}/EditAccount.xhtml?accountId=#{account.accountId}" target="_blank" class="btn btn-warning btn-small">Edit</a>
 		</b:dataTableColumn> 
     </b:dataTable>
     

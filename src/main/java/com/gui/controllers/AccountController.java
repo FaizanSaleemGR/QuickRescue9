@@ -84,17 +84,15 @@ public class AccountController implements Serializable {
     	accountsList = new ArrayList<>();
 //		list.add(new Account("FaizanSaleem", "faizan.com", "Taxila"));
 
-    	accountsList.addAll(accountService.getAllAccounts());
+//    	accountsList.addAll(accountService.getAllAccounts());
 
-		System.out.println("in Init");
+		System.out.println("in Init of AccountController");
 		account = new Account();
 		newAccount = new Account();
 		editedAccount = new Account();
 
 
 		editCounter = 0;
-
-
     }
 
 
@@ -134,13 +132,13 @@ public class AccountController implements Serializable {
 	}
 
 
-    public String addAccount() {
+    public void addAccount() {
     	System.out.println("In Add New Account");
     	accountService.addAccount(newAccount);
 		accountsList.add(newAccount);
 		newAccount = new Account(); // Reset placeholder.
-//		UtilsBean.redirectTo("AllAccountsView.xhtml");
-		return "/AllAccountsView.xhtml?faces-redirect=true";
+//		return "/AllAccountsView.xhtml?faces-redirect=true";
+		UtilsBean.redirectTo("ViewAllAccounts.xhtml");
     }
 
 	public void setAccount(Account account) {
@@ -158,7 +156,7 @@ public class AccountController implements Serializable {
     	account = new Account(); // Reset placeholder.
     }
 
-    public String deleteAccount(int accountId) {
+    public void deleteAccount(int accountId) {
 
     	System.err.println("In Delete(int accountId)");
 
@@ -171,7 +169,8 @@ public class AccountController implements Serializable {
 
     	accountToDelete = new Account();
 
-    	return "/AllAccountsView.xhtml?faces-redirect=true";
+//    	return "/AllAccountsView.xhtml?faces-redirect=true";
+    	UtilsBean.redirectTo("ViewAllAccounts.xhtml");
 
     }
 
