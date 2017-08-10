@@ -11,6 +11,17 @@
 		<param-value>Production</param-value>
 	</context-param>
 	
+	<!-- Activates the waitcursor and the double-click protection -->
+	<context-param>
+	  <param-name>net.bootsfaces.blockUI</param-name>
+	  <param-value>true</param-value>
+	</context-param>
+	
+	<context-param>
+    <param-name>javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>
+    <param-value>true</param-value>
+</context-param>
+	
 	<!-- <context-param>
     <param-name>net.bootsfaces.get_jquery_from_cdn</param-name>
     <param-value>false</param-value>

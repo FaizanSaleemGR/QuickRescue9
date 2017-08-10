@@ -1,23 +1,26 @@
-package com.ejb.services.impl;
+package com.services.impl;
 
+import java.io.Serializable;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
-import java.util.Map;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 
 import com.dao.ContactDao;
-import com.ejb.services.ContactService;
-import com.gui.controllers.UtilsBean;
-import com.jpa.entities.Account;
-import com.jpa.entities.Contact;
-import com.jpa.entities.ContactLoginDetails;
+import com.entities.Account;
+import com.entities.Contact;
+import com.entities.ContactLoginDetails;
+import com.services.ContactService;
+import com.utils.Utils;
 
 @Stateless
-public class ContactServiceImpl implements ContactService {
+public class ContactServiceImpl implements ContactService, Serializable {
 
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
 	@EJB
 	private ContactDao contactDao;
 
@@ -28,6 +31,11 @@ public class ContactServiceImpl implements ContactService {
 	@Override
 	public Integer addContact(Account account, Contact contact) {
 		return contactDao.addContact(account, contact);
+	}
+
+	@Override
+	public Integer addLoginDetails(Contact contact, ContactLoginDetails contactLoginDetails) {
+		return contactDao.addLoginDetails(contact, contactLoginDetails);
 	}
 
 
@@ -69,11 +77,14 @@ public class ContactServiceImpl implements ContactService {
 
 	@Override
 	public Boolean loginContact(String contactUsername, String contactPassword) {
+		Boolean check = null;
+
 
 		ContactLoginDetails contactLoginDetails = contactDao.getContactLogin(contactUsername, contactPassword);
+			if(contactLoginDetails == null) {
+				return check;
+			}
 		Contact contact = contactLoginDetails.getContact();
-
-		Boolean check = null;
 
 		if(contact != null) {
 			check = false;
@@ -82,14 +93,25 @@ public class ContactServiceImpl implements ContactService {
 				if(contactUsername.equals(contactLoginDetails.getUsername()) && contactPassword.equals(contactLoginDetails.getPassword())) {
 					check = true;
 
+
+					// Redirect contact to ViewAllAccounts if it's a contact of QuickRescue account.
 					if(contact.getAccount().getName().equals("QuickRescue")) {
-						UtilsBean.redirectTo("ViewAllAccounts.xhtml");
-					} else {
+
+						Utils.addToSession(new SimpleEntry<>("contact", contact));
+
+						Utils.redirectTo("ViewAllAccounts.xhtml");
+//						return "ViewAllAccounts.xhtml?faces-redirect=true";
+					}
+					// Redirect contact to ViewAllContacts if it's NOT a contact of QuickRescue account.
+					else {
 						System.out.println("Contact is not member of QuickRescue Account");
-						ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-						Map<String, Object> sessionMap = externalContext.getSessionMap();
-						sessionMap.put("accountId", contact.getAccount().getAccountId());
-						UtilsBean.redirectTo("ViewAllContacts.xhtml");
+
+						Utils.addToSession(
+								new SimpleEntry<>("accountId", contact.getAccount().getAccountId())
+								);
+						Utils.addToSession(new SimpleEntry<>("contact", contact));
+
+						Utils.redirectTo("ViewAllContacts.xhtml");
 					}
 				}
 			}

@@ -4,9 +4,9 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import com.jpa.entities.Account;
-import com.jpa.entities.Contact;
-import com.jpa.entities.ContactLoginDetails;
+import com.entities.Account;
+import com.entities.Contact;
+import com.entities.ContactLoginDetails;
 
 @Local
 public interface ContactDao {
@@ -20,4 +20,5 @@ public interface ContactDao {
 	void updateContact(Contact contact);
 	ContactLoginDetails getContactLogin(String contactUsername, String contactPassword);
 	Contact getContact(String firstName, String lastName);
+	Integer addLoginDetails(Contact contact, ContactLoginDetails contactLoginDetails);
 }

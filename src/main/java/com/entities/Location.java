@@ -1,4 +1,4 @@
-package com.jpa.entities;
+package com.entities;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -10,7 +10,6 @@ public class Location implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Integer locationId;
-	private Integer profileId;
 	private String city;
 	private String country;
 
@@ -52,12 +51,5 @@ public class Location implements Serializable {
 		this.profiles = profiles;
 	}
 
-	public Integer getProfileId() {
-		return profileId;
-	}
-
-	public void setProfileId(Integer profileId) {
-		this.profileId = profileId;
-	}
 
 }

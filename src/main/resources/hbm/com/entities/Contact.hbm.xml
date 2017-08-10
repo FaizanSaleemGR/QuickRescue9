@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"> 
+
+<hibernate-mapping>
+
+	<class name="com.entities.Contact" table="contact">
+		<meta attribute="class-description">
+			This class contains details of contacts
+			(employees) of member/customer
+			account.
+		</meta>
+
+
+		<id name="contactId" type="java.lang.Integer" column="contactId">
+	 		<generator class="identity" />
+	 	</id>
+
+		<property name="firstName" type="string" column="first_name" />
+		<property name="lastName" type="string" column="last_name" />
+		<property name="emailAddress" type="string" column="email_address" />
+		<property name="gender" type="char" column="gender" />
+		<property name="phone" type="string" column="phone" />
+		<property name="status" type="boolean" column="status" />
+		<property name="streetAddress" type="string" column="street_address" />
+		<property name="city" type="string" column="city" />
+		<property name="state" type="string" column="state" />
+		<property name="country" type="string" column="country" />
+		<property name="hasLogin" type="boolean" column="hasLogin" />
+
+		<!-- One to many Relation between Account and Contact -->
+ 		<many-to-one name="account" class="com.entities.Account" fetch="select">
+            <column name="accountId" not-null="true" />
+        </many-to-one>
+
+		<!-- One to one Relation between Contat and ContactLoginDetails -->
+		 <many-to-one name="loginDetails" class="com.entities.ContactLoginDetails" column="contact_login_details" not-null="true" cascade="all" unique="true" lazy="false" />
+			
+	</class>
+
+</hibernate-mapping>

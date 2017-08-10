@@ -1,4 +1,4 @@
-package com.jpa.entities;
+package com.entities;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -9,17 +9,20 @@ public class Account implements Serializable{
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	private Integer accountId;
+	private Integer accountId; // PK of This Class
 	private String name;
 	private String emailDomain;
 	private String timeZoneCity;
-	private boolean canEdit = false;
+	private Set<Contact> contacts; // One to Many relation between Account and Contact
+	private Set<AlertProfile> alertProfiles; // One to Many relation between Account and AlertProfile
 
-	private Set<Contact> contacts;
-	private Set<AlertProfile> alertProfiles;
+	private AccountContract accountContract; // One to one relation between Account and AccountContract
+
+
+	private boolean editable;
 
 	public Account() {
-
+		super();
 	}
 
 	public Account(Integer accountId, String name, String emailDomain, String timeZoneCity, Set<Contact> contacts,
@@ -89,15 +92,21 @@ public class Account implements Serializable{
 		this.timeZoneCity = timeZoneCity;
 	}
 
-	public boolean isCanEdit() {
-		return canEdit;
+	public AccountContract getAccountContract() {
+		return accountContract;
 	}
 
-	public void setCanEdit(boolean canEdit) {
-		this.canEdit = canEdit;
+	public void setAccountContract(AccountContract accountContract) {
+		this.accountContract = accountContract;
 	}
 
+	public boolean getEditable() {
+		return editable;
+	}
 
+	public void setEditable(boolean editable) {
+		this.editable = editable;
+	}
 
 
 }

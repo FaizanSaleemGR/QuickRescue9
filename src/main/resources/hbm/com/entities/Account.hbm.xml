@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Aug 8, 2017 2:23:47 PM by Hibernate Tools 3.5.0.Final -->
+<hibernate-mapping>
+    <class name="com.entities.Account" table="Account">
+        <meta attribute="class-description">
+	 		This class contains member/customer's accounts details.
+	 	</meta>
+	 	
+	 	<id name="accountId" type="java.lang.Integer" column="accountId">
+	 		<generator class="identity" />
+	 	</id>
+	 	
+	 	<property name="emailDomain" type="string" column="email_domain" />
+	 	<property name="name" type="string" column="name" />
+	 	<property name="timeZoneCity" type="string" column="time_zone_city" />
+	 	
+	 	<!-- One to many Relation between Account and Contact -->
+	 	<set name="contacts" table="contact" inverse="true" cascade="all" lazy="false" fetch="select">
+            <key>
+                <column name="accountId" not-null="true" />
+            </key>
+            <one-to-many class="com.entities.Contact" />
+        </set>
+	 	
+	 	<!-- One to many Relation between Account and AlertProfile -->
+	 	<set name="alertProfiles" table="alert_profile" inverse="true" cascade="all" lazy="false" fetch="select">
+            <key>
+                <column name="accountId" not-null="true" />
+            </key>
+            <one-to-many class="com.entities.AlertProfile" />
+        </set>
+        
+        <!-- One to One mapping relation between Account and AccountContract -->
+		<many-to-one name="accountContract" class="com.entities.AccountContract" column="account_contract" not-null="true" cascade="all" unique="true" />
+        
+    </class>
+</hibernate-mapping>

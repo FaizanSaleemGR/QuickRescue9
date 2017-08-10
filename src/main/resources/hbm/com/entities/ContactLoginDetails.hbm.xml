@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"> 
+
+<hibernate-mapping>
+
+	<class name="com.entities.ContactLoginDetails" table="contact_login_details">
+		<meta attribute="class-description">
+			This class contains details of contact's logins.
+		</meta>
+
+		<id name="contactLoginId" type="java.lang.Integer">
+			<column name="contactLoginId" />
+			<generator class="native" /> 
+		</id>
+
+		<property name="username" type="string" column="username" />
+		<property name="password" type="string" column="password" />
+		
+
+		<!-- One to One relation between ContactLoginDetails and Contact 
+		<one-to-one name="contact" class="com.entities.Contact"  />--> 
+		
+        <many-to-one name="contact" column="contactId" unique="true"  class="com.entities.Contact" not-null="true" lazy="false" />
+
+	</class>
+
+</hibernate-mapping>

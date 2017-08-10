@@ -10,7 +10,7 @@
 	<name>QuickRescue9</name>
 	<url>http://maven.apache.org</url>
 
-
+<!--  
 	<repositories>
 		<repository>
 			<id>central</id>
@@ -23,7 +23,7 @@
 			</snapshots>
 		</repository>
 	</repositories>
-
+-->
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<version.org.jboss.as.plugins.maven.plugin>7.1.Final</version.org.jboss.as.plugins.maven.plugin>
@@ -32,7 +32,7 @@
 		<version.ejb.plugin>2.3</version.ejb.plugin>
 		<jdk.version>1.8</jdk.version>
 		<version.arquillian_core>1.1.9.Final</version.arquillian_core>
-		<env.JBOSS_HOME>D:\installations\java\wildfly-9.0.1.Final</env.JBOSS_HOME>
+		<env.JBOSS_HOME>D:\installations\java\wildfly-9.0.1.Final - old</env.JBOSS_HOME>
 	</properties>
 
 	<dependencies>
@@ -41,14 +41,6 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.springframework/springloaded -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>springloaded</artifactId>
-			<version>1.2.7.RELEASE</version>
-		</dependency>
-
 
 		<!-- Hibernate APIs Start -->
 		<dependency>
@@ -110,30 +102,26 @@
 
 
 		<!-- https://mvnrepository.com/artifact/net.bootsfaces/bootsfaces -->
-		 <dependency>
+		<dependency>
 			<groupId>net.bootsfaces</groupId>
 			<artifactId>bootsfaces</artifactId>
 			<version>1.1.2</version>
-			<scope>compile</scope> 
+			<scope>compile</scope>
 		</dependency>
 
-	<dependency>
-		<groupId>org.primefaces</groupId>
-		<artifactId>primefaces</artifactId>
-		<version>6.1</version>
-		<scope>compile</scope>
-	</dependency>
-	
-	<!-- https://mvnrepository.com/artifact/org.primefaces.themes/bootstrap -->
-	<dependency>
-		<groupId>org.primefaces.themes</groupId>
-		<artifactId>bootstrap</artifactId>
-		<version>1.0.10</version>
-	</dependency>
-	
+		<dependency>
+			<groupId>org.primefaces</groupId>
+			<artifactId>primefaces</artifactId>
+			<version>6.1</version>
+			<scope>compile</scope>
+		</dependency>
 
-
-
+		<!-- https://mvnrepository.com/artifact/org.primefaces.themes/bootstrap -->
+		<dependency>
+			<groupId>org.primefaces.themes</groupId>
+			<artifactId>bootstrap</artifactId>
+			<version>1.0.10</version>
+		</dependency>
 	</dependencies>
 
 
@@ -156,7 +144,8 @@
 				<configuration>
 					<archive>
 						<manifestEntries>
-							<Dependencies>org.hibernate, org.hibernate.validator, org.javassist</Dependencies>
+							<Dependencies>org.hibernate, org.hibernate.validator,
+								org.javassist</Dependencies>
 						</manifestEntries>
 					</archive>
 					<webappDirectory>

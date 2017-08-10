@@ -18,59 +18,9 @@
 
 <h:body>
 
-
-	<!-- Top Navbar  -->
-	<b:navBar brand="QuickRescue" brandHref="#" static="true"
-		inverse="true">
-		<b:navbarLinks>
-			<b:navLink value="Link" href="#"></b:navLink>
-			<b:navLink value="Link" href="#"></b:navLink>
-			<b:dropMenu value="Dropdown" iconAwesome="birthday-cake">
-				<b:navLink value="Action" href="#"></b:navLink>
-				<b:navLink value="Another action" href="#"></b:navLink>
-				<b:navLink value="Something else here" href="#"></b:navLink>
-				<b:navLink></b:navLink>
-				<b:navLink header="Nav header"></b:navLink>
-				<b:navLink value="Separated link" href="#"></b:navLink>
-				<b:dropMenu value="Nested submenu" iconAwesome="birthday-cake"
-					iconAlign="right">
-					<b:navLink value="You can nest menus" href="#"></b:navLink>
-					<b:dropMenu value="Nested sub-submenu">
-						<b:navLink value="... as deep as ..." href="#"></b:navLink>
-						<b:dropMenu value="Nested sub-sub-submenu">
-							<b:navLink value="... you want!" href="#"></b:navLink>
-						</b:dropMenu>
-					</b:dropMenu>
-
-				</b:dropMenu>
-				<b:navLink value="One more separated link" href="#"></b:navLink>
-			</b:dropMenu>
-		</b:navbarLinks>
-		<form class="navbar-form navbar-left hidden-md hidden-sm hidden-xs"
-			role="search">
-			<div class="form-group">
-				<input type="text" class="form-control" />
-			</div>
-			<button type="submit" class="btn btn-default">Submit</button>
-		</form>
-		<!-- Following line is needed for TBS 3.0.1 (panel content overflow issue) -->
-		<b:navbarLinks pull="right">
-			<b:navLink value="    " href="#"></b:navLink>
-		</b:navbarLinks>
-		<b:navbarLinks pull="right" styleClass="hidden-xs">
-			<b:navLink value="Link" href="#"></b:navLink>
-			<b:dropMenu value="Dropdown">
-				<b:navLink value="Action" href="#"></b:navLink>
-				<b:navLink value="Another action" href="#"></b:navLink>
-				<b:navLink value="Something else here" href="#"></b:navLink>
-				<b:navLink></b:navLink>
-				<b:navLink header="Nav header"></b:navLink>
-				<b:navLink value="Separated link" href="#"></b:navLink>
-				<b:navLink value="One more separated link" href="#"></b:navLink>
-			</b:dropMenu>
-		</b:navbarLinks>
-	</b:navBar>
-	
+		<ui:insert name="header" >
+		  <ui:include src="WEB-INF/templates/common/commonHeader.xhtml" />
+		</ui:insert>
 	<b:container> 
 	
 <h:form id="accountListForm" style="padding-top:50px">
@@ -93,8 +43,6 @@
 		<b:dataTableColumn label="">
 			<b:commandButton value="Update Account" look="success" action="#{accountController.saveAccount(account)}" />
 		</b:dataTableColumn>
-
-
 
     </b:dataTable>
 

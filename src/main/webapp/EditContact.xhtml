@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+<h:head>
+	<title>Edit Contact :: Quick Rescue</title>
+	<meta name="author" content="Faizan Saleem"></meta>
+</h:head>
+
+
+<f:metadata>
+    <f:event type="postAddToView" listener="#{contactController.editContact()}" />
+</f:metadata>
+
+<h:body>
+
+		<ui:insert name="header" >
+		  <ui:include src="WEB-INF/templates/common/commonHeader.xhtml" />
+		</ui:insert>
+	<b:container> 
+	
+<h:form id="contactListForm" style="padding-top:50px">
+    <b:dataTable value="#{contactController.editedAccountsList}" var="contact" page-length="5" page-length-menu="5,10,20" class="editableContactTable">
+    
+		<b:dataTableColumn value="#{contact.contactId}" label="Contact ID" order="desc"  />
+        
+        <b:dataTableColumn label="First Name">
+        	<b:inputText value="#{contact.firstName}"></b:inputText>
+        </b:dataTableColumn>
+        
+                <b:dataTableColumn label="Last Name">
+        	<b:inputText value="#{contact.lastName}"></b:inputText>
+        </b:dataTableColumn>
+        
+                <b:dataTableColumn label="Email Address">
+        	<b:inputText value="#{contact.emailAddress}"></b:inputText>
+        </b:dataTableColumn>
+        
+                <b:dataTableColumn label="Gender">
+        	<b:inputText value="#{contact.gender}"></b:inputText>
+        </b:dataTableColumn>
+        
+                <b:dataTableColumn label="Phone">
+        	<b:inputText value="#{contact.phone}"></b:inputText>
+        </b:dataTableColumn>
+        
+                <b:dataTableColumn label="Status">
+        	<b:inputText value="#{contact.status}"></b:inputText>
+        </b:dataTableColumn>
+        
+                <b:dataTableColumn label="Street Address">
+        	<b:inputText value="#{contact.streetAddress}"></b:inputText>
+        </b:dataTableColumn>
+        
+                <b:dataTableColumn label="City">
+        	<b:inputText value="#{contact.city}"></b:inputText>
+        </b:dataTableColumn>
+        
+                <b:dataTableColumn label="State">
+        	<b:inputText value="#{contact.state}"></b:inputText>
+        </b:dataTableColumn>
+        
+                <b:dataTableColumn label="Country">
+        	<b:inputText value="#{contact.country}"></b:inputText>
+        </b:dataTableColumn>
+        
+        
+        
+        
+ 		<b:dataTableColumn label="">
+			<b:commandButton value="Update Contact" look="success" action="#{contactController.saveContact(contact)}" />
+		</b:dataTableColumn>
+		
+		
+		
+		
+		
+		
+		
+
+    </b:dataTable>
+
+
+
+    
+</h:form>
+ 
+	</b:container>
+
+</h:body>
+</html>

@@ -1,11 +1,12 @@
-package com.ejb.services;
+package com.services;
 
 import java.util.List;
 
 import javax.ejb.Local;
 
-import com.jpa.entities.Account;
-import com.jpa.entities.Contact;
+import com.entities.Account;
+import com.entities.Contact;
+import com.entities.ContactLoginDetails;
 
 @Local
 public interface ContactService {
@@ -18,4 +19,5 @@ public interface ContactService {
 	List<Contact> getContactsOfAccount(Account account);
 	void updateContact(Contact contact);
 	Boolean loginContact(String contactUsername, String contactPassword);
+	Integer addLoginDetails(Contact contact, ContactLoginDetails contactLoginDetails);
 }

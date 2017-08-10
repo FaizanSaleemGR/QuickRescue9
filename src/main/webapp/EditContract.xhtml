@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+<h:head>
+	<title>Edit Contact :: Quick Rescue</title>
+	<meta name="author" content="Faizan Saleem"></meta>
+</h:head>
+
+
+<f:metadata>
+    <f:event type="postAddToView" listener="#{accountController.editContract()}" />
+</f:metadata>
+
+<h:body>
+
+
+		<ui:insert name="header" >
+		  <ui:include src="WEB-INF/templates/common/commonHeader.xhtml" />
+		</ui:insert>
+
+	<b:container> 
+	
+<h:form id="accountListForm" style="padding-top:50px">
+    <b:dataTable value="#{accountController.editedContractsList}" var="contract" page-length="5" page-length-menu="5,10,20" class="editableContractTable">
+    
+        <b:dataTableColumn value="#{contract.contractId}" label="Contract ID" order="asc"  />
+        
+        <b:dataTableColumn label="Start Date">
+           	<b:dateTimePicker value="#{contract.startDate}"
+					        allow-input-toggle="true"
+					        show-date="true"
+					        show-icon="true"
+					        use-current="true" display="inline" />
+        </b:dataTableColumn>
+        
+        <b:dataTableColumn label="End Date">
+           	<b:dateTimePicker value="#{contract.endDate}"
+					        allow-input-toggle="true"
+					        show-date="true"
+					        show-icon="true"
+					        use-current="true" display="inline"  />
+        </b:dataTableColumn>
+        
+        <b:dataTableColumn label="Contacts Limit">
+        	<b:inputText value="#{contract.contactsLimit}" />
+        </b:dataTableColumn>
+
+        <b:dataTableColumn label="Logins Limit">
+        	<b:inputText value="#{contract.loginsLimit}" />
+        </b:dataTableColumn>
+
+		<b:dataTableColumn label="">
+			<b:commandButton value="Update Contract" look="success" action="#{accountController.saveContract(contract)}" />
+		</b:dataTableColumn>
+
+    </b:dataTable>
+
+
+
+    
+</h:form>
+ 
+	</b:container>
+
+</h:body>
+</html>

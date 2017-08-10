@@ -1,4 +1,4 @@
-package com.jpa.entities;
+package com.entities;
 
 import java.io.Serializable;
 
@@ -11,32 +11,31 @@ public class Contact implements Serializable {
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	private Integer contactLoginId;
-	private Integer contactId;
+	private Integer contactId; // PK of this class
+	public Account account; // One to many relation between Account and Contact
+	private ContactLoginDetails loginDetails; // One to One relation between Contact and ContactLoginDetails
 
 	private String firstName;
 	private String lastName;
 	private String emailAddress;
 	private char gender;
 	private String phone;
-	private Integer status;
+	private Boolean status;
 	private String streetAddress;
 	private String city;
 	private String state;
 	private String country;
-
-	private Integer accountId;
 	private Boolean hasLogin;
 
-	public Account account;
-	private ContactLoginDetails loginDetails;
+
+	private boolean editable;
 
 	public Contact() {
 		super();
 	}
 
 	public Contact(String firstName, String lastName, String emailAddress, char gender, String phone,
-			Integer status, String streetAddress, String city, String state, String country, Account account) {
+			Boolean status, String streetAddress, String city, String state, String country, Account account) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -52,7 +51,7 @@ public class Contact implements Serializable {
 	}
 
 	public Contact(String firstName, String lastName, String emailAddress, char gender, String phone,
-			Integer status, String streetAddress, String city, String state, String country) {
+			Boolean status, String streetAddress, String city, String state, String country) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -67,7 +66,7 @@ public class Contact implements Serializable {
 	}
 
 	public Contact(String firstName, String lastName, String emailAddress, char gender, String phone,
-			Integer status, String streetAddress, String city, String state, String country, String accountName) {
+			Boolean status, String streetAddress, String city, String state, String country, String accountName) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -120,10 +119,10 @@ public class Contact implements Serializable {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	public Integer getStatus() {
+	public Boolean  getStatus() {
 		return status;
 	}
-	public void setStatus(Integer status) {
+	public void setStatus(Boolean status) {
 		this.status = status;
 	}
 	public String getStreetAddress() {
@@ -157,14 +156,6 @@ public class Contact implements Serializable {
 		this.account = account;
 	}
 
-	public Integer getAccountId() {
-		return accountId;
-	}
-
-	public void setAccountId(Integer accountId) {
-		this.accountId = accountId;
-	}
-
 	public Boolean getHasLogin() {
 		return hasLogin;
 	}
@@ -181,12 +172,12 @@ public class Contact implements Serializable {
 		this.loginDetails = loginDetails;
 	}
 
-	public Integer getContactLoginId() {
-		return contactLoginId;
+	public boolean getEditable() {
+		return editable;
 	}
 
-	public void setContactLoginId(Integer contactLoginId) {
-		this.contactLoginId = contactLoginId;
+	public void setEditable(boolean editable) {
+		this.editable = editable;
 	}
 
 }

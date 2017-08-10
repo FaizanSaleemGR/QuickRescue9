@@ -4,7 +4,8 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import com.jpa.entities.Account;
+import com.entities.Account;
+import com.entities.AccountContract;
 
 @Local
 public interface AccountDao {
@@ -18,4 +19,7 @@ public interface AccountDao {
 	Boolean checkIfAccountExists(Account account);
 	void updateAccount(Account account);
 	void deleteAccount(Account account);
+	List<AccountContract> getAllContracts();
+	void updateContract(AccountContract contract);
+	AccountContract findContractById(Integer contractId);
 }

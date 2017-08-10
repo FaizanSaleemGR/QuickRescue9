@@ -1,4 +1,4 @@
-package com.jpa.entities;
+package com.entities;
 
 import java.io.Serializable;
 
@@ -8,11 +8,13 @@ public class ContactLoginDetails implements Serializable {
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	private Integer contactLoginId;
+	private Integer contactLoginId;	// PK of this class
+	private Contact contact; // One to one relation between Contact and ContactLoginDetails
+
+
+
 	private String username;
 	private String password;
-	private Integer contactId;
-	private Contact contact;
 
 	public Integer getContactLoginId() {
 		return contactLoginId;
@@ -32,19 +34,12 @@ public class ContactLoginDetails implements Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public Integer getContactId() {
-		return contactId;
-	}
-	public void setContactId(Integer contactId) {
-		this.contactId = contactId;
-	}
 	public Contact getContact() {
 		return contact;
 	}
 	public void setContact(Contact contact) {
 		this.contact = contact;
 	}
-
 
 
 }

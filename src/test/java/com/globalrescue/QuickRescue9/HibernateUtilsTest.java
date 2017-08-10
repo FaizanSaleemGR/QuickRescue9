@@ -10,8 +10,8 @@ import org.junit.runners.MethodSorters;
 
 import com.dao.ContactDao;
 import com.dao.impl.ContactDaoImpl;
-import com.jpa.entities.Contact;
-import com.jpa.entities.ContactLoginDetails;
+import com.entities.Contact;
+import com.entities.ContactLoginDetails;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class HibernateUtilsTest {

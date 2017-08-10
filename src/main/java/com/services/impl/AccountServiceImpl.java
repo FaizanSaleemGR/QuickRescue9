@@ -1,6 +1,7 @@
-package com.ejb.services.impl;
+package com.services.impl;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -9,12 +10,17 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import com.dao.AccountDao;
-import com.ejb.services.AccountService;
-import com.jpa.entities.Account;
+import com.entities.Account;
+import com.entities.AccountContract;
+import com.services.AccountService;
 
 @Stateless
-public class AccountServiceImpl implements AccountService {
+public class AccountServiceImpl implements AccountService, Serializable   {
 
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
 	@EJB
 	private AccountDao accountDao;
 
@@ -41,6 +47,11 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public Account findAccountById(Integer accountId) {
 		return accountDao.findAccountById(accountId);
+	}
+
+	@Override
+	public AccountContract findContractById(Integer contractId) {
+		return accountDao.findContractById(contractId);
 	}
 
 	@Override
@@ -72,6 +83,11 @@ public class AccountServiceImpl implements AccountService {
 		accountDao.updateAccount(account);
 	}
 
+	@Override
+	public void updateContract(AccountContract contract) {
+		accountDao.updateContract(contract);
+	}
+
 
 	@Override
 	public void redirectToExternal(String pageName) {
@@ -99,5 +115,11 @@ public class AccountServiceImpl implements AccountService {
 		    e.printStackTrace();
 		}
 
+	}
+
+
+	@Override
+	public List<AccountContract> getAllContracts() {
+		return accountDao.getAllContracts();
 	}
 }

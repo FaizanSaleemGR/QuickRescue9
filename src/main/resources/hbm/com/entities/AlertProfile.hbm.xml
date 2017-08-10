@@ -5,29 +5,28 @@
  
  <hibernate-mapping>
  
-	 <class name="com.jpa.entities.AlertProfile" table="alert_profile">
+	 <class name="com.entities.AlertProfile" table="alert_profile">
 	 	<meta attribute="class-description">
 	 		This class contains alert profile details of an account.
 	 	</meta>
 	 	
 	 	<id name="profileId" type="java.lang.Integer" column="profileId">
-	 		<generator class="native"></generator>
+	 		<generator class="identity" />
 	 	</id>
 	 	
-	 	<property name="profileName" type="string" column="profile_name"></property>
+	 	<property name="profileName" type="string" column="profile_name" />
 
-        <!-- Many to One relation between AlertProfile and Account -->
-        <many-to-one name="account" class="com.jpa.entities.Account" fetch="select">
+        <!-- One to Many relation between Account and AlertProfile -->
+        <many-to-one name="account" class="com.entities.Account" fetch="select">
             <column name="accountId" not-null="true" />
         </many-to-one>
         
         
         <!-- Many to Many relation between AlertProfile and Location -->
-        <set name="locations" table="profile_location"
-			inverse="false" lazy="false" fetch="select" cascade="all">
-			<key column="profileId" />
-			<many-to-many column="locationId" class="com.jpa.entities.Location" />
-		</set>
+        <set name="locations" table="profile_location" cascade="all">
+            <key column="profileId" />
+           	<many-to-many column="locationId"  class="com.entities.Location" />
+        </set>
      
         
         

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"> 
+
+<hibernate-mapping>
+
+	<class name="com.entities.AccountContract" table="account_contracts">
+		<meta attribute="class-description">
+			This class contains details of contracts of accounts.
+		</meta>
+
+		<id name="contractId" type="java.lang.Integer">
+			<column name="contractId" />
+			<generator class="identity" />
+		</id>
+
+		<property name="startDate" type="date" column="start_date" />
+		<property name="endDate" type="date" column="end_date" />
+		<property name="contactsLimit" type="java.lang.Integer" column="contacts_limit" />
+		<property name="loginsLimit" type="java.lang.Integer" column="logins_limit" />
+		
+	</class>
+
+</hibernate-mapping>

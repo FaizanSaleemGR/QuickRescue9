@@ -1,0 +1,157 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+<h:head>
+	<title>View All Contracts :: Quick Rescue</title>
+	<meta name="author" content="Faizan Saleem"></meta>
+</h:head>
+
+
+
+<h:body>
+
+
+			<ui:insert name="header" >
+		  <ui:include src="WEB-INF/templates/common/commonHeader.xhtml" />
+		</ui:insert>
+
+
+
+<!-- Add New Contract Modal  -->  
+	<b:modal id="AddNewContractModal" title="Add New Contract" styleClass="modalPseudoClass">
+		<b:form id="addContractForm">
+				<b:panel title="Add New Contract" look="info">
+				
+				<b:row>
+					<b:column>
+						    <b:dateTimePicker value="#{accountController.accountContract.startDate}"
+					        allow-input-toggle="true"
+					        show-date="true"
+					        show-icon="true"
+					        use-current="true"
+					        label="Start Date" />
+					</b:column>
+				</b:row>
+				
+				<b:row>
+					<b:column>
+						    <b:dateTimePicker value="#{accountController.accountContract.endDate}"
+					        allow-input-toggle="true"
+					        show-date="true"
+					        show-icon="true"
+					        use-current="true"
+					        label="End Date" />
+					</b:column>
+				</b:row>
+				
+				<b:row>
+					<b:column>
+						    
+						    <b:inputText type="number" label="Contacts Limit" value="#{accountController.accountContract.contactsLimit}" min="0"></b:inputText>
+						    
+					</b:column>
+				</b:row>				
+				
+				<b:row>
+					<b:column>
+						    <b:inputText type="number" label="Logins Limit" value="#{accountController.accountContract.loginsLimit}" min="0"></b:inputText>
+					</b:column>
+				</b:row>	
+				
+				
+				<b:row>
+					<b:column>
+					
+						<b:selectOneMenu value="#{accountController.accountIdForNewContract}" label="Select an Account">
+   							<f:selectItems value="#{accountController.accountsNamesList.entrySet()}" var="entry" itemValue="#{entry.key}" itemLabel="#{entry.key} - #{entry.value}" />
+						</b:selectOneMenu>
+					</b:column>
+				</b:row>
+							
+				
+				</b:panel>
+				
+				
+					<b:row>
+						<b:column>
+							<b:commandButton value="Add New Contract" action="#{accountController.addNewContract()}"
+								look="success" style="width:100%" />
+						</b:column>
+					</b:row>
+					
+				
+				
+		</b:form>
+	</b:modal>
+
+	<b:container> 
+	
+	<b:row>
+    <b:column col-md="1">
+        <button id="btrigger" class="btn btn-success btn-md" data-target="#AddNewContractModal" data-toggle="modal">Add New Contract</button>
+    </b:column>
+</b:row>		
+	
+	
+ <h:form id="contactListForm" style="padding-top:50px">
+ <h:panelGroup id="contactListDT">
+    <b:dataTable value="#{accountController.contractsList}" class="editableContractTable" var="contract" page-length="5" page-length-menu="5,10,20">
+        <b:dataTableColumn value="#{contract.contractId}" label="Contract ID" order="asc"  />
+        
+        
+        <b:dataTableColumn label="Start Date">
+        
+        	<b:dateTimePicker value="#{contract.startDate}"
+					        allow-input-toggle="true"
+					        show-date="true"
+					        show-icon="true"
+					        use-current="true"
+					        rendered="#{contract.editable}" />
+					        
+        	<h:outputText value="#{contract.startDate}" rendered="#{not contract.editable}">
+   				<f:convertDateTime pattern="yyyy-MM-dd" />
+			</h:outputText>
+        
+        
+        </b:dataTableColumn>
+        
+        
+                <b:dataTableColumn label="End Date">
+        
+        	<b:dateTimePicker value="#{contract.endDate}"
+					        allow-input-toggle="true"
+					        show-date="true"
+					        show-icon="true"
+					        use-current="true"
+					        rendered="#{contract.editable}" />
+					        
+        	<h:outputText value="#{contract.endDate}" rendered="#{not contract.editable}">
+   				<f:convertDateTime pattern="yyyy-MM-dd" />
+			</h:outputText>
+        
+        
+        </b:dataTableColumn>
+        
+        <b:dataTableColumn value="#{contract.contactsLimit}" label="Contacts Limit"  />
+        <b:dataTableColumn value="#{contract.loginsLimit}" label="Logins Limit"  />
+       
+        <b:dataTableColumn label="Action">
+        	
+		                                    
+        	<b:icon name="edit" size="lg" ajax="true" update="@(.editableContractTable)" onclick="ajax:accountController.contractEditAction(contract)" />
+       </b:dataTableColumn>
+        
+    </b:dataTable>
+    </h:panelGroup>
+    
+</h:form>
+ 
+	</b:container>
+
+</h:body>
+</html>

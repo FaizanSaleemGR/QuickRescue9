@@ -1,4 +1,4 @@
-package com.jpa.entities;
+package com.entities;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -9,12 +9,11 @@ public class AlertProfile implements Serializable {
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	private Integer locationId;
-	private Integer profileId;
+	private Integer profileId; // PK of this class
 	private String profileName;
-	private Integer accountId;
+	private Account account; // One to Many relation between Account and AlertProfile
+
 	private Set<Location> locations;
-	private Account account;
 
 	public AlertProfile() {
 		super();
@@ -31,12 +30,7 @@ public class AlertProfile implements Serializable {
 	public void setProfileName(String profileName) {
 		this.profileName = profileName;
 	}
-	public Integer getAccountId() {
-		return accountId;
-	}
-	public void setAccountId(Integer accountId) {
-		this.accountId = accountId;
-	}
+
 	public Set<Location> getLocations() {
 		return locations;
 	}
@@ -48,11 +42,5 @@ public class AlertProfile implements Serializable {
 	}
 	public void setAccount(Account account) {
 		this.account = account;
-	}
-	public Integer getLocationId() {
-		return locationId;
-	}
-	public void setLocationId(Integer locationId) {
-		this.locationId = locationId;
 	}
 }

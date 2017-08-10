@@ -1,69 +1,20 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:b="http://bootsfaces.net/ui">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite">
     <h:head>
 	<title>View All Accounts :: Quick Rescue</title>
 	<meta name="author" content="Faizan Saleem"></meta>
 </h:head>
 <h:body>
 
-	<!-- Top Navbar  -->
-	<b:navBar brand="QuickRescue" brandHref="#" static="true"
-		inverse="true">
-		<b:navbarLinks>
-			<b:navLink value="Link" href="#"></b:navLink>
-			<b:navLink value="Link" href="#"></b:navLink>
-			<b:dropMenu value="Dropdown" iconAwesome="birthday-cake">
-				<b:navLink value="Action" href="#"></b:navLink>
-				<b:navLink value="Another action" href="#"></b:navLink>
-				<b:navLink value="Something else here" href="#"></b:navLink>
-				<b:navLink></b:navLink>
-				<b:navLink header="Nav header"></b:navLink>
-				<b:navLink value="Separated link" href="#"></b:navLink>
-				<b:dropMenu value="Nested submenu" iconAwesome="birthday-cake"
-					iconAlign="right">
-					<b:navLink value="You can nest menus" href="#"></b:navLink>
-					<b:dropMenu value="Nested sub-submenu">
-						<b:navLink value="... as deep as ..." href="#"></b:navLink>
-						<b:dropMenu value="Nested sub-sub-submenu">
-							<b:navLink value="... you want!" href="#"></b:navLink>
-						</b:dropMenu>
-					</b:dropMenu>
-
-				</b:dropMenu>
-				<b:navLink value="One more separated link" href="#"></b:navLink>
-			</b:dropMenu>
-		</b:navbarLinks>
-		<form class="navbar-form navbar-left hidden-md hidden-sm hidden-xs"
-			role="search">
-			<div class="form-group">
-				<input type="text" class="form-control" />
-			</div>
-			<button type="submit" class="btn btn-default">Submit</button>
-		</form>
-		<!-- Following line is needed for TBS 3.0.1 (panel content overflow issue) -->
-		<b:navbarLinks pull="right">
-			<b:navLink value="    " href="#"></b:navLink>
-		</b:navbarLinks>
-		<b:navbarLinks pull="right" styleClass="hidden-xs">
-			<b:navLink value="Link" href="#"></b:navLink>
-			<b:dropMenu value="Dropdown">
-				<b:navLink value="Action" href="#"></b:navLink>
-				<b:navLink value="Another action" href="#"></b:navLink>
-				<b:navLink value="Something else here" href="#"></b:navLink>
-				<b:navLink></b:navLink>
-				<b:navLink header="Nav header"></b:navLink>
-				<b:navLink value="Separated link" href="#"></b:navLink>
-				<b:navLink value="One more separated link" href="#"></b:navLink>
-			</b:dropMenu>
-		</b:navbarLinks>
-	</b:navBar>
-	
-	
+		<ui:insert name="header" >
+		  <ui:include src="WEB-INF/templates/common/commonHeader.xhtml" />
+		</ui:insert>
 	
 	<!-- Add New Account Modal  -->  
 	<b:modal id="AddNewAccountModal" title="Add New Account" styleClass="modalPseudoClass">
@@ -104,6 +55,57 @@
 					
 					
 					
+					
+					
+				</b:panel>
+				
+				
+				
+				
+				
+				
+				
+				<b:panel title="Add Account Contract" look="info">
+				
+				<b:row>
+					<b:column>
+						    <b:dateTimePicker value="#{accountController.accountContract.startDate}"
+					        allow-input-toggle="true"
+					        show-date="true"
+					        show-icon="true"
+					        use-current="true"
+					        label="Start Date" />
+					</b:column>
+				</b:row>
+				
+				<b:row>
+					<b:column>
+						    <b:dateTimePicker value="#{accountController.accountContract.endDate}"
+					        allow-input-toggle="true"
+					        show-date="true"
+					        show-icon="true"
+					        use-current="true"
+					        label="End Date" />
+					</b:column>
+				</b:row>
+				
+				<b:row>
+					<b:column>
+						    
+						    <b:inputText type="number" label="Contacts Limit" value="#{accountController.accountContract.contactsLimit}" min="0"></b:inputText>
+						     
+					</b:column>
+				</b:row>				 
+				
+				<b:row>
+					<b:column>
+						    <b:inputText type="number" label="Logins Limit" value="#{accountController.accountContract.loginsLimit}" min="0"></b:inputText>
+					</b:column>
+				</b:row>				
+				
+				</b:panel>
+				
+				
 					<b:row>
 						<b:column>
 							<b:commandButton value="Add New Account" action="#{accountController.addAccount()}"
@@ -111,104 +113,75 @@
 						</b:column>
 					</b:row>
 					
-					
-					
-					
-				</b:panel>
+				
+				
 		</b:form>
 	</b:modal>
-	
-	
-	
-	
-		<!-- Add New Account Modal  -->  
-	<b:modal id="EditAccountModal" title="Edit Account" styleClass="modalPseudoClass">
-		<b:form id="editAccountForm">
-				<b:panel title="Edit Account" look="primary">
-					<b:row>
-						<b:column>
-							<b:inputText placeholder="Account Name" id="newAccountName" value="#{accountController.account.name}" autocomplete="false">
-								<f:facet name="prepend">
-									<b:icon name="user" />
-								</f:facet>
-							</b:inputText>
-						</b:column>
-					</b:row>
-					
-					<b:row>
-						<b:column>
-							<b:inputText placeholder="Email Domain" id="newAccountEmailDomain" value="#{accountController.account.emailDomain}" autocomplete="false">
-								<f:facet name="prepend">
-									<b:iconAwesome name="envelope" />
-								</f:facet>
-							</b:inputText>
-						</b:column>
-					</b:row>
-					
-					
-					
-							<b:row>
-						<b:column>
-							<b:inputText placeholder="Time Zone City" id="newAccountTimeZoneCity" value="#{accountController.account.timeZoneCity}"
-								 autocomplete="false">
-								<f:facet name="prepend">
-									<b:iconAwesome name="clock-o" />
-								</f:facet>
-							</b:inputText>
-						</b:column>
-					</b:row>
-					
-					
-					
-					<b:row>
-						<b:column>
-							<b:commandButton value="Edit Account" action="#{accountController.editAccount(account)}"
-								look="success" style="width:100%" />
-						</b:column>
-					</b:row>
-					
-					
-					
-					
-				</b:panel>
-		</b:form>
-	</b:modal>
-	
-	
-	
-	
 	
 	
 	
 	<b:container> 
 	
-<b:row styleClass="">
-    <b:column>
-        <button id="btrigger" class="btn btn-success btn-sm" data-target="#AddNewAccountModal" data-toggle="modal">Add New Account</button>
+<b:row>
+    <b:column col-md="1">
+        <button id="btrigger" class="btn btn-success btn-md" data-target="#AddNewAccountModal" data-toggle="modal">Add New Account</button>
+    </b:column>
+    <b:column col-md="1" offset-xs="1">
+        <a href="#{request.contextPath}/ViewAllContracts.xhtml" target="_blank" class="btn btn-warning btn-md">View All Contracts</a>
     </b:column>
 </b:row>		
 		
  <h:form id="accountListForm" style="padding-top:50px">
-    <b:dataTable value="#{accountController.accountsList}" var="account" page-length="5" page-length-menu="5,10,20" class="editableAccountTable">
+  <h:panelGroup id="accountsListDT">
+    <b:dataTable value="#{accountController.accountsList}" var="account" page-length="5" page-length-menu="5,10,20" id="editableAccountTable" class="editableAccountTable">
     
         <b:dataTableColumn value="#{account.accountId}" label="ID" order="asc"  />
-        <b:dataTableColumn value="#{account.name}" label="Name" />
-        <b:dataTableColumn value="#{account.emailDomain}" label="Email Domain" />
-        
-        <b:dataTableColumn label="Time Zone City">
-        	<b:inputText value="#{account.timeZoneCity}" rendered="#{account.canEdit}" />
-            <h:outputText value="#{account.timeZoneCity}" rendered="#{not account.canEdit}" />
+        <b:dataTableColumn label="Name">
+        	<b:inputText value="#{account.name}" rendered="#{account.editable}" />
+        	<h:outputText value="#{account.name}" rendered="#{not account.editable}" />
+        </b:dataTableColumn>
+
+        <b:dataTableColumn label="Email Domain">
+        	
+        	<b:inputText value="#{account.emailDomain}" rendered="#{account.editable}">
+        		<f:facet name="prepend">
+        			<h:outputText value="@" />
+        		</f:facet>
+        	</b:inputText>
+        	
+        	<h:outputText value="@#{account.emailDomain}" rendered="#{not account.editable}" />
+        </b:dataTableColumn>
+
+         <b:dataTableColumn label="Time Zone City">
+        	<b:inputText value="#{account.timeZoneCity}" rendered="#{account.editable}" />
+        	<h:outputText value="#{account.timeZoneCity}" rendered="#{not account.editable}" />
         </b:dataTableColumn>
         
-        <b:dataTableColumn label="Contacts">  
+        <b:dataTableColumn label="Contacts">
         	    <a href="#{request.contextPath}/ViewContacts.xhtml?accountId=#{account.accountId}" target="_blank" class="btn btn-primary btn-small">View Contacts</a>
         </b:dataTableColumn>
-        <b:dataTableColumn label="">
-        	<b:commandButton value="Delete" icon="cross" action="#{accountController.deleteAccount(account.accountId)}" look="danger" />
-        	<a href="#{request.contextPath}/EditAccount.xhtml?accountId=#{account.accountId}" target="_blank" class="btn btn-warning btn-small">Edit</a>
+        
+       
+		<b:dataTableColumn label="">
+			
+
+			<b:icon name="remove-sign" size="lg">
+				<f:ajax event="click" execute="@form" listener="#{accountController.deleteAccount(account.accountId)}" render="editableAccountTable" />
+			</b:icon>
+			
+		<b:icon name="edit" size="lg" ajax="true" update="@(.editableAccountTable)" onclick="ajax:accountController.accountEditAction(account)" />
+		
 		</b:dataTableColumn> 
-    </b:dataTable>
-    
+		
+		
+		
+		
+		
+		
+		
+		
+   	</b:dataTable>
+    </h:panelGroup>
 </h:form>
 
 

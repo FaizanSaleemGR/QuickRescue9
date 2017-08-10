@@ -5,24 +5,26 @@
  
  <hibernate-mapping>
  
-	 <class name="com.jpa.entities.Location" table="location">
+	 <class name="com.entities.Location" table="location">
 	 	<meta attribute="class-description">
 	 		This class contains location details of an alert profile.
 	 	</meta>
 	 	
 	 	<id name="locationId" type="java.lang.Integer" column="locationId">
-	 		<generator class="native"></generator>
+	 		<generator class="native" />
 	 	</id>
 	 	
 	 	<property name="city" type="string" column="city" />
 	 	<property name="country" type="string" column="country" />
  
-         <!-- Many to Many relation between Location and AlertProfile -->
-        <set name="profiles" table="alert_profile"
+         <!-- 
+         Many to Many relation between Location and AlertProfile 
+        <set name="profiles" table="profile_location"
 			inverse="true" lazy="true" fetch="select">
-			<key column="profileId" />
-			<many-to-many column="locationId" class="com.jpa.entities.Location" />
+			<key column="locationId" not-null="true" />
+			<many-to-many column="profileId" entity-name="com.entities.AlertProfile" />
 		</set>
+		-->
         
 	 </class>
  </hibernate-mapping>
