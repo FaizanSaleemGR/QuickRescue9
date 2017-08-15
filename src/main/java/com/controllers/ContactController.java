@@ -119,7 +119,10 @@ public class ContactController implements Serializable {
 				return true;
 			}
 		}
-		System.out.println("No contract found for account " + account.getName() + " with id " + account.getAccountId());
+		else {
+			System.out.println("No contract found for account " + account.getName() + " with id " + account.getAccountId());
+		}
+		
 		return false;
 	}
 
@@ -140,7 +143,10 @@ public class ContactController implements Serializable {
 				return true;
 			}
 		}
-		System.out.println("No contract found for account " + account.getName() + " with id " + account.getAccountId());
+		else {
+			System.out.println("No contract found for account " + account.getName() + " with id " + account.getAccountId());
+		}
+
 		return false;
 	}
 
