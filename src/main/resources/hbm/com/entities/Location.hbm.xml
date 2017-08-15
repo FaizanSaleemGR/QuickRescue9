@@ -18,13 +18,13 @@
 	 	<property name="country" type="string" column="country" />
  
          <!-- 
-         Many to Many relation between Location and AlertProfile 
-        <set name="profiles" table="profile_location"
+         Many to Many relation between Location and AlertProfile 	-->
+        <bag name="profiles" table="profile_location"
 			inverse="true" lazy="true" fetch="select">
 			<key column="locationId" not-null="true" />
 			<many-to-many column="profileId" entity-name="com.entities.AlertProfile" />
-		</set>
-		-->
+		</bag>
+	
         
 	 </class>
  </hibernate-mapping>

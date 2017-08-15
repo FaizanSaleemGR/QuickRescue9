@@ -23,10 +23,10 @@
         
         
         <!-- Many to Many relation between AlertProfile and Location -->
-        <set name="locations" table="profile_location" cascade="all">
+        <bag name="locations" table="profile_location" cascade="all">
             <key column="profileId" />
            	<many-to-many column="locationId"  class="com.entities.Location" />
-        </set>
+        </bag>
      
         
         

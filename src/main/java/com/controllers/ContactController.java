@@ -10,8 +10,10 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
 import com.entities.Account;
+import com.entities.AlertProfile;
 import com.entities.Contact;
 import com.entities.ContactLoginDetails;
+import com.entities.Location;
 import com.services.AccountService;
 import com.services.ContactService;
 import com.utils.Utils;
@@ -32,9 +34,17 @@ public class ContactController implements Serializable {
 	ContactService contactService;
 
 	private List<Contact> contactsList = new ArrayList<>();
+	private List<AlertProfile> alertProfiles = new ArrayList<>();
 	private Integer accountId;
 	private Contact newContact;
 	private Account account;
+
+	private AlertProfile alertProfile;
+	private Location location;
+	private ArrayList<Location> locations;
+
+	private Location editedLocation;
+
 	private int editCounter;
 
 	private ArrayList<Contact> editedAccountsList;
@@ -49,8 +59,20 @@ public class ContactController implements Serializable {
 
 		newContact = new Contact();
 		account = new Account();
+		alertProfile = new AlertProfile();
+		location = new Location();
+		locations = new ArrayList<>();
 		editCounter = 0;
 
+		editedLocation = new Location();
+
+
+		this.accountId = (Integer) Utils.getFromSession("accountId");
+		System.out.println("Got from Session - accountId = " + accountId);
+		this.account = accountService.findAccountById(accountId);
+
+
+		alertProfiles = accountService.getAlertProfiles(this.account);
 		getAccountContacts();
 
 	}
@@ -62,11 +84,7 @@ public class ContactController implements Serializable {
 
 			System.out.println("In getAccountContacts()");
 
-			this.accountId = (Integer) Utils.getFromSession("accountId");
 
-			System.out.println("getAccountContacts() - accountId = " + accountId);
-
-			this.account = accountService.findAccountById(accountId);
 
 			contactsList.addAll(this.account.getContacts());
 
@@ -77,31 +95,89 @@ public class ContactController implements Serializable {
 	}
 
 
+	public void checkForAlertProfileMatch(Contact contact, Account account) {
+
+		for (AlertProfile alertProfile : account.getAlertProfiles()) {
+			for(Location location : alertProfile.getLocations()) {
+				if(null != contact.getCity() && contact.getCity().equals(location.getCity())) {
+					System.out.println("Alert Profile sent for contact (" + contact.getFirstName()  + ", " + contact.getLastName()+ ") on matching City " + contact.getCity() +":"+location.getCity());
+				}
+				else if(null != contact.getCountry() && contact.getCountry().equals(location.getCountry())) {
+					System.out.println("Alert Profile sent for contact (" + contact.getFirstName()  + ", " + contact.getLastName()+ ") on matching Country " + contact.getCountry() +":"+location.getCountry());
+				}
+			} // inner loop end
+		} // outer loop end
+
+	} // function end
+
+
+	public boolean checkAccountContactsLimit(Account account) {
+
+
+		if(null!= account.getAccountContract()) {
+			if(account.getAccountContract().getContactsLimit() > account.getContacts().size()) {
+				return true;
+			}
+		}
+		System.out.println("No contract found for account " + account.getName() + " with id " + account.getAccountId());
+		return false;
+	}
+
+	public boolean checkAccountLoginsLimit(Account account) {
+
+		if(null!= account.getAccountContract()) {
+			// Count those contacts which has 'hasLogin' flag true.
+			int loginsCount = 0;
+
+			for (Contact c : account.getContacts()) {
+				if (c.getHasLogin()) {
+					loginsCount++;
+				}
+			}
+
+
+			if(account.getAccountContract().getLoginsLimit() > loginsCount) {
+				return true;
+			}
+		}
+		System.out.println("No contract found for account " + account.getName() + " with id " + account.getAccountId());
+		return false;
+	}
+
+
 	// Method used to add Contact using Modal in ViewAllContacts.xhtml
 	public void addContact() {
 	    	System.out.println("In Add New Contact");
-	    	ContactLoginDetails contactLoginDetails = new ContactLoginDetails();
 
-	    	// Adding ContactLoginDetails to a contact
-	    	if(this.newContact.getHasLogin()) {
-	    		contactLoginDetails = Utils.createLogin(account, newContact);
-	    		newContact.setLoginDetails(contactLoginDetails);
+	    	if(!this.checkAccountContactsLimit(this.account)) {
+				System.out.println("Contact NOT added - Account's CONTACTS Limit Exceeded." );
+			} else {
+		    	ContactLoginDetails contactLoginDetails = new ContactLoginDetails();
 
+		    	// Adding ContactLoginDetails to a contact
+		    	if(this.newContact.getHasLogin()) {
+		    		if(!this.checkAccountLoginsLimit(this.account)) {
+						System.out.println("Contact NOT added - Account's LOGINS Limit Exceeded." );
+					}
+		    		else {
+			    		contactLoginDetails = Utils.createLogin(account, newContact);
+			    		newContact.setLoginDetails(contactLoginDetails);
+		    		}
+		    	}
+
+		    	// Adding contact to the associated account
+		    	Integer contactId = contactService.addContact(this.account, this.newContact);
+		    	System.out.println("Contact Added with Id=" + contactId);
+
+		    	// Add Contact to ContactLoginDetails for bi-directional purpose.
+		    	contactService.addLoginDetails(newContact, contactLoginDetails);
+
+		    	if(contactsList.add(newContact)) {
+					System.out.println("Contact successfully added to contacts list");
+				}
+
+		    	this.checkForAlertProfileMatch(this.newContact, this.account);
 	    	}
-
-	    	// Adding contact to the associated account
-	    	Integer contactId = contactService.addContact(this.account, this.newContact);
-	    	System.out.println("Contact Added with Id=" + contactId);
-
-	    	// Add Contact to ContactLoginDetails for bi-directional purpose.
-	    	contactService.addLoginDetails(newContact, contactLoginDetails);
-
-
-
-
-	    	if(contactsList.add(newContact)) {
-				System.out.println("Contact successfully added to contacts list");
-			}
 
 	    	newContact = new Contact(); // Reset placeholder.
 			Utils.redirectTo("ViewAllContacts.xhtml");
@@ -182,17 +258,145 @@ public class ContactController implements Serializable {
 
 			// As the contact now has "hasLogin" true, so we need to create its login details.
 			if(contact.getHasLogin()) {
-				ContactLoginDetails contactLoginDetails = Utils.createLogin(account, contact);
-				contact.setLoginDetails(contactLoginDetails);
-				contactService.addLoginDetails(contact, contactLoginDetails);
+
+				if(!this.checkAccountLoginsLimit(this.account)) {
+					System.out.println("Login NOT created - Account's LOGINS Limit Exceeded." );
+				} else {
+					ContactLoginDetails contactLoginDetails = Utils.createLogin(account, contact);
+					contact.setLoginDetails(contactLoginDetails);
+					contactService.addLoginDetails(contact, contactLoginDetails);
+				}
 			}
 
 			contactService.updateContact(contact);
+			this.checkForAlertProfileMatch(contact, this.account);
 
 		//return to current page
 		return null;
-
 	}
+
+
+	 // Method to add city of a location from Add New Alert Profile form.
+    public void addLocation(Location location) {
+
+    	if (null==location.getCity() && null==location.getCountry()) {
+    		System.out.println("In addLocation(Location location) - City and Country are Empty - Location not added");
+    	}
+    	else if (null==location.getCity()) {
+    		System.out.println("In addLocation(Location location) - City is Empty - Location Added");
+    		locations.add(location);
+    	}
+    	else if(null==location.getCountry()) {
+    		System.out.println("In addLocation(Location location) - Country is Empty - Location Added");
+    		locations.add(location);
+    	}
+    	else {
+    		System.out.println("In addLocation(Location location) - " + location.getCity() + ", " + location.getCountry() + " - Location Added");
+    		locations.add(location);
+    	}
+
+    	location = new Location();
+    }
+
+
+	 // Method to delete a location from Add New Alert Profile form.
+    public void deleteLocation(Location location) {
+    	System.out.println("In deleteLocation(Location location) - " + location.getCity() + ", " + location.getCountry());
+    	locations.remove(location);
+//    	location = new Location();
+    }
+
+
+
+
+
+
+    public void addLocationFromEditedProfile(AlertProfile profile, Location location) {
+
+    	if (null==location.getCity() && null==location.getCountry()) {
+    		System.out.println("In addLocation(Location location) - City and Country are Empty - Location not added");
+    	}
+    	else if (null==location.getCity()) {
+    		System.out.println("In addLocation(Location location) - City is Empty - Location Added");
+    		profile.getLocations().add(location);
+    	}
+    	else if(null==location.getCountry()) {
+    		System.out.println("In addLocation(Location location) - Country is Empty - Location Added");
+    		profile.getLocations().add(location);
+    	}
+    	else {
+    		System.out.println("In addLocation(Location location) - " + location.getCity() + ", " + location.getCountry() + " - Location Added");
+    		profile.getLocations().add(location);
+    	}
+
+    	location = new Location();
+    }
+
+    public void deleteLocationFromEditedProfile(AlertProfile profile, Location location) {
+    	System.out.println("In deleteLocationFromEditedProfile(AlertProfile profile, Location location) - " + location.getCity() + ", " + location.getCountry());
+    	profile.getLocations().remove(location);
+//    	location = new Location();
+    }
+
+
+    public void addAlertProfile() {
+    	System.out.println("In addNewAlertProfile()");
+
+    	for(Location loc : locations) {
+    		alertProfile.addLocation(loc);
+    	}
+
+//    	this.account.getAlertProfiles().add(alertProfile);
+
+    	accountService.addAlertProfile(alertProfile, this.account);
+    	alertProfile = new AlertProfile();
+
+    	Utils.redirectTo("ViewAllContacts.xhtml");
+    }
+
+    public void deleteAlertProfile(Integer profileId) {
+
+    	System.err.println("In deleteContact(int contactId) - contactId=" + profileId);
+    	alertProfiles.remove(contactService.findAlertProfileById(profileId));
+    	contactService.deleteAlertProfileById(profileId);
+
+    	Utils.redirectTo("ViewAllContacts.xhtml");
+    }
+
+
+
+
+
+
+	public String alertProfileEditAction(AlertProfile profile) {
+
+		if(!profile.getEditable()) {
+			profile.setEditable(true);
+		} else {
+			alertProfileSaveAction(profile);
+		}
+
+		return null;
+	}
+
+	public String alertProfileSaveAction(AlertProfile profile) {
+
+		// Set editable to false
+		profile.setEditable(false);
+
+		// As the contact now has "hasLogin" true, so we need to create its login
+		// details.
+		contactService.updateAlertProfile(profile);
+
+		// return to current page
+		return null;
+	}
+
+
+
+
+
+
 
 
 
@@ -241,6 +445,46 @@ public class ContactController implements Serializable {
 
 	public void setAccount(Account account) {
 		this.account = account;
+	}
+
+	public AlertProfile getAlertProfile() {
+		return alertProfile;
+	}
+
+	public void setAlertProfile(AlertProfile alertProfile) {
+		this.alertProfile = alertProfile;
+	}
+
+	public Location getLocation() {
+		return location;
+	}
+
+	public void setLocation(Location location) {
+		this.location = location;
+	}
+
+	public ArrayList<Location> getLocations() {
+		return locations;
+	}
+
+	public void setLocations(ArrayList<Location> locations) {
+		this.locations = locations;
+	}
+
+	public List<AlertProfile> getAlertProfiles() {
+		return alertProfiles;
+	}
+
+	public void setAlertProfiles(List<AlertProfile> alertProfiles) {
+		this.alertProfiles = alertProfiles;
+	}
+
+	public Location getEditedLocation() {
+		return editedLocation;
+	}
+
+	public void setEditedLocation(Location editedLocation) {
+		this.editedLocation = editedLocation;
 	}
 
 

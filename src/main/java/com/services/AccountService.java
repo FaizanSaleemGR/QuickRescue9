@@ -6,6 +6,7 @@ import javax.ejb.Local;
 
 import com.entities.Account;
 import com.entities.AccountContract;
+import com.entities.AlertProfile;
 
 @Local
 public interface AccountService {
@@ -21,12 +22,10 @@ public interface AccountService {
 	void updateAccount(Account account);
 
 
-	void redirectToExternal(String pageName);
-	void redirectToInternal(String pageName);
 	void deleteAccount(Account account);
 	void updateContract(AccountContract contract);
 	AccountContract findContractById(Integer contractId);
-
-
+	void addAlertProfile(AlertProfile alertProfile, Account account);
+	List<AlertProfile> getAlertProfiles(Account account);
 
 }

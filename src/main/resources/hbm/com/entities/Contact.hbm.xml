@@ -30,7 +30,7 @@
 		<property name="hasLogin" type="boolean" column="hasLogin" />
 
 		<!-- One to many Relation between Account and Contact -->
- 		<many-to-one name="account" class="com.entities.Account" fetch="select">
+ 		<many-to-one name="account" class="com.entities.Account" fetch="select" lazy="false">
             <column name="accountId" not-null="true" />
         </many-to-one>
 

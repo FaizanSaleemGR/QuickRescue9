@@ -6,6 +6,7 @@ import javax.ejb.Local;
 
 import com.entities.Account;
 import com.entities.AccountContract;
+import com.entities.AlertProfile;
 
 @Local
 public interface AccountDao {
@@ -22,4 +23,6 @@ public interface AccountDao {
 	List<AccountContract> getAllContracts();
 	void updateContract(AccountContract contract);
 	AccountContract findContractById(Integer contractId);
+	void addAlertProfile(AlertProfile alertProfile, Account account);
+	List<AlertProfile> getAlertProfiles(Account account);
 }

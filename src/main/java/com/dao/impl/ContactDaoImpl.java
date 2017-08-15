@@ -18,6 +18,7 @@ import org.hibernate.type.IntegerType;
 
 import com.dao.ContactDao;
 import com.entities.Account;
+import com.entities.AlertProfile;
 import com.entities.Contact;
 import com.entities.ContactLoginDetails;
 import com.utils.HibernateUtils;
@@ -222,6 +223,47 @@ public class ContactDaoImpl implements ContactDao {
 
 	}
 
+
+
+	@Override
+	public AlertProfile findAlertProfileById(Integer profileId) {
+
+		Session session = factory.openSession();
+		Transaction tx = null;
+		AlertProfile alertProfileToFind = null;
+		List<AlertProfile> alertProfiletList = null;
+
+		try {
+
+
+			tx = session.beginTransaction();
+
+
+			Criteria criteria = session.createCriteria(AlertProfile.class);
+			criteria.add(Restrictions.eq("profileId", profileId));
+
+			alertProfiletList = (List<AlertProfile>) criteria.list();
+
+
+			if (null != alertProfiletList && alertProfiletList.size() > 0) {
+				alertProfileToFind = alertProfiletList.get(0);
+			}
+
+			tx.commit();
+
+		} catch (HibernateException e) {
+			System.err.println(e.getLocalizedMessage());
+
+			if (tx != null) {
+				tx.rollback();
+			}
+		} finally {
+			session.close();
+		}
+		return alertProfileToFind;
+
+	}
+
 	@Override
 	public Boolean deleteContactByName(String contactFirstName, String contactLastName) {
 
@@ -292,6 +334,43 @@ public class ContactDaoImpl implements ContactDao {
 
 		return check;
 	}
+
+
+	@Override
+	public Boolean deleteAlertProfileById(Integer profileId) {
+		Session session = factory.openSession();
+		Transaction tx = null;
+		Boolean check = null;
+
+		try {
+
+			tx = session.beginTransaction();
+			AlertProfile alertProfileToRemove = findAlertProfileById(profileId);
+
+			if (alertProfileToRemove != null) {
+				check = true;
+				session.delete(alertProfileToRemove);
+			} else {
+				check = false;
+			}
+
+			tx.commit();
+		} catch (HibernateException e) {
+
+			System.err.println(e.getLocalizedMessage());
+
+			if (tx != null) {
+				tx.rollback();
+			}
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+
+		return check;
+	}
+
 
 	@Override
 	public List<Contact> getContactsOfAccount(Account account) {
@@ -469,5 +548,33 @@ public class ContactDaoImpl implements ContactDao {
 
 		return contactToReturn;
 	}
+
+	@Override
+	public void updateAlertProfile(AlertProfile profile) {
+
+		Session session = factory.openSession();
+		Transaction tx = null;
+
+		try {
+			  tx = session.beginTransaction();
+
+			  session.update(profile);
+
+			 tx.commit();
+		} catch (HibernateException e) {
+
+			System.out.println(e.getMessage());
+
+			if (tx != null) {
+				tx.rollback();
+			}
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+
+	}
+
 
 }

@@ -25,12 +25,12 @@
         </set>
 	 	
 	 	<!-- One to many Relation between Account and AlertProfile -->
-	 	<set name="alertProfiles" table="alert_profile" inverse="true" cascade="all" lazy="false" fetch="select">
+	 	<bag name="alertProfiles" table="alert_profile" inverse="true" cascade="all" lazy="false" fetch="select">
             <key>
                 <column name="accountId" not-null="true" />
             </key>
             <one-to-many class="com.entities.AlertProfile" />
-        </set>
+        </bag>
         
         <!-- One to One mapping relation between Account and AccountContract -->
 		<many-to-one name="accountContract" class="com.entities.AccountContract" column="account_contract" not-null="true" cascade="all" unique="true" />

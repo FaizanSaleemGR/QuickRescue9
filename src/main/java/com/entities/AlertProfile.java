@@ -1,7 +1,8 @@
 package com.entities;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AlertProfile implements Serializable {
 
@@ -13,10 +14,13 @@ public class AlertProfile implements Serializable {
 	private String profileName;
 	private Account account; // One to Many relation between Account and AlertProfile
 
-	private Set<Location> locations;
+	private boolean editable;
+
+	private List<Location> locations;	// Many to Many relation between AlertProfile and Location
 
 	public AlertProfile() {
 		super();
+		locations = new ArrayList<>();
 	}
 	public Integer getProfileId() {
 		return profileId;
@@ -31,10 +35,10 @@ public class AlertProfile implements Serializable {
 		this.profileName = profileName;
 	}
 
-	public Set<Location> getLocations() {
+	public List<Location> getLocations() {
 		return locations;
 	}
-	public void setLocations(Set<Location> locations) {
+	public void setLocations(List<Location> locations) {
 		this.locations = locations;
 	}
 	public Account getAccount() {
@@ -43,4 +47,16 @@ public class AlertProfile implements Serializable {
 	public void setAccount(Account account) {
 		this.account = account;
 	}
+
+	public void addLocation(Location location) {
+		this.locations.add(location);
+	}
+	public boolean getEditable() {
+		return editable;
+	}
+	public void setEditable(boolean editable) {
+		this.editable = editable;
+	}
+
+
 }

@@ -1,7 +1,7 @@
 package com.entities;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 public class Location implements Serializable {
 
@@ -9,11 +9,11 @@ public class Location implements Serializable {
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	private Integer locationId;
+	private Integer locationId;	// PK of this class
 	private String city;
 	private String country;
 
-	private Set<AlertProfile> profiles;
+	private List<AlertProfile> profiles;	// Many to many relation between AlertProfile and Location.
 
 	public Location() {
 		super();
@@ -43,11 +43,11 @@ public class Location implements Serializable {
 		this.country = country;
 	}
 
-	public Set<AlertProfile> getProfiles() {
+	public List<AlertProfile> getProfiles() {
 		return profiles;
 	}
 
-	public void setProfiles(Set<AlertProfile> profiles) {
+	public void setProfiles(List<AlertProfile> profiles) {
 		this.profiles = profiles;
 	}
 

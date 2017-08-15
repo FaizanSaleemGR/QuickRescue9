@@ -1,17 +1,15 @@
 package com.services.impl;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 
 import com.dao.AccountDao;
 import com.entities.Account;
 import com.entities.AccountContract;
+import com.entities.AlertProfile;
 import com.services.AccountService;
 
 @Stateless
@@ -59,24 +57,20 @@ public class AccountServiceImpl implements AccountService, Serializable   {
 		accountDao.deleteAccount(account);
 	}
 
-
 	@Override
 	public Boolean deleteAccountByName(String accountName) {
 		return accountDao.deleteAccountByName(accountName);
 	}
-
 
 	@Override
 	public Boolean deleteAccountById(Integer accountId) {
 		return accountDao.deleteAccountById(accountId);
 	}
 
-
 	@Override
 	public Boolean checkIfAccountExists(Account account) {
 		return accountDao.checkIfAccountExists(account);
 	}
-
 
 	@Override
 	public void updateAccount(Account account) {
@@ -88,38 +82,19 @@ public class AccountServiceImpl implements AccountService, Serializable   {
 		accountDao.updateContract(contract);
 	}
 
-
-	@Override
-	public void redirectToExternal(String pageName) {
-		ExternalContext ec = FacesContext.getCurrentInstance()
-		        .getExternalContext();
-		try {
-		    ec.redirect("http://google.com");
-		} catch (IOException e) {
-		    // TODO Auto-generated catch block
-		    e.printStackTrace();
-		}
-
-	}
-
-
-	@Override
-	public void redirectToInternal(String pageName) {
-		ExternalContext ec = FacesContext.getCurrentInstance()
-		        .getExternalContext();
-		try {
-		    ec.redirect(ec.getRequestContextPath()
-		            + "/" + pageName);
-		} catch (IOException e) {
-		    // TODO Auto-generated catch block
-		    e.printStackTrace();
-		}
-
-	}
-
-
 	@Override
 	public List<AccountContract> getAllContracts() {
 		return accountDao.getAllContracts();
 	}
+
+	@Override
+	public void addAlertProfile(AlertProfile alertProfile, Account account) {
+		accountDao.addAlertProfile(alertProfile, account);
+	}
+
+	@Override
+	public List<AlertProfile> getAlertProfiles(Account account) {
+		return accountDao.getAlertProfiles(account);
+	}
+
 }

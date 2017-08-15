@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 
 import com.dao.ContactDao;
 import com.entities.Account;
+import com.entities.AlertProfile;
 import com.entities.Contact;
 import com.entities.ContactLoginDetails;
 import com.services.ContactService;
@@ -50,6 +51,11 @@ public class ContactServiceImpl implements ContactService, Serializable {
 		return contactDao.findContactById(contactId);
 	}
 
+	@Override
+	public AlertProfile findAlertProfileById(Integer profileId) {
+		return contactDao.findAlertProfileById(profileId);
+	}
+
 
 	@Override
 	public Boolean deleteContactByName(String contactFirstName, String contactLastName) {
@@ -60,6 +66,11 @@ public class ContactServiceImpl implements ContactService, Serializable {
 	@Override
 	public Boolean deleteContactById(Integer contactId) {
 		return contactDao.deleteContactById(contactId);
+	}
+
+	@Override
+	public Boolean deleteAlertProfileById(Integer profileId) {
+		return contactDao.deleteAlertProfileById(profileId);
 	}
 
 
@@ -74,6 +85,10 @@ public class ContactServiceImpl implements ContactService, Serializable {
 		contactDao.updateContact(contact);
 	}
 
+	@Override
+	public void updateAlertProfile(AlertProfile profile) {
+		contactDao.updateAlertProfile(profile);
+	}
 
 	@Override
 	public Boolean loginContact(String contactUsername, String contactPassword) {

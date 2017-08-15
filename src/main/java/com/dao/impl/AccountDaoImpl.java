@@ -13,6 +13,7 @@ import org.hibernate.Transaction;
 import com.dao.AccountDao;
 import com.entities.Account;
 import com.entities.AccountContract;
+import com.entities.AlertProfile;
 import com.utils.HibernateUtils;
 
 @Stateless
@@ -448,6 +449,67 @@ public class AccountDaoImpl implements AccountDao {
     		session.close();
     	}
 
+	}
+
+
+	@Override
+	public void addAlertProfile(AlertProfile alertProfile, Account account) {
+		Session session = factory.openSession();
+		Transaction tx = null;
+
+		try {
+			tx = session.beginTransaction();
+
+			alertProfile.setAccount(account);
+
+			session.save(alertProfile);
+
+			account.getAlertProfiles().add(alertProfile);
+
+			session.update(account);
+
+			tx.commit();
+		} catch (HibernateException e) {
+
+			System.out.println(e.getMessage());
+
+			if (tx != null) {
+				tx.rollback();
+			}
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+	}
+
+
+	@Override
+	public List<AlertProfile> getAlertProfiles(Account account) {
+		Session session = factory.openSession();
+		Transaction tx = null;
+		List<AlertProfile> alertProfiles = null;
+
+		try {
+			tx = session.beginTransaction();
+
+			alertProfiles = account.getAlertProfiles();
+
+			tx.commit();
+		} catch (HibernateException e) {
+
+			System.out.println(e.getMessage());
+
+			if (tx != null) {
+				tx.rollback();
+			}
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+		
+		return alertProfiles;
 	}
 
 

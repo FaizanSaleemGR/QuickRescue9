@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ejb.Local;
 
 import com.entities.Account;
+import com.entities.AlertProfile;
 import com.entities.Contact;
 import com.entities.ContactLoginDetails;
 
@@ -20,4 +21,7 @@ public interface ContactService {
 	void updateContact(Contact contact);
 	Boolean loginContact(String contactUsername, String contactPassword);
 	Integer addLoginDetails(Contact contact, ContactLoginDetails contactLoginDetails);
+	void updateAlertProfile(AlertProfile profile);
+	AlertProfile findAlertProfileById(Integer profileId);
+	Boolean deleteAlertProfileById(Integer profileId);
 }
