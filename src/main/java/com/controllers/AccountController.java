@@ -276,6 +276,10 @@ public class AccountController implements Serializable {
 
 	}
 
+	public Integer getCurrentNumberOfContactsOfAccount(Account account) {
+		return account.getContacts().size();
+	}
+
 
 
 

@@ -301,8 +301,16 @@
         
         </b:dataTableColumn>
         
-        <b:dataTableColumn value="#{contract.contactsLimit}" label="Contacts Limit"  />
-        <b:dataTableColumn value="#{contract.loginsLimit}" label="Logins Limit"  />
+        <b:dataTableColumn label="Contacts Limit">
+        
+        	<b:touchSpin value="#{contract.contactsLimit}" min="#{accountController.getCurrentNumberOfContactsOfAccount(contract.account)}" rendered="#{contract.editable}" />
+        	
+        	<h:outputText value="#{contract.contactsLimit}" rendered="#{not contract.editable}" />
+        
+        </b:dataTableColumn>
+        
+        <b:dataTableColumn value="#{contract.loginsLimit}" label="Logins Limit" >
+       </b:dataTableColumn>
        
         <b:dataTableColumn label="Action">
         	
