@@ -5,331 +5,430 @@
 	xmlns:b="http://bootsfaces.net/ui"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:composite="http://java.sun.com/jsf/composite">
-    <h:head>
+	xmlns:composite="http://java.sun.com/jsf/composite"
+>
+<h:head>
 	<title>View All Accounts :: Quick Rescue</title>
 	<meta name="author" content="Faizan Saleem"></meta>
 </h:head>
+
+<f:metadata>
+	<f:viewAction action="#{errorController.checkForPageAccess}"/>
+</f:metadata>
+
 <h:body>
 
-		<ui:insert name="header" >
-		  <ui:include src="WEB-INF/templates/common/commonHeader.xhtml" />
-		</ui:insert>
-	
-	<!-- Add New Account Modal  -->  
-	<b:modal id="AddNewAccountModal" title="Add New Account" styleClass="modalPseudoClass">
+	<ui:insert name="header">
+		<ui:include src="WEB-INF/templates/common/commonHeader.xhtml" />
+	</ui:insert>
+
+	<!-- Add New Account Modal  -->
+	<b:modal id="AddNewAccountModal" title="Add New Account"
+		styleClass="modalPseudoClass"
+	>
 		<b:form id="addAccountForm">
-				<b:panel title="Add New Account" look="primary">
-					<b:row>
-						<b:column>
-							<b:inputText placeholder="Account Name" id="newAccountName" value="#{accountController.newAccount.name}" autocomplete="false">
-								<f:facet name="prepend">
-									<b:icon name="user" />
-								</f:facet>
-							</b:inputText>
-						</b:column>
-					</b:row>
-					
-					<b:row>
-						<b:column>
-							<b:inputText placeholder="Email Domain" id="newAccountEmailDomain" value="#{accountController.newAccount.emailDomain}" autocomplete="false">
-								<f:facet name="prepend">
-									<b:iconAwesome name="envelope" />
-								</f:facet>
-							</b:inputText>
-						</b:column>
-					</b:row>
-					
-					
-					
-							<b:row>
-						<b:column>
-							<b:inputText placeholder="Time Zone City" id="newAccountTimeZoneCity" value="#{accountController.newAccount.timeZoneCity}"
-								 autocomplete="false">
-								<f:facet name="prepend">
-									<b:iconAwesome name="clock-o" />
-								</f:facet>
-							</b:inputText>
-						</b:column>
-					</b:row>
-					
-					
-					
-					
-					
-				</b:panel>
-				
-				
-				
-				
-				
-				
-				
-				<b:panel title="Add Account Contract" look="info">
-				
+			<b:panel title="Add New Account" look="primary">
 				<b:row>
 					<b:column>
-						    <b:dateTimePicker value="#{accountController.accountContract.startDate}"
-					        allow-input-toggle="true"
-					        show-date="true"
-					        show-icon="true"
-					        use-current="true"
-					        label="Start Date" />
+						<b:inputText placeholder="Account Name" id="newAccountName"
+							value="#{accountController.newAccount.name}" autocomplete="false"
+						>
+							<f:facet name="prepend">
+								<b:icon name="user" />
+							</f:facet>
+						</b:inputText>
 					</b:column>
 				</b:row>
-				
+
 				<b:row>
 					<b:column>
-						    <b:dateTimePicker value="#{accountController.accountContract.endDate}"
-					        allow-input-toggle="true"
-					        show-date="true"
-					        show-icon="true"
-					        use-current="true"
-					        label="End Date" />
+						<b:inputText placeholder="Email Domain" id="newAccountEmailDomain"
+							value="#{accountController.newAccount.emailDomain}"
+							autocomplete="false"
+						>
+							<f:facet name="prepend">
+								<b:iconAwesome name="envelope" />
+							</f:facet>
+						</b:inputText>
 					</b:column>
 				</b:row>
-				
+
+
+
 				<b:row>
 					<b:column>
-						    
-						    <b:inputText type="number" label="Contacts Limit" value="#{accountController.accountContract.contactsLimit}" min="0"></b:inputText>
-						     
+						<b:inputText placeholder="Time Zone City"
+							id="newAccountTimeZoneCity"
+							value="#{accountController.newAccount.timeZoneCity}"
+							autocomplete="false"
+						>
+							<f:facet name="prepend">
+								<b:iconAwesome name="clock-o" />
+							</f:facet>
+						</b:inputText>
 					</b:column>
-				</b:row>				 
-				
+				</b:row>
+
+
+
+
+
+			</b:panel>
+
+
+
+
+
+
+
+			<b:panel title="Add Account Contract" look="info">
+
 				<b:row>
 					<b:column>
-						    <b:inputText type="number" label="Logins Limit" value="#{accountController.accountContract.loginsLimit}" min="0"></b:inputText>
+						<b:dateTimePicker
+							value="#{accountController.accountContract.startDate}"
+							allow-input-toggle="true" show-date="true" show-icon="true"
+							use-current="true" label="Start Date"
+						/>
 					</b:column>
-				</b:row>				
-				
-				</b:panel>
-				
-				
-					<b:row>
-						<b:column>
-							<b:commandButton value="Add New Account" action="#{accountController.addAccount()}"
-								look="success" style="width:100%" />
-						</b:column>
-					</b:row>
-					
-				
-				
+				</b:row>
+
+				<b:row>
+					<b:column>
+						<b:dateTimePicker
+							value="#{accountController.accountContract.endDate}"
+							allow-input-toggle="true" show-date="true" show-icon="true"
+							use-current="true" label="End Date"
+						/>
+					</b:column>
+				</b:row>
+
+				<b:row>
+					<b:column>
+
+						<b:inputText type="number" label="Contacts Limit"
+							value="#{accountController.accountContract.contactsLimit}"
+							min="0"
+						></b:inputText>
+
+					</b:column>
+				</b:row>
+
+				<b:row>
+					<b:column>
+						<b:inputText type="number" label="Logins Limit"
+							value="#{accountController.accountContract.loginsLimit}" min="0"
+						></b:inputText>
+					</b:column>
+				</b:row>
+
+			</b:panel>
+
+
+			<b:row>
+				<b:column>
+					<b:commandButton value="Add New Account"
+						action="#{accountController.addAccount()}" look="success"
+						style="width:100%"
+					/>
+				</b:column>
+			</b:row>
+
+
+
 		</b:form>
 	</b:modal>
-	<b:modal id="AddNewContractModal" title="Add New Contract" styleClass="modalPseudoClass">
+	<b:modal id="AddNewContractModal" title="Add New Contract"
+		styleClass="modalPseudoClass"
+	>
 		<b:form id="addContractForm">
-				<b:panel title="Add New Contract" look="info">
-				
+			<b:panel title="Add New Contract" look="info">
+
 				<b:row>
 					<b:column>
-						    <b:dateTimePicker value="#{accountController.accountContract.startDate}"
-					        allow-input-toggle="true"
-					        show-date="true"
-					        show-icon="true"
-					        use-current="true"
-					        label="Start Date" />
+						<b:dateTimePicker
+							value="#{accountController.accountContract.startDate}"
+							allow-input-toggle="true" show-date="true" show-icon="true"
+							use-current="true" label="Start Date"
+						/>
 					</b:column>
 				</b:row>
-				
+
 				<b:row>
 					<b:column>
-						    <b:dateTimePicker value="#{accountController.accountContract.endDate}"
-					        allow-input-toggle="true"
-					        show-date="true"
-					        show-icon="true"
-					        use-current="true"
-					        label="End Date" />
+						<b:dateTimePicker
+							value="#{accountController.accountContract.endDate}"
+							allow-input-toggle="true" show-date="true" show-icon="true"
+							use-current="true" label="End Date"
+						/>
 					</b:column>
 				</b:row>
-				
+
 				<b:row>
 					<b:column>
-						    
-						    <b:inputText type="number" label="Contacts Limit" value="#{accountController.accountContract.contactsLimit}" min="0"></b:inputText>
-						    
+
+						<b:inputText type="number" label="Contacts Limit"
+							value="#{accountController.accountContract.contactsLimit}"
+							min="0"
+						></b:inputText>
+
 					</b:column>
-				</b:row>				
-				
+				</b:row>
+
 				<b:row>
 					<b:column>
-						    <b:inputText type="number" label="Logins Limit" value="#{accountController.accountContract.loginsLimit}" min="0"></b:inputText>
+						<b:inputText type="number" label="Logins Limit"
+							value="#{accountController.accountContract.loginsLimit}" min="0"
+						></b:inputText>
 					</b:column>
-				</b:row>	
-				
-				
+				</b:row>
+
+
 				<b:row>
 					<b:column>
-					
-						<b:selectOneMenu value="#{accountController.accountIdForNewContract}" label="Select an Account">
-   							<f:selectItems value="#{accountController.accountsNamesList.entrySet()}" var="entry" itemValue="#{entry.key}" itemLabel="#{entry.key} - #{entry.value}" />
+
+						<b:selectOneMenu
+							value="#{accountController.accountIdForNewContract}"
+							label="Select an Account"
+						>
+							<f:selectItems
+								value="#{accountController.accountsNamesList.entrySet()}"
+								var="entry" itemValue="#{entry.key}"
+								itemLabel="#{entry.key} - #{entry.value}"
+							/>
 						</b:selectOneMenu>
 					</b:column>
 				</b:row>
-							
-				
-				</b:panel>
-				
-				
-					<b:row>
-						<b:column>
-							<b:commandButton value="Add New Contract" action="#{accountController.addNewContract()}"
-								look="success" style="width:100%" />
-						</b:column>
-					</b:row>
-					
-				
-				
+
+
+			</b:panel>
+
+
+			<b:row>
+				<b:column>
+					<b:commandButton value="Add New Contract"
+						action="#{accountController.addNewContract()}" look="success"
+						style="width:100%"
+					/>
+				</b:column>
+			</b:row>
+
+
+
 		</b:form>
 	</b:modal>
-	
-	
+
+
 	<b:container fluid="true">
 
-		<b:tabView pills="true"
-			contentStyle="border: 1px solid #ddd; padding:10px"
-		>
-			<b:tab title="All Accounts">
+		<b:form style="padding-top:25px">
+			<b:commandButton value="Log Out" look="danger"
+				action="#{utilsController.logout()}" style="float:right;"
+			/>
+			<b:tabView pills="true"
+				contentStyle="border: 1px solid #ddd; padding:10px"
+			>
+				<b:tab title="All Accounts">
 
-<b:row>
-    <b:column>
-        <button id="btrigger" style="float:right" class="btn btn-success btn-sm" data-target="#AddNewAccountModal" data-toggle="modal">Add New Account</button>
-    </b:column>
-</b:row>		
-		
- <h:form id="accountListForm" style="padding-top:25px">
-  <h:panelGroup id="accountsListDT">
-    <b:dataTable value="#{accountController.accountsList}" var="account" page-length="5" page-length-menu="5,10,20" id="editableAccountTable" class="editableAccountTable">
-    
-        <b:dataTableColumn value="#{account.accountId}" label="ID" order="asc"  />
-        <b:dataTableColumn label="Name">
-        	<b:inputText value="#{account.name}" rendered="#{account.editable}" />
-        	<h:outputText value="#{account.name}" rendered="#{not account.editable}" />
-        </b:dataTableColumn>
+					<b:row>
+						<b:column>
+							<button id="btrigger" style="float: right"
+								class="btn btn-success btn-sm" data-target="#AddNewAccountModal"
+								data-toggle="modal" type="button"
+							>Add New Account</button>
+						</b:column>
+					</b:row>
 
-        <b:dataTableColumn label="Email Domain">
-        	
-        	<b:inputText value="#{account.emailDomain}" rendered="#{account.editable}">
-        		<f:facet name="prepend">
-        			<h:outputText value="@" />
-        		</f:facet>
-        	</b:inputText>
-        	
-        	<h:outputText value="@#{account.emailDomain}" rendered="#{not account.editable}" />
-        </b:dataTableColumn>
+					<h:panelGroup id="accountsListDT">
+						<b:dataTable value="#{accountController.accountsList}"
+							var="account" page-length="5" page-length-menu="5,10,20"
+							id="editableAccountTable" class="editableAccountTable"
+						>
 
-         <b:dataTableColumn label="Time Zone City">
-        	<b:inputText value="#{account.timeZoneCity}" rendered="#{account.editable}" />
-        	<h:outputText value="#{account.timeZoneCity}" rendered="#{not account.editable}" />
-        </b:dataTableColumn>
-        
-        <b:dataTableColumn label="Contacts">
-        	    <a href="#{request.contextPath}/ViewContacts.xhtml?accountId=#{account.accountId}" target="_blank" class="btn btn-primary btn-small">View Contacts</a>
-        </b:dataTableColumn>
-        
-       
-		<b:dataTableColumn label="">
-			
+							<b:dataTableColumn value="#{account.accountId}" label="ID"
+								order="asc"
+							/>
+							<b:dataTableColumn label="Name">
+								<b:inputText value="#{account.name}"
+									rendered="#{account.editable}"
+								/>
+								<h:outputText value="#{account.name}"
+									rendered="#{not account.editable}"
+								/>
+							</b:dataTableColumn>
 
-			<b:icon name="remove-sign" size="lg">
-				<f:ajax event="click" execute="@form" listener="#{accountController.deleteAccount(account.accountId)}" render="editableAccountTable" />
-			</b:icon>
-			
-		<b:icon name="edit" size="lg" ajax="true" update="@(.editableAccountTable)" onclick="ajax:accountController.accountEditAction(account)" />
-		
-		</b:dataTableColumn> 
-		
-		
-		
-		
-		
-		
-		
-		
-   	</b:dataTable>
-    </h:panelGroup>
-</h:form>
+							<b:dataTableColumn label="Email Domain">
 
+								<b:inputText value="#{account.emailDomain}"
+									rendered="#{account.editable}"
+								>
+									<f:facet name="prepend">
+										<h:outputText value="@" />
+									</f:facet>
+								</b:inputText>
+
+								<h:outputText value="@#{account.emailDomain}"
+									rendered="#{not account.editable}"
+								/>
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="Time Zone City">
+								<b:inputText value="#{account.timeZoneCity}"
+									rendered="#{account.editable}"
+								/>
+								<h:outputText value="#{account.timeZoneCity}"
+									rendered="#{not account.editable}"
+								/>
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="Contacts">
+								<a
+									href="#{request.contextPath}/ViewContacts.xhtml?accountId=#{account.accountId}"
+									target="_blank" class="btn btn-primary btn-small"
+								>View Contacts</a>
+							</b:dataTableColumn>
 
 
-			</b:tab>
+							<b:dataTableColumn label="">
 
-			<b:tab title="All Contracts">
-			
-				<b:row>
-    <b:column>
-        <button id="btrigger" style="float:right" class="btn btn-warning btn-sm" data-target="#AddNewContractModal" data-toggle="modal">Add New Contract</button>
-    </b:column>
-</b:row>
 
- <h:form id="contractListForm" style="padding-top:25px">
- <h:panelGroup id="contractListDT">
-    <b:dataTable value="#{accountController.contractsList}" class="editableContractTable" var="contract" page-length="5" page-length-menu="5,10,20">
-        <b:dataTableColumn value="#{contract.contractId}" label="Contract ID" order="asc"  />
-        
-        
-        <b:dataTableColumn label="Start Date">
-        
-        	<b:dateTimePicker value="#{contract.startDate}"
-					        allow-input-toggle="true"
-					        show-date="true"
-					        show-icon="true"
-					        use-current="true"
-					        rendered="#{contract.editable}" />
-					        
-        	<h:outputText value="#{contract.startDate}" rendered="#{not contract.editable}">
-   				<f:convertDateTime pattern="yyyy-MM-dd" />
-			</h:outputText>
-        
-        
-        </b:dataTableColumn>
-        
-        
-                <b:dataTableColumn label="End Date">
-        
-        	<b:dateTimePicker value="#{contract.endDate}"
-					        allow-input-toggle="true"
-					        show-date="true"
-					        show-icon="true"
-					        use-current="true"
-					        rendered="#{contract.editable}" />
-					        
-        	<h:outputText value="#{contract.endDate}" rendered="#{not contract.editable}">
-   				<f:convertDateTime pattern="yyyy-MM-dd" />
-			</h:outputText>
-        
-        
-        </b:dataTableColumn>
-        
-        <b:dataTableColumn label="Contacts Limit">
-        
-        	<b:touchSpin value="#{contract.contactsLimit}" min="#{accountController.getCurrentNumberOfContactsOfAccount(contract.account)}" rendered="#{contract.editable}" />
-        	
-        	<h:outputText value="#{contract.contactsLimit}" rendered="#{not contract.editable}" />
-        
-        </b:dataTableColumn>
-        
-        <b:dataTableColumn value="#{contract.loginsLimit}" label="Logins Limit" >
-       </b:dataTableColumn>
-       
-        <b:dataTableColumn label="Action">
-        	
-		                                    
-        	<b:icon name="edit" size="lg" ajax="true" update="@(.editableContractTable)" onclick="ajax:accountController.contractEditAction(contract)" />
-       </b:dataTableColumn>
-        
-    </b:dataTable>
-    </h:panelGroup>
-    
-</h:form>
- 
+								<b:icon name="remove-sign" size="lg">
+									<f:ajax event="click" execute="@form"
+										listener="#{accountController.deleteAccount(account.accountId)}"
+										render="editableAccountTable"
+									/>
+								</b:icon>
 
-			</b:tab>
-		</b:tabView>
+								<b:icon name="edit" size="lg" ajax="true"
+									update="@(.editableAccountTable)"
+									onclick="ajax:accountController.accountEditAction(account)"
+								/>
 
-	</b:container>	
-	
-	
+							</b:dataTableColumn>
+
+
+
+
+
+
+
+
+						</b:dataTable>
+					</h:panelGroup>
+
+
+
+				</b:tab>
+
+				<b:tab title="All Contracts">
+
+					<b:row>
+						<b:column>
+							<button id="btrigger" style="float: right"
+								class="btn btn-warning btn-sm"
+								data-target="#AddNewContractModal" data-toggle="modal" type="button"
+							>Add New Contract</button>
+						</b:column>
+					</b:row>
+
+					<h:panelGroup id="contractListDT">
+						<b:dataTable value="#{accountController.contractsList}"
+							class="editableContractTable" var="contract" page-length="5"
+							page-length-menu="5,10,20"
+						>
+							<b:dataTableColumn value="#{contract.contractId}"
+								label="Contract ID" order="asc"
+							/>
+
+
+							<b:dataTableColumn label="Start Date">
+
+								<b:dateTimePicker value="#{contract.startDate}"
+									allow-input-toggle="true" show-date="true" show-icon="true"
+									use-current="true" rendered="#{contract.editable}"
+								/>
+
+								<h:outputText value="#{contract.startDate}"
+									rendered="#{not contract.editable}"
+								>
+									<f:convertDateTime pattern="yyyy-MM-dd" />
+								</h:outputText>
+
+
+							</b:dataTableColumn>
+
+
+							<b:dataTableColumn label="End Date">
+
+								<b:dateTimePicker value="#{contract.endDate}"
+									allow-input-toggle="true" show-date="true" show-icon="true"
+									use-current="true" rendered="#{contract.editable}"
+								/>
+
+								<h:outputText value="#{contract.endDate}"
+									rendered="#{not contract.editable}"
+								>
+									<f:convertDateTime pattern="yyyy-MM-dd" />
+								</h:outputText>
+
+
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="Contacts Limit">
+
+								<b:touchSpin value="#{contract.contactsLimit}"
+									min="#{accountController.getCurrentNumberOfContactsOfAccount(contract.account)}"
+									rendered="#{contract.editable}"
+								/>
+
+								<h:outputText value="#{contract.contactsLimit}"
+									rendered="#{not contract.editable}"
+								/>
+
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="Logins Limit">
+
+								<b:touchSpin value="#{contract.loginsLimit}"
+									min="#{accountController.getCurrentNumberOfLoginsOfAccount(contract.account)}"
+									rendered="#{contract.editable}"
+								/>
+
+								<h:outputText value="#{contract.loginsLimit}"
+									rendered="#{not contract.editable}"
+								/>
+
+
+
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="Account">
+								<h:outputText
+									value="#{contract.account.name} (#{contract.account.accountId})"
+								/>
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="Action">
+
+
+								<b:icon name="edit" size="lg" ajax="true"
+									update="@(.editableContractTable)"
+									onclick="ajax:accountController.contractEditAction(contract)"
+								/>
+							</b:dataTableColumn>
+
+						</b:dataTable>
+					</h:panelGroup>
+
+
+
+				</b:tab>
+			</b:tabView>
+
+		</b:form>
+	</b:container>
+
+
 
 </h:body>
 </html>

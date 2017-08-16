@@ -2,16 +2,19 @@ package com.controllers;
 
 import java.io.Serializable;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 
+import com.entities.Contact;
 import com.services.ContactService;
+import com.utils.Utils;
 
 @ManagedBean(name="contactLoginController")
-@ViewScoped
+@RequestScoped
 public class ContactLoginController implements Serializable {
 
 
@@ -28,18 +31,78 @@ public class ContactLoginController implements Serializable {
 
 	private String errorMsg;
 
+
+	@PostConstruct
+	public void init() {
+	}
+
 	public String loginContact(String contactUsername, String contactPassword) {
 		FacesContext context = FacesContext.getCurrentInstance();
 		System.out.println("in loginContact(String, String)");
+		Boolean loginCheck = null;
+		String redirectTo = null;
 
-
-		if(null==contactService.loginContact(contactUsername, contactPassword)) {
-//			errorMsg = "Login Not Found.";
+		// Check if login is not found i.e. it's null as per the logic in ContactServiceImpl.loginContact(...)
+		if((redirectTo=contactService.loginContact(contactUsername, contactPassword))==null) {
 			context.addMessage(null, new FacesMessage("Unknown login, try again"));
+			loginCheck = false;
+		} else { // If login is found.
+			Utils.setSessionTimeOutInMinutes(60);	//Set session timeout to 60 mins.
+			loginCheck = true;
 		}
 
-		return null;
+		if(!loginCheck) {
+			Utils.logout();
+		}
+
+//		Utils.redirectTo(redirectTo);
+		return redirectTo.replaceAll(".xhtml", "")+"?faces-redirect=true";
 	}
+
+
+	public String checkForLogin1() {
+
+		System.out.println("In checkForLogin()");
+
+		Contact contact = (Contact) Utils.getFromSession("contact");
+
+		if(contact != null) {
+			if(contact.getAccount().getName().equals("QuickRescue")) {
+				return "ViewAllAccounts.xhtml?faces-redirect=true";
+			}
+			else {
+				return "ViewAllContacts.xhtml?faces-redirect=true";
+			}
+		}
+		else {
+			return "login.xhtml";
+//			throw new NullPointerException("contact from Session is null");
+		}
+
+	}
+
+
+	  public void checkForLogin(){
+
+		  System.out.println("In checkForLogin(ComponentSystemEvent)");
+
+			Contact contact = (Contact) Utils.getFromSession("contact");
+
+			if(contact != null) {
+				if(contact.getAccount().getName().equals("QuickRescue")) {
+					Utils.navigateTo("ViewAllAccounts.xhtml");
+				}
+				else
+				{
+					Utils.navigateTo("ViewAllContacts.xhtml");
+				}
+			}
+			else {
+				Utils.navigateTo("login.xhtml");
+//				throw new NullPointerException("contact from Session is null");
+			}
+		  }
+
 
 	public String getContactUsername() {
 		return contactUsername;

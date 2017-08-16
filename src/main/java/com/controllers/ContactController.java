@@ -3,6 +3,7 @@ package com.controllers;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -68,12 +69,16 @@ public class ContactController implements Serializable {
 
 
 		this.accountId = (Integer) Utils.getFromSession("accountId");
-		System.out.println("Got from Session - accountId = " + accountId);
-		this.account = accountService.findAccountById(accountId);
 
-
-		alertProfiles = accountService.getAlertProfiles(this.account);
-		getAccountContacts();
+		if(this.accountId == -1 || this.accountId == null) {
+			throw new NoSuchElementException("Couldn't get accountId from Session.");
+		}
+		else {
+			System.out.println("Got from Session - accountId = " + accountId);
+			this.account = accountService.findAccountById(accountId);
+			alertProfiles = this.account.getAlertProfiles();
+			getAccountContacts();
+		}
 
 	}
 
@@ -122,7 +127,7 @@ public class ContactController implements Serializable {
 		else {
 			System.out.println("No contract found for account " + account.getName() + " with id " + account.getAccountId());
 		}
-		
+
 		return false;
 	}
 
@@ -152,7 +157,7 @@ public class ContactController implements Serializable {
 
 
 	// Method used to add Contact using Modal in ViewAllContacts.xhtml
-	public void addContact() {
+	public String addContact() {
 	    	System.out.println("In Add New Contact");
 
 	    	if(!this.checkAccountContactsLimit(this.account)) {
@@ -186,7 +191,8 @@ public class ContactController implements Serializable {
 	    	}
 
 	    	newContact = new Contact(); // Reset placeholder.
-			Utils.redirectTo("ViewAllContacts.xhtml");
+//			Utils.redirectTo("ViewAllContacts.xhtml");
+	    	return "ViewAllContacts?faces-redirect=true";
 	    }
 
 

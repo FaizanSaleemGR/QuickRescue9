@@ -201,7 +201,7 @@ public class AccountController implements Serializable {
 
 		accountService.updateAccount(acc);
 
-		Utils.redirectTo("ViewAllContracts.xhtml");
+		Utils.redirectTo("ViewAllAccounts.xhtml");
 	}
 
 	public void editContract() {
@@ -246,7 +246,7 @@ public class AccountController implements Serializable {
 
 		editContractCounter--;
 
-		Utils.redirectTo("ViewAllContracts.xhtml");
+		Utils.redirectTo("ViewAllAccounts.xhtml");
 	}
 
 
@@ -275,17 +275,24 @@ public class AccountController implements Serializable {
 		return null;
 
 	}
-	
+
 	public Integer getCurrentNumberOfContactsOfAccount(Account account) {
-		return account.getContacts().size();
+		return (account != null && account.getContacts() != null) ? account.getContacts().size() : 0;
 	}
 
+	public Integer getCurrentNumberOfLoginsOfAccount(Account account) {
+		Integer loginsCount = 0;
 
+		if(getCurrentNumberOfContactsOfAccount(account) != 0) {
+			for(Contact contact : account.getContacts()) {
+				if(contact.getHasLogin()) {
+					loginsCount++;
+				}
+			}
+		}
 
-
-
-
-
+		return loginsCount;
+	}
 
 	public String accountEditAction(Account account) {
 

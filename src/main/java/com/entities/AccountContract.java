@@ -16,6 +16,9 @@ public class AccountContract implements Serializable {
 	private Integer contactsLimit;
 	private Integer loginsLimit;
 
+	private Account account;
+
+
 	private boolean editable;
 
 
@@ -55,6 +58,12 @@ public class AccountContract implements Serializable {
 	}
 	public void setEditable(boolean editable) {
 		this.editable = editable;
+	}
+	public Account getAccount() {
+		return account;
+	}
+	public void setAccount(Account account) {
+		this.account = account;
 	}
 
 

@@ -10,6 +10,15 @@
 	<title>Login :: Quick Rescue</title>
 	<meta name="author" content="Faizan Saleem"></meta>
 </h:head>
+
+<f:metadata>
+    <f:viewAction action="#{contactLoginController.checkForLogin}"/>
+</f:metadata>
+
+<f:viewAction>
+
+</f:viewAction>
+
 <h:body> 
 
 		<ui:insert name="header" >
@@ -46,10 +55,14 @@
 
 			<b:row> 
 				<b:column span="2" offset="5">
-					<b:commandButton ajax="true" value="login" look="primary" style="width:100%" onclick="ajax:contactLoginController.loginContact(contactLoginController.contactUsername, contactLoginController.contactPassword)" update="messages" process="@form">
-					
-					
+				
+					<!-- <b:commandButton ajax="true" value="login" look="primary" style="width:100%" onclick="ajax:contactLoginController.loginContact(contactLoginController.contactUsername, contactLoginController.contactPassword)" update="messages" process="@form">
 					</b:commandButton> 
+ -->					
+					<b:commandButton value="Login" look="primary" action="#{contactLoginController.loginContact(contactLoginController.contactUsername, contactLoginController.contactPassword)}"  />
+					
+					
+					
             		
 				</b:column>
 			</b:row> 

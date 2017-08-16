@@ -19,7 +19,7 @@ public interface ContactService {
 	Boolean deleteContactById(Integer contactId);
 	List<Contact> getContactsOfAccount(Account account);
 	void updateContact(Contact contact);
-	Boolean loginContact(String contactUsername, String contactPassword);
+	String loginContact(String contactUsername, String contactPassword);
 	Integer addLoginDetails(Contact contact, ContactLoginDetails contactLoginDetails);
 	void updateAlertProfile(AlertProfile profile);
 	AlertProfile findAlertProfileById(Integer profileId);

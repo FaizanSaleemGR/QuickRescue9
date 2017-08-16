@@ -17,6 +17,12 @@
 	  <param-value>true</param-value>
 	</context-param>
 	
+	
+	<error-page>
+    <exception-type>javax.faces.application.ViewExpiredException</exception-type>
+    <location>/login.xhtml</location>
+</error-page>
+	
 	<context-param>
     <param-name>javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>
     <param-value>true</param-value>
@@ -38,11 +44,6 @@
     <param-name>net.bootsfaces.get_fontawesome_from_cdn</param-name>
     <param-value>false</param-value>
 </context-param> -->
-
-<context-param>
-    <param-name>primefaces.THEME</param-name>
-    <param-value>bootstrap</param-value>
-</context-param>
 
 	<!-- Welcome page -->
 	<welcome-file-list>
