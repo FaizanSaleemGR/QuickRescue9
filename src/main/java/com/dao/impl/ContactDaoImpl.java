@@ -49,7 +49,6 @@ public class ContactDaoImpl implements ContactDao {
 		}
 	}
 
-
 	@Override
 	public Integer addLoginDetails(Contact contact, ContactLoginDetails contactLoginDetails) {
 
@@ -61,20 +60,19 @@ public class ContactDaoImpl implements ContactDao {
 			tx = session.beginTransaction();
 
 			Criteria criteria = session.createCriteria(ContactLoginDetails.class);
-			ContactLoginDetails contactLoginDetails2 = (ContactLoginDetails) criteria.add(Restrictions.sqlRestriction("contactId=?", contact.getContactId(), IntegerType.INSTANCE)).uniqueResult();
+			ContactLoginDetails contactLoginDetails2 = (ContactLoginDetails) criteria
+					.add(Restrictions.sqlRestriction("contactId=?", contact.getContactId(), IntegerType.INSTANCE))
+					.uniqueResult();
 
-
-			if(null!=contactLoginDetails2) {
+			if (null != contactLoginDetails2) {
 				contact.setLoginDetails(contactLoginDetails2);
 				contactLoginDetails2.setContact(contact);
 				session.saveOrUpdate(contactLoginDetails2);
-			}
-			else {
+			} else {
 				contact.setLoginDetails(contactLoginDetails);
 				contactLoginDetails.setContact(contact);
 				session.saveOrUpdate(contactLoginDetails);
 			}
-
 
 			session.update(contact);
 
@@ -107,12 +105,11 @@ public class ContactDaoImpl implements ContactDao {
 			tx = session.beginTransaction();
 
 			contact.setAccount(account);
-			//contact.setAccountId(account.getAccountId());
+			// contact.setAccountId(account.getAccountId());
 			account.getContacts().add(contact);
 
-			contactId = (Integer)session.save(contact);
+			contactId = (Integer) session.save(contact);
 			session.update(account);
-
 
 			tx.commit();
 		} catch (HibernateException e) {
@@ -143,23 +140,6 @@ public class ContactDaoImpl implements ContactDao {
 		try {
 
 			tx = session.beginTransaction();
-
-			/*
-			 * CriteriaBuilder crBuilder = session.getCriteriaBuilder();
-			 * CriteriaQuery<Contact> criteria = crBuilder.createQuery(Contact.class);
-			 *
-			 * Root<Contact> contactRoot = criteria.from(Contact.class);
-			 * criteria.select(contactRoot);
-			 *
-			 *
-			 * Predicate nameRestriction = crBuilder.and( crBuilder.equal(
-			 * contactRoot.get("firstName"), contactFirstName ), crBuilder.equal(
-			 * contactRoot.get("lastName"), contactLastName ) );
-			 *
-			 * criteria.where(nameRestriction);
-			 *
-			 * contactToReturn = session.createQuery(criteria).getSingleResult();
-			 */
 
 			contactToReturn = (Contact) entityManager
 					.createNativeQuery("SELECT * " + "FROM contact WHERE first_name = '" + contactFirstName
@@ -194,15 +174,12 @@ public class ContactDaoImpl implements ContactDao {
 
 		try {
 
-
 			tx = session.beginTransaction();
-
 
 			Criteria criteria = session.createCriteria(Contact.class);
 			criteria.add(Restrictions.eq("contactId", contactId));
 
 			contactList = (List<Contact>) criteria.list();
-
 
 			if (null != contactList && contactList.size() > 0) {
 				contactToFind = contactList.get(0);
@@ -223,8 +200,6 @@ public class ContactDaoImpl implements ContactDao {
 
 	}
 
-
-
 	@Override
 	public AlertProfile findAlertProfileById(Integer profileId) {
 
@@ -235,15 +210,12 @@ public class ContactDaoImpl implements ContactDao {
 
 		try {
 
-
 			tx = session.beginTransaction();
-
 
 			Criteria criteria = session.createCriteria(AlertProfile.class);
 			criteria.add(Restrictions.eq("profileId", profileId));
 
 			alertProfiletList = (List<AlertProfile>) criteria.list();
-
 
 			if (null != alertProfiletList && alertProfiletList.size() > 0) {
 				alertProfileToFind = alertProfiletList.get(0);
@@ -335,6 +307,32 @@ public class ContactDaoImpl implements ContactDao {
 		return check;
 	}
 
+	@Override
+	public void delete(Contact contact) {
+		Session session = factory.openSession();
+		Transaction tx = null;
+
+		try {
+
+			tx = session.beginTransaction();
+
+			session.delete(contact);
+
+			tx.commit();
+		} catch (HibernateException e) {
+
+			System.err.println(e.getLocalizedMessage());
+
+			if (tx != null) {
+				tx.rollback();
+			}
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+
+	}
 
 	@Override
 	public Boolean deleteAlertProfileById(Integer profileId) {
@@ -371,7 +369,6 @@ public class ContactDaoImpl implements ContactDao {
 		return check;
 	}
 
-
 	@Override
 	public List<Contact> getContactsOfAccount(Account account) {
 
@@ -382,26 +379,18 @@ public class ContactDaoImpl implements ContactDao {
 		try {
 			tx = session.beginTransaction();
 
+			// Account checkAccount = (Account) session.load(Account.class,
+			// account.getAccountId());
 
+			SQLQuery query = session.createSQLQuery("Select * from contact where accountId=:accountId ");
+			query.setParameter("accountId", account.getAccountId());
 
-//			Account checkAccount = (Account) session.load(Account.class, account.getAccountId());
-
-
-
-    		SQLQuery query = session.createSQLQuery("Select * from contact where accountId=:accountId ");
-    		query.setParameter("accountId", account.getAccountId());
-
-//			query.setResultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP);
+			// query.setResultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP);
 			query.addEntity(Contact.class);
 
+			contactList = (List<Contact>) query.list();
 
-			contactList = (List<Contact>)query.list();
-
-    		tx.commit();
-
-
-
-
+			tx.commit();
 
 		} catch (HibernateException e) {
 			if (tx != null) {
@@ -426,11 +415,11 @@ public class ContactDaoImpl implements ContactDao {
 		Transaction tx = null;
 
 		try {
-			  tx = session.beginTransaction();
+			tx = session.beginTransaction();
 
-			  session.update(contactToUpdate);
+			session.update(contactToUpdate);
 
-			 tx.commit();
+			tx.commit();
 		} catch (HibernateException e) {
 
 			System.out.println(e.getMessage());
@@ -447,6 +436,11 @@ public class ContactDaoImpl implements ContactDao {
 	}
 
 	@Override
+	public void update(Contact contact) {
+		this.updateContact(contact);
+	}
+
+	@Override
 	public ContactLoginDetails getContactLogin(String username, String password) {
 
 		Session session = factory.openSession();
@@ -454,53 +448,19 @@ public class ContactDaoImpl implements ContactDao {
 		List<ContactLoginDetails> contactDetailsToReturn = null;
 		ContactLoginDetails singleContactDetails = null;
 		try {
-	 		tx = session.beginTransaction();
+			tx = session.beginTransaction();
 
-	 		/*
-	 		Query query = session.createQuery("from contact_login_details where username = :username AND password = :password ");
-	 		query.setParameter("username", username);
-	 		query.setParameter("password", password);
-	 		contactDetailsToReturn = (ContactLoginDetails) query.uniqueResult();
+			DetachedCriteria criteria = DetachedCriteria.forClass(ContactLoginDetails.class, "a");
+			criteria.add(Restrictions.eq("a.username", username));
+			criteria.add(Restrictions.eq("a.password", password));
 
+			contactDetailsToReturn = (List<ContactLoginDetails>) criteria.getExecutableCriteria(session).list();
 
+			if (null != contactDetailsToReturn && contactDetailsToReturn.size() > 0) {
+				singleContactDetails = contactDetailsToReturn.get(0);
+			}
 
-
-	 		Criteria query = session.
-	 				createCriteria(ContactLoginDetails.class, "cld");
-	 				query.setProjection(Projections.projectionList().
-	 				add(Projections.property("cld.account")));
-
-	 				query.add(Restrictions.eq("username", username));
-	 				query.add(Restrictions.eq("password", password));
-
-
-
-
-	 				String sql = "SELECT * from contact_login_details cld, contact cont where cld.username = :username AND cld.password = :password AND cld.contactId = cont.contactId";
-
-	 				SQLQuery query = session.createSQLQuery(sql);
-	 				query.addEntity(ContactLoginDetails.class);
-	 				query.addEntity(Contact.class);
-	 				query.setParameter("username", username);
-	 		 		query.setParameter("password", password);
-
-	 		 		contactDetailsToReturn =  query.list();
-	 		 		*/
-
-
-
-	 			    DetachedCriteria criteria = DetachedCriteria.forClass(ContactLoginDetails.class, "a");
-	 			    criteria.add(Restrictions.eq("a.username", username));
-	 			    criteria.add(Restrictions.eq("a.password", password));
-
-	 			   contactDetailsToReturn = (List<ContactLoginDetails>) criteria.getExecutableCriteria(session).list();
-
-
-	 			   if(null!=contactDetailsToReturn && contactDetailsToReturn.size() > 0) {
-					singleContactDetails = contactDetailsToReturn.get(0);
-				}
-
-	 		tx.commit();
+			tx.commit();
 		} catch (HibernateException e) {
 
 			System.out.println(e.getMessage());
@@ -556,11 +516,11 @@ public class ContactDaoImpl implements ContactDao {
 		Transaction tx = null;
 
 		try {
-			  tx = session.beginTransaction();
+			tx = session.beginTransaction();
 
-			  session.update(profile);
+			session.update(profile);
 
-			 tx.commit();
+			tx.commit();
 		} catch (HibernateException e) {
 
 			System.out.println(e.getMessage());
@@ -576,5 +536,10 @@ public class ContactDaoImpl implements ContactDao {
 
 	}
 
+	@Override
+	public Integer add(Contact contact) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

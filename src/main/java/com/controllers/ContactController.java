@@ -44,7 +44,7 @@ public class ContactController implements Serializable {
 	private Account account;
 
 	private Integer contactsLeft, loginsLeft;
-	
+
 	private AlertProfile alertProfile;
 	private Location location;
 	private ArrayList<Location> locations;
@@ -52,6 +52,8 @@ public class ContactController implements Serializable {
 	private Location editedLocation;
 
 	private int editCounter;
+
+	private String contactsAndLoginsLimit;
 
 	private ArrayList<Contact> editedAccountsList;
 
@@ -72,11 +74,13 @@ public class ContactController implements Serializable {
 
 		editedLocation = new Location();
 
+
+
 		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 		HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
 
 		if (request.getRequestedSessionId() != null && request.isRequestedSessionIdValid()) {
-		
+
 		this.accountId = (Integer) Utils.getFromSession("accountId");
 
 		if(this.accountId == -1 || this.accountId == null) {
@@ -85,9 +89,9 @@ public class ContactController implements Serializable {
 		else {
 			System.out.println("Got from Session - accountId = " + accountId);
 			this.account = accountService.findAccountById(accountId);
-			
+
 			this.countContactAndLoginLimit();
-			
+
 			alertProfiles = this.account.getAlertProfiles();
 			getAccountContacts();
 		}
@@ -212,9 +216,9 @@ public class ContactController implements Serializable {
 	public void countContactAndLoginLimit() {
 		contactsLeft = account.getAccountContract().getContactsLimit() - account.getContacts().size();
 		loginsLeft = (account.getAccountContract().getLoginsLimit() - (int) account.getContacts().stream().filter(x->x.getHasLogin()).count());
-		
+		this.contactsAndLoginsLimit = "You can create "+contactsLeft+" more contacts and "+loginsLeft+" more logins";
 	}
-	
+
 
 	 // Method to delete a contact from ViewAllContacts.xhtml page.
     public void deleteContact(Integer contactId) {
@@ -299,13 +303,13 @@ public class ContactController implements Serializable {
 				if(!this.checkAccountLoginsLimit(this.account)) {
 					System.out.println("Login NOT created - Account's LOGINS Limit Exceeded." );
 				} else {
-					 
-					
+
+
 					 contactLoginDetails = Utils.createLogin(account, contact);
 					 contact.setLoginDetails(contactLoginDetails);
 					 contactLoginDetails.setContact(contact);
 					 contactService.addLoginDetails(contact, contactLoginDetails);
-					
+
 				}
 			}
 
@@ -543,6 +547,21 @@ public class ContactController implements Serializable {
 
 	public void setLoginsLeft(Integer loginsLeft) {
 		this.loginsLeft = loginsLeft;
+	}
+
+	public String getContactsAndLoginsLimit() {
+		return contactsAndLoginsLimit;
+	}
+
+	public void setContactsAndLoginsLimit(String contactsAndLoginLimit) {
+		this.contactsAndLoginsLimit = contactsAndLoginLimit;
+	}
+
+	public void contactsAndLoginsLimitCheck() {
+
+		System.out.println("In ContactController - contactsAndLoginsLimitCheck()");
+
+		this.contactsAndLoginsLimit = "You can create "+contactsLeft+" more contacts and "+loginsLeft+" more logins";
 	}
 
 

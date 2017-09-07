@@ -25,6 +25,8 @@ public class ContactServiceImpl implements ContactService, Serializable {
 	@EJB
 	private ContactDao contactDao;
 
+	private Boolean loggedIn = false;
+
 	public ContactServiceImpl() {
 
 	}
@@ -108,10 +110,13 @@ public class ContactServiceImpl implements ContactService, Serializable {
 
 					// Redirect contact to ViewAllAccounts if it's a contact of QuickRescue account.
 					if(contact.getAccount().getName().equals("QuickRescue")) {
+						loggedIn = true;
 						Utils.addToSession(
 								new SimpleEntry<>("accountId", contact.getAccount().getAccountId()),
-								new SimpleEntry<>("contact", contact)
+								new SimpleEntry<>("contact", contact),
+								new SimpleEntry<>("loggedIn", loggedIn)
 								);
+
 
 						redirectTo = "ViewAllAccounts.xhtml";
 					}
@@ -119,10 +124,13 @@ public class ContactServiceImpl implements ContactService, Serializable {
 					else {
 						System.out.println("Contact is not member of QuickRescue Account");
 
+						loggedIn = true;
 						Utils.addToSession(
 								new SimpleEntry<>("accountId", contact.getAccount().getAccountId()),
-								new SimpleEntry<>("contact", contact)
+								new SimpleEntry<>("contact", contact),
+								new SimpleEntry<>("loggedIn", loggedIn)
 								);
+
 						redirectTo = "ViewAllContacts.xhtml";
 					}
 
@@ -131,7 +139,17 @@ public class ContactServiceImpl implements ContactService, Serializable {
 				}
 			}
 		}
+
+		loggedIn = false;
 		return redirectTo;
+	}
+
+	public Boolean isLoggedIn() {
+		return loggedIn;
+	}
+
+	public void setLoggedIn(Boolean loggedIn) {
+		this.loggedIn = loggedIn;
 	}
 
 

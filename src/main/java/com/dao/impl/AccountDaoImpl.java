@@ -60,36 +60,6 @@ public class AccountDaoImpl implements AccountDao {
     	try {
     		tx = session.beginTransaction();
 
-/*    		entityManager = entityManagerFactory.createEntityManager();
-    		entityManager.getTransaction().begin();
-    		accountList = entityManager.createQuery( "from Account", Account.class ).getResultList();
-    		entityManager.getTransaction().commit();
-    		entityManager.close();*/
-
-
-//    		Query query = session.createSQLQuery("Select * from account");
-//    		accountList = (List<Account>)query.list();
-
-
-
-/*			String sql = "select a.accountId as aaId, a.name, a.email_domain, a.time_zone_city,"
-					+ "c.contactId, c.first_name, c.last_name, c.email_address, c.gender, c.phone, c.status, c.street_address, c.city, c.state, c.country, c.hasLogin, c.contactLoginId"
-					+ " from account a, contact c where a.accountId = c.accountId";*/
-
-/*    		String sql = "Select a.accountId, a.name, a.email_domain, a.time_zone_city from account a";
-
-			SQLQuery query = session.createSQLQuery(sql);
-			query.setResultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP);
-			accountList = query.list();
-*/
-
-
-    		/*for ( Account event : (List<Account>) result ) {
-    		    System.out.println( "Event (" + event.getDate() + ") : " + event.getTitle() );
-    		}*/
-
-
-
     		accountList = (List<Account>) session.createCriteria(Account.class)
     			    .list();
 
@@ -116,36 +86,6 @@ public class AccountDaoImpl implements AccountDao {
 
     	try {
     		tx = session.beginTransaction();
-
-/*    		entityManager = entityManagerFactory.createEntityManager();
-    		entityManager.getTransaction().begin();
-    		accountList = entityManager.createQuery( "from Account", Account.class ).getResultList();
-    		entityManager.getTransaction().commit();
-    		entityManager.close();*/
-
-
-//    		Query query = session.createSQLQuery("Select * from account");
-//    		accountList = (List<Account>)query.list();
-
-
-
-/*			String sql = "select a.accountId as aaId, a.name, a.email_domain, a.time_zone_city,"
-					+ "c.contactId, c.first_name, c.last_name, c.email_address, c.gender, c.phone, c.status, c.street_address, c.city, c.state, c.country, c.hasLogin, c.contactLoginId"
-					+ " from account a, contact c where a.accountId = c.accountId";*/
-
-/*    		String sql = "Select a.accountId, a.name, a.email_domain, a.time_zone_city from account a";
-
-			SQLQuery query = session.createSQLQuery(sql);
-			query.setResultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP);
-			accountList = query.list();
-*/
-
-
-    		/*for ( Account event : (List<Account>) result ) {
-    		    System.out.println( "Event (" + event.getDate() + ") : " + event.getTitle() );
-    		}*/
-
-
 
     		contractList = (List<AccountContract>) session.createCriteria(AccountContract.class)
     			    .list();
@@ -222,6 +162,11 @@ public class AccountDaoImpl implements AccountDao {
     	}
 
     	return accountId;
+	}
+
+	@Override
+	public Integer add(Account account) {
+		return this.addAccount(account);
 	}
 
 	@Override
@@ -383,6 +328,11 @@ public class AccountDaoImpl implements AccountDao {
 	}
 
 	@Override
+	public void delete(Account account) {
+		this.deleteAccount(account);
+	}
+
+	@Override
 	public Boolean deleteAccountByName(String accountName) {
 		// TODO Auto-generated method stub
 		return null;
@@ -420,6 +370,11 @@ public class AccountDaoImpl implements AccountDao {
     		session.close();
     	}
 
+	}
+
+	@Override
+	public void update(Account account) {
+		this.update(account);
 	}
 
 
@@ -508,11 +463,8 @@ public class AccountDaoImpl implements AccountDao {
 				session.close();
 			}
 		}
-		
+
 		return alertProfiles;
 	}
-
-
-
 
 }

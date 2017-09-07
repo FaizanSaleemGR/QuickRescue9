@@ -9,6 +9,8 @@
 <h:head>
 	<title>Login :: Quick Rescue</title>
 	<meta name="author" content="Faizan Saleem"></meta>
+    <h:outputStylesheet name="css/login_page_style.css"></h:outputStylesheet>
+	
 </h:head>
 
 <f:metadata>
@@ -26,48 +28,31 @@
 		</ui:insert>
  
 
-	<b:jumbotron> 
-		<h1>Contact Login </h1>
-	</b:jumbotron>
-	
-	
-	
-	<b:container>
-		<h:form style="padding-top:150px">
+<b:container>
+	<div class="wrapper">
+		<b:form class="form-signin" name="Login_Form">   
 		
 		<h:outputLabel id="messages" value="#{contactLoginController.errorMsg}"></h:outputLabel>
 		
-			<b:row>
-				<b:column span="4" offset="4"> 
-				<h:inputText placeholder="Username" required="true" value="#{contactLoginController.contactUsername}">
+		    <h3 class="form-signin-heading">Welcome Back! Please Sign In</h3>
+			  <hr class="colorgraph" /><br />
+			  
+			 <b:inputText placeholder="Username" class="form-control" required="true" value="#{contactLoginController.contactUsername}">
 					<f:facet name="prepend"> 
 						<b:icon name="user" />
 					</f:facet>
-				</h:inputText>
+				</b:inputText>
 
-				<h:inputSecret placeholder="Password" required="true" value="#{contactLoginController.contactPassword}">
+				<b:inputSecret placeholder="Password" class="form-control" required="true" value="#{contactLoginController.contactPassword}">
 					<f:facet name="prepend">
 						<b:iconAwesome name="key" />
 					</f:facet>
-				</h:inputSecret>
-				</b:column>
-			</b:row>
-
-			<b:row> 
-				<b:column span="2" offset="5">
-				
-					<!-- <b:commandButton ajax="true" value="login" look="primary" style="width:100%" onclick="ajax:contactLoginController.loginContact(contactLoginController.contactUsername, contactLoginController.contactPassword)" update="messages" process="@form">
-					</b:commandButton> 
- -->					
-					<b:commandButton value="Login" look="primary" action="#{contactLoginController.loginContact(contactLoginController.contactUsername, contactLoginController.contactPassword)}"  />
+				</b:inputSecret>
 					
+					<b:commandButton value="Login" style="width:100%" look="primary" action="#{contactLoginController.loginContact(contactLoginController.contactUsername, contactLoginController.contactPassword)}"  />
 					
-					
-            		
-				</b:column>
-			</b:row> 
-		</h:form> 
-		
+		</b:form>			
+	</div>
 	</b:container>
 
 </h:body>

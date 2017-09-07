@@ -78,7 +78,7 @@ public class ContactLoginController implements Serializable {
 					Utils.navigateTo("ViewAllContacts.xhtml");
 //					return "ViewAllContacts.xhtml?faces-redirect=true";
 				}
-			} 
+			}
 		else {
 			Utils.navigateTo("login.xhtml");
 //			return "login.xhtml?faces-redirect=true";
@@ -110,4 +110,5 @@ public class ContactLoginController implements Serializable {
 	public void setErrorMsg(String errorMsg) {
 		this.errorMsg = errorMsg;
 	}
+
 }

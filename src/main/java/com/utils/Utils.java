@@ -22,7 +22,7 @@ import com.entities.ContactLoginDetails;
 @ViewScoped
 public class Utils implements Serializable {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
@@ -124,15 +124,17 @@ public class Utils implements Serializable {
 		externalContext.setSessionMaxInactiveInterval(timeOut*60);;
 	}
 
-	public static String logout() {
+	public static void logout() {
 		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 
 		System.out.println("In logout()");
+
 		externalContext.getSessionMap().clear();
 //		navigateTo("login");
 		externalContext.invalidateSession();
-//		redirectTo("login.xhtml");
-		return "login?faces-redirect=true";
+		redirectTo("login.xhtml");
+//		return "login?faces-redirect=true";
+//		navigateTo("login");
     }
 
 	public static String getCurrentPageName() {
@@ -146,7 +148,14 @@ public class Utils implements Serializable {
 		if ( externalContext.isResponseCommitted() ) {
 			//
 		}
+	}
+
+	public static boolean checkLoggedIn() {
+
+		Boolean loggedInCheck = (Boolean) getFromSession("loggedIn");
 
 
+
+		return (loggedInCheck == null) ? false : loggedInCheck;
 	}
 }

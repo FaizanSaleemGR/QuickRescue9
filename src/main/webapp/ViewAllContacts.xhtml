@@ -1,11 +1,13 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:b="http://bootsfaces.net/ui"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:composite="http://java.sun.com/jsf/composite">
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	>
     <h:head>
 	<title>View All Contacts :: Quick Rescue</title>
 	<meta name="author" content="Faizan Saleem"></meta>
@@ -20,13 +22,21 @@
 		</ui:insert>
 	
 	<b:modal id="AddNewContactModal" title="Add New Contact" styleClass="modalPseudoClass">
+	
 		<b:form id="addContactForm">
 				<b:panel title="Add New Contact" look="primary">
 				
 				<b:row>
 					<b:column>
 					
- 					<h:outputText value="You can create #{contactController.contactsLeft} more contacts and #{contactController.loginsLeft} more logins" />
+ 					<b:poll interval="10000"
+            update="contactAndLoginLimit"
+            actionListener="#{contactController.contactsAndLoginsLimitCheck()}"/>
+            
+    <h:outputText id="contactAndLoginLimit"
+                  value="#{contactController.contactsAndLoginsLimit}" />
+ 					
+ 					
 					
 					</b:column>
 				</b:row>
@@ -297,8 +307,6 @@
 	
 	
 	<h:form style="padding-top:25px">
-	
-		<b:commandButton action="#{utilsController.logout()}" value="Log Out" look="danger" style="float:right" />
 	
 		<b:tabView pills="true"
 			contentStyle="border: 1px solid #ddd; padding:10px"

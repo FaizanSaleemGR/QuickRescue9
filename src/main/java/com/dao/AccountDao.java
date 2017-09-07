@@ -9,10 +9,16 @@ import com.entities.AccountContract;
 import com.entities.AlertProfile;
 
 @Local
-public interface AccountDao {
+public interface AccountDao extends BaseDao<Account> {
 
 	List<Account> getAllAccounts();
 	Integer addAccount(Account account);
+	@Override
+	Integer add(Account account);
+	@Override
+	void update(Account account);
+	@Override
+	void delete(Account account);
 	Account findAccountByName(String accountName);
 	Account findAccountById(Integer accountId);
 	Boolean deleteAccountByName(String accountName);

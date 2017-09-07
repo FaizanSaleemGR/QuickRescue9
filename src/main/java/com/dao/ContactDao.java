@@ -10,9 +10,15 @@ import com.entities.Contact;
 import com.entities.ContactLoginDetails;
 
 @Local
-public interface ContactDao {
+public interface ContactDao extends BaseDao<Contact> {
 
 	Integer addContact(Account account, Contact contact);
+	@Override
+	Integer add(Contact contact);
+	@Override
+	void update(Contact contact);
+	@Override
+	void delete(Contact contact);
 	Contact findContactByName(String contactFirstName, String contactLastName);
 	Contact findContactById(Integer contactId);
 	Boolean deleteContactByName(String contactFirstName, String contactLastName);
