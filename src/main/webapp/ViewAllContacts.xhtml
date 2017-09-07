@@ -24,7 +24,7 @@
 	<b:modal id="AddNewContactModal" title="Add New Contact" styleClass="modalPseudoClass">
 	
 		<b:form id="addContactForm">
-				<b:panel title="Add New Contact" look="primary">
+				<b:panel title="Add New Contact" look="primary"> 
 				
 				<b:row>
 					<b:column>
@@ -303,6 +303,24 @@
 	<b:container fluid="true">
 	
 	    <b:label severity="danger" text="#{contactController.account.name} (#{contactController.account.accountId})" medium-screen="2" offset-md="10" />
+	
+	<b:alert severity="info">
+	<b:row>
+	
+	<b:column col-md="3">
+	<h:outputText value="#{contactController.account.name} (#{contactController.account.accountId})" />
+	</b:column>
+	
+	<b:column col-md="3">
+	<h:outputText value="Contacts: #{contactController.contactsLeft} / #{contactController.account.accountContract.contactsLimit}" />
+	</b:column>
+
+	<b:column col-md="3">
+	<h:outputText value="Logins: #{contactController.loginsLeft} / #{contactController.account.accountContract.loginsLimit}" />
+	</b:column>
+	
+	</b:row>
+	</b:alert>
 	
 	
 	

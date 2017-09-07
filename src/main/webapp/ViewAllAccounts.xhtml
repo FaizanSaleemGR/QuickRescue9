@@ -418,6 +418,7 @@
 								<b:dateTimePicker value="#{contract.startDate}"
 									allow-input-toggle="true" show-date="true" show-icon="true"
 									use-current="true" rendered="#{contract.editable}"
+									format="YYYY-MM-DD"
 								/>
 
 								<h:outputText value="#{contract.startDate}"
@@ -435,6 +436,8 @@
 								<b:dateTimePicker value="#{contract.endDate}"
 									allow-input-toggle="true" show-date="true" show-icon="true"
 									use-current="true" rendered="#{contract.editable}"
+									minDate="#{accountController.minDate}"
+									format="YYYY-MM-DD"
 								/>
 
 								<h:outputText value="#{contract.endDate}"

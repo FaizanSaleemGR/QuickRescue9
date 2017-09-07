@@ -1,6 +1,7 @@
 package com.controllers;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -67,10 +68,14 @@ public class AccountController implements Serializable {
 //	private String currentPageName = requestUrl.getServletPath().replaceAll("/", "").replaceAll(".xhtml", "");
 
 	Date minDateTime;
-	
-	
+	String minDate = null;
+	String maxDate = null;
+
 	public AccountController() {
 		minDateTime = new Date();
+		minDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		maxDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+
 		accountsList = new ArrayList<>();
 		contractsList = new ArrayList<>();
 		account = new Account();
@@ -81,12 +86,12 @@ public class AccountController implements Serializable {
 		editCounter = 0;
 		editContractCounter = 0;
 	}
-	
-	
-	
+
+
+
 	@PostConstruct
 	public void init() {
-	
+
 		accountsList.addAll(accountService.getAllAccounts());
 
 //		accountsNamesList = accountsList.stream().map(x-> new SimpleEntry<Integer, String>(x.getAccountId(), x.getName()) ).collect(Collectors.toList());
@@ -95,7 +100,7 @@ public class AccountController implements Serializable {
 		contractsList.addAll(accountService.getAllContracts());
 
 		System.out.println("in Init of AccountController");
-		
+
 
 	}
 
@@ -104,16 +109,16 @@ public class AccountController implements Serializable {
 		System.out.println("In Add New Account");
 
 		Integer accId = accountService.addAccount(newAccount);
-		
+
 		Account acc = accountService.findAccountById(accId);
 		accountContract.setAccount(acc);
 		acc.setAccountContract(accountContract);
-		
+
 		accountService.updateAccount(acc);
-		
+
 		accountsList.add(newAccount);
 		contractsList.add(accountContract);
-		
+
 		newAccount = new Account(); // Reset placeholder.
 		accountContract = new AccountContract();
 //		 return "/AllAccountsView.xhtml?faces-redirect=true";
@@ -510,5 +515,29 @@ public class AccountController implements Serializable {
 	public void setMinDateTime(Date minDateTime) {
 		this.minDateTime = minDateTime;
 	}
-	
+
+
+
+	public String getMinDate() {
+		return minDate;
+	}
+
+
+
+	public void setMinDate(String minDate) {
+		this.minDate = minDate;
+	}
+
+
+
+	public String getMaxDate() {
+		return maxDate;
+	}
+
+
+
+	public void setMaxDate(String maxDate) {
+		this.maxDate = maxDate;
+	}
+
 }

@@ -229,7 +229,7 @@ public class ContactController implements Serializable {
 
 //    	Utils.redirectTo("ViewAllContacts.xhtml");
 //    	return "ViewAllContacts?faces-redirect=true";
-    	Utils.redirectTo("ViewContacts.xhtml");
+    	Utils.redirectTo("ViewAllContacts.xhtml");
 
     }
 
