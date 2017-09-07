@@ -6,15 +6,17 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 import com.entities.Contact;
 import com.services.ContactService;
 import com.utils.Utils;
 
 @ManagedBean(name="contactLoginController")
-@RequestScoped
+@ViewScoped
 public class ContactLoginController implements Serializable {
 
 
@@ -60,48 +62,29 @@ public class ContactLoginController implements Serializable {
 	}
 
 
-	public String checkForLogin1() {
+	public void checkForLogin() {
 
 		System.out.println("In checkForLogin()");
-
-		Contact contact = (Contact) Utils.getFromSession("contact");
-
-		if(contact != null) {
-			if(contact.getAccount().getName().equals("QuickRescue")) {
-				return "ViewAllAccounts.xhtml?faces-redirect=true";
-			}
-			else {
-				return "ViewAllContacts.xhtml?faces-redirect=true";
-			}
-		}
-		else {
-			return "login.xhtml";
-//			throw new NullPointerException("contact from Session is null");
-		}
-
-	}
-
-
-	  public void checkForLogin(){
-
-		  System.out.println("In checkForLogin(ComponentSystemEvent)");
+		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+		HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
 
 			Contact contact = (Contact) Utils.getFromSession("contact");
 
-			if(contact != null) {
-				if(contact.getAccount().getName().equals("QuickRescue")) {
+			if (contact != null) {
+				if (contact.getAccount().getName().equals("QuickRescue")) {
 					Utils.navigateTo("ViewAllAccounts.xhtml");
-				}
-				else
-				{
+//					return "ViewAllAccounts.xhtml?faces-redirect=true";
+				} else {
 					Utils.navigateTo("ViewAllContacts.xhtml");
+//					return "ViewAllContacts.xhtml?faces-redirect=true";
 				}
-			}
-			else {
-				Utils.navigateTo("login.xhtml");
-//				throw new NullPointerException("contact from Session is null");
-			}
-		  }
+			} 
+		else {
+			Utils.navigateTo("login.xhtml");
+//			return "login.xhtml?faces-redirect=true";
+			// throw new NullPointerException("contact from Session is null");
+		}
+	}
 
 
 	public String getContactUsername() {

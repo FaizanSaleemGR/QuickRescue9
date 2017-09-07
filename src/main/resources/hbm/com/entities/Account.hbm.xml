@@ -33,7 +33,7 @@
         </bag>
         
         <!-- One to One mapping relation between Account and AccountContract -->
-		<many-to-one name="accountContract" class="com.entities.AccountContract" column="account_contract" not-null="true" cascade="all" unique="true" lazy="false" />
+		<many-to-one name="accountContract" class="com.entities.AccountContract" column="account_contract" not-null="true" cascade="all" unique="true"  />
         
     </class>
 </hibernate-mapping>

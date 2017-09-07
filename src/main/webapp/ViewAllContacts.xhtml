@@ -10,7 +10,9 @@
 	<title>View All Contacts :: Quick Rescue</title>
 	<meta name="author" content="Faizan Saleem"></meta>
 </h:head>
-
+<f:metadata>
+	<f:viewAction action="#{errorController.checkForPageAccess}"/>
+</f:metadata>
 <h:body>
 
 		<ui:insert name="header" >
@@ -20,6 +22,16 @@
 	<b:modal id="AddNewContactModal" title="Add New Contact" styleClass="modalPseudoClass">
 		<b:form id="addContactForm">
 				<b:panel title="Add New Contact" look="primary">
+				
+				<b:row>
+					<b:column>
+					
+ 					<h:outputText value="You can create #{contactController.contactsLeft} more contacts and #{contactController.loginsLeft} more logins" />
+					
+					</b:column>
+				</b:row>
+				
+				
 				
 				<b:row>
 					<b:column>

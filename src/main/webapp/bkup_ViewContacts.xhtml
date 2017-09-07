@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+<h:head>
+	<title>View Contacts :: Quick Rescue</title>
+	<meta name="author" content="Faizan Saleem"></meta>
+</h:head>
+
+
+<f:metadata>
+    <f:event type="postAddToView" listener="#{accountController.getContacts()}" />
+</f:metadata>
+
+<h:body>
+
+		<ui:insert name="header" >
+		  <ui:include src="WEB-INF/templates/common/commonHeader.xhtml" />
+		</ui:insert>
+
+
+	<b:container> 
+	
+ <h:form id="contactListForm" style="padding-top:50px">
+ <h:panelGroup id="contactListDT">
+    <b:dataTable value="#{accountController.contactsList}" var="contact" page-length="5" page-length-menu="5,10,20">
+        <b:dataTableColumn value="#{contact.contactId}" label="Contact ID"  />
+        <b:dataTableColumn value="#{contact.firstName}" label="First Name"  />
+        <b:dataTableColumn value="#{contact.lastName}" label="Last Name"  />
+        <b:dataTableColumn value="#{contact.emailAddress}" label="Email Address"  />
+        <b:dataTableColumn value="#{contact.gender}" label="Gender"  />
+        <b:dataTableColumn value="#{contact.phone}" label="Phone"  />
+        <b:dataTableColumn value="#{contact.status}" label="Status"  />
+        <b:dataTableColumn value="#{contact.streetAddress}" label="Street"  />
+        <b:dataTableColumn value="#{contact.city}" label="City"  />
+        <b:dataTableColumn value="#{contact.state}" label="State"  />
+        <b:dataTableColumn value="#{contact.country}" label="Country"  />
+        <b:dataTableColumn value="#{contact.hasLogin}" label="hasLogin"  />
+    </b:dataTable>
+    </h:panelGroup>
+</h:form>
+ 
+	</b:container>
+
+</h:body>
+</html>

@@ -2,6 +2,7 @@ package com.controllers;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -65,19 +66,13 @@ public class AccountController implements Serializable {
 //	private HttpServletRequest requestUrl = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
 //	private String currentPageName = requestUrl.getServletPath().replaceAll("/", "").replaceAll(".xhtml", "");
 
-	@PostConstruct
-	public void init() {
+	Date minDateTime;
+	
+	
+	public AccountController() {
+		minDateTime = new Date();
 		accountsList = new ArrayList<>();
 		contractsList = new ArrayList<>();
-
-		accountsList.addAll(accountService.getAllAccounts());
-
-//		accountsNamesList = accountsList.stream().map(x-> new SimpleEntry<Integer, String>(x.getAccountId(), x.getName()) ).collect(Collectors.toList());
-		accountsNamesList = accountsList.stream().filter(x-> x.getAccountContract()==null). collect(Collectors.toMap(Account::getAccountId, Account::getName));
-
-		contractsList.addAll(accountService.getAllContracts());
-
-		System.out.println("in Init of AccountController");
 		account = new Account();
 		newAccount = new Account();
 		editedAccount = new Account();
@@ -85,6 +80,22 @@ public class AccountController implements Serializable {
 
 		editCounter = 0;
 		editContractCounter = 0;
+	}
+	
+	
+	
+	@PostConstruct
+	public void init() {
+	
+		accountsList.addAll(accountService.getAllAccounts());
+
+//		accountsNamesList = accountsList.stream().map(x-> new SimpleEntry<Integer, String>(x.getAccountId(), x.getName()) ).collect(Collectors.toList());
+		accountsNamesList = accountsList.stream().filter(x-> x.getAccountContract()==null).collect(Collectors.toMap(Account::getAccountId, Account::getName));
+
+		contractsList.addAll(accountService.getAllContracts());
+
+		System.out.println("in Init of AccountController");
+		
 
 	}
 
@@ -92,13 +103,21 @@ public class AccountController implements Serializable {
 	public void addAccount() {
 		System.out.println("In Add New Account");
 
-//		accountContract.setAccount(newAccount);
-		newAccount.setAccountContract(accountContract);
-		accountService.addAccount(newAccount);
+		Integer accId = accountService.addAccount(newAccount);
+		
+		Account acc = accountService.findAccountById(accId);
+		accountContract.setAccount(acc);
+		acc.setAccountContract(accountContract);
+		
+		accountService.updateAccount(acc);
+		
 		accountsList.add(newAccount);
+		contractsList.add(accountContract);
+		
 		newAccount = new Account(); // Reset placeholder.
-		// return "/AllAccountsView.xhtml?faces-redirect=true";
-		Utils.redirectTo("ViewAllAccounts.xhtml");
+		accountContract = new AccountContract();
+//		 return "/AllAccountsView.xhtml?faces-redirect=true";
+		Utils.navigateTo("ViewAllAccounts.xhtml");
 	}
 
 	// Method to delete an account from ViewAllAccounts.xhtml page.
@@ -109,14 +128,15 @@ public class AccountController implements Serializable {
 		// accountService.deleteAccountByName(this.accountToDelete.getName());
 
 		accountToDelete = accountService.findAccountById(accountId);
-		accountService.deleteAccount(accountToDelete);
 
+		contractsList.remove(this.accountToDelete.getAccountContract());
+		accountService.deleteAccount(accountToDelete);
 		accountsList.remove(this.accountToDelete);
 
 		accountToDelete = new Account();
 
-		// return "/AllAccountsView.xhtml?faces-redirect=true";
-		Utils.redirectTo("ViewAllAccounts.xhtml");
+//		 return "/ViewAllAccounts.xhtml?faces-redirect=true";
+		Utils.navigateTo("ViewAllAccounts");
 
 	}
 
@@ -126,9 +146,8 @@ public class AccountController implements Serializable {
 
 		System.out.println("In getContacts");
 
-		Map<String, String> parameterMap = FacesContext.getCurrentInstance().getExternalContext()
-				.getRequestParameterMap();
-		Integer accountId = Integer.valueOf(parameterMap.get("accountId"));
+		Map<String, String> parameterMap = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+		Integer accountId = Integer.valueOf(Utils.getFromRequest("accountId"));
 
 		System.out.println("accountId = " + accountId);
 
@@ -185,7 +204,7 @@ public class AccountController implements Serializable {
 
 		editCounter--;
 
-		Utils.redirectTo("ViewAllAccounts.xhtml");
+		Utils.navigateTo("ViewAllAccounts.xhtml");
 		// return "AllAccountsView.xhtml?faces-redirect=true";
 	}
 
@@ -196,12 +215,13 @@ public class AccountController implements Serializable {
 		Account acc = accountsList.stream().filter(x -> x.getAccountId().equals(accountIdForNewContract)).findFirst()
 				.get();
 
+		accountContract.setAccount(acc);
 		acc.setAccountContract(accountContract);
 //		accountContract.setAccount(acc);
 
 		accountService.updateAccount(acc);
 
-		Utils.redirectTo("ViewAllAccounts.xhtml");
+		Utils.navigateTo("ViewAllAccounts.xhtml");
 	}
 
 	public void editContract() {
@@ -246,7 +266,7 @@ public class AccountController implements Serializable {
 
 		editContractCounter--;
 
-		Utils.redirectTo("ViewAllAccounts.xhtml");
+		Utils.navigateTo("ViewAllAccounts.xhtml");
 	}
 
 
@@ -483,4 +503,12 @@ public class AccountController implements Serializable {
 		this.accountsNamesList = accountsNamesList;
 	}
 
+	public Date getMinDateTime() {
+		return minDateTime;
+	}
+
+	public void setMinDateTime(Date minDateTime) {
+		this.minDateTime = minDateTime;
+	}
+	
 }

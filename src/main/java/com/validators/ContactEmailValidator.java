@@ -1,4 +1,4 @@
-package validators;
+package com.validators;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -32,13 +32,25 @@ public class ContactEmailValidator implements Validator, Serializable {
 	@Override
 	public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException 	{
 
+		if(value != null) {
+		
 		Account acc = (Account) component.getAttributes().get("account");
 		String email = value.toString();
 		Boolean doesExist = false;
+		Boolean invalidPattern = false;
+		
 
-
+		if(email.contains("@")) {
+			invalidPattern = true;
+			FacesMessage msg = new FacesMessage("Invalid email pattern.", "Email contain @ symbol.");
+			msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+			throw new ValidatorException(msg);
+		}
+		
+		
+		if(!invalidPattern) {
 		for (Contact contact : acc.getContacts()) {
-			if(contact.getEmailAddress().equals(email)) {
+			if(contact.getEmailAddress().toLowerCase().equals(email.toLowerCase())) {
 				doesExist = true;
 			}
 		}
@@ -47,6 +59,8 @@ public class ContactEmailValidator implements Validator, Serializable {
 			FacesMessage msg = new FacesMessage("E-mail already exists.", "A contact associated with this account already has same email address.");
 			msg.setSeverity(FacesMessage.SEVERITY_ERROR);
 			throw new ValidatorException(msg);
+		}
+		}
 		}
 	}
 

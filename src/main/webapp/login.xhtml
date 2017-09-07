@@ -12,7 +12,7 @@
 </h:head>
 
 <f:metadata>
-    <f:viewAction action="#{contactLoginController.checkForLogin}"/>
+    <f:viewAction action="#{contactLoginController.checkForLogin}" />
 </f:metadata>
 
 <f:viewAction>
@@ -33,23 +33,23 @@
 	
 	
 	<b:container>
-		<b:form style="padding-top:150px">
+		<h:form style="padding-top:150px">
 		
 		<h:outputLabel id="messages" value="#{contactLoginController.errorMsg}"></h:outputLabel>
 		
 			<b:row>
 				<b:column span="4" offset="4"> 
-				<b:inputText placeholder="Username" required="true" value="#{contactLoginController.contactUsername}">
+				<h:inputText placeholder="Username" required="true" value="#{contactLoginController.contactUsername}">
 					<f:facet name="prepend"> 
 						<b:icon name="user" />
 					</f:facet>
-				</b:inputText>
+				</h:inputText>
 
-				<b:inputText placeholder="Password" required="true" value="#{contactLoginController.contactPassword}">
+				<h:inputSecret placeholder="Password" required="true" value="#{contactLoginController.contactPassword}">
 					<f:facet name="prepend">
 						<b:iconAwesome name="key" />
 					</f:facet>
-				</b:inputText>
+				</h:inputSecret>
 				</b:column>
 			</b:row>
 
@@ -66,7 +66,7 @@
             		
 				</b:column>
 			</b:row> 
-		</b:form> 
+		</h:form> 
 		
 	</b:container>
 

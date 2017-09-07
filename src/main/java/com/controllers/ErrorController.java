@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 import com.entities.Contact;
 import com.utils.Utils;
@@ -36,7 +38,10 @@ public class ErrorController implements Serializable {
 			return "login?faces-redirect=true";
 		}
 
-		if(Utils.getCurrentPageName().equals("ViewAllAccounts") && contact != null && !contact.getAccount().getName().equals("QuickRescue") ) {
+		HttpServletRequest requestUrl = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+		String currentPageName = requestUrl.getServletPath().replaceAll("/", "").replaceAll(".xhtml", "");
+		
+		if(currentPageName.equals("ViewAllAccounts") && contact != null && !contact.getAccount().getName().equals("QuickRescue") ) {
 			error = "You are not permitted for requested resource.";
 			return "error?faces-redirect=true";
 		}

@@ -1,6 +1,7 @@
 package com.utils;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
 import java.util.Random;
@@ -19,12 +20,17 @@ import com.entities.ContactLoginDetails;
 
 @ManagedBean(name="utilsController")
 @ViewScoped
-public class Utils {
-	static ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+public class Utils implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 	static int alreadyRedirected = 0;
 
 	public static void redirectTo(String url) {
 //		FacesContext.getCurrentInstance().getApplication().getNavigationHandler().handleNavigation(FacesContext.getCurrentInstance(), null, url);
+		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 		HttpServletResponse response;
 		response = (HttpServletResponse)externalContext.getResponse();
 		try {
@@ -53,6 +59,7 @@ public class Utils {
 
 
 	public static void addToSession(SimpleEntry<String, Object>... params) {
+		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 
 		Map<String, Object> sessionMap = externalContext.getSessionMap();
 
@@ -64,6 +71,7 @@ public class Utils {
 
 
 	public static Object getFromSession(String key) {
+		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 
 		Map<String, Object> sessionMap = externalContext.getSessionMap();
 
@@ -73,7 +81,7 @@ public class Utils {
 
 
 	public static void addToRequest(SimpleEntry<String, String>... params) {
-
+		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 		Map<String, String> requestMap = externalContext.getRequestParameterMap();
 
 
@@ -84,7 +92,7 @@ public class Utils {
 
 
 	public static String getFromRequest(String key) {
-
+		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 		Map<String, String> requestMap = externalContext.getRequestParameterMap();
 
 		return requestMap.get(key);
@@ -112,27 +120,28 @@ public class Utils {
 	}
 
 	public static void setSessionTimeOutInMinutes(Integer timeOut) {
+		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 		externalContext.setSessionMaxInactiveInterval(timeOut*60);;
 	}
 
 	public static String logout() {
+		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 
 		System.out.println("In logout()");
 		externalContext.getSessionMap().clear();
-		navigateTo("login");
+//		navigateTo("login");
 		externalContext.invalidateSession();
-
-	    return "";
-
-
-
+//		redirectTo("login.xhtml");
+		return "login?faces-redirect=true";
     }
 
 	public static String getCurrentPageName() {
+		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 		return ((HttpServletRequest)externalContext.getRequest()).getServletPath().replaceAll("/", "").replaceAll(".xhtml", "");
 	}
 
 	public static void flushResponseBuffer() {
+		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 
 		if ( externalContext.isResponseCommitted() ) {
 			//
@@ -140,6 +149,4 @@ public class Utils {
 
 
 	}
-
-
 }

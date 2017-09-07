@@ -36,7 +36,17 @@
 							<f:facet name="prepend">
 								<b:icon name="user" />
 							</f:facet>
+							
+							
+							<f:validator validatorId="EmptyFieldValidator"/>
+  							<f:validator validatorId="AccountNameValidator" />  
+							
+							<f:attribute name="accountList" value="#{accountController.accountsList}" />
+							<f:ajax event="change" render="@form" execute="@form" />
 						</b:inputText>
+						
+						<b:message id="newAccountNameValidationMessage" for="newAccountName" />
+						
 					</b:column>
 				</b:row>
 
@@ -49,7 +59,18 @@
 							<f:facet name="prepend">
 								<b:iconAwesome name="envelope" />
 							</f:facet>
+							
+							<f:validator validatorId="EmptyFieldValidator"/>
+  							<f:validator validatorId="AccountEmailDomainValidator" />  
+							
+							<f:attribute name="accountList" value="#{accountController.accountsList}" />
+							<f:ajax event="change" render="@form" execute="@form" />
+							
 						</b:inputText>
+						
+						
+						<b:message id="newAccountEmailDomainValidationMessage" for="newAccountEmailDomain" />
+						
 					</b:column>
 				</b:row>
 
@@ -88,8 +109,15 @@
 						<b:dateTimePicker
 							value="#{accountController.accountContract.startDate}"
 							allow-input-toggle="true" show-date="true" show-icon="true"
-							use-current="true" label="Start Date"
-						/>
+							use-current="true" label="Start Date" id="contractStartDate"
+							 validator="EmptyFieldValidator">
+							 
+							 
+							 <f:ajax event="change" render="@form" execute="@form" />
+							 </b:dateTimePicker>
+						
+						<b:message id="contractStartDateValidationMessage" for="contractStartDate" />
+						
 					</b:column>
 				</b:row>
 
@@ -98,8 +126,12 @@
 						<b:dateTimePicker
 							value="#{accountController.accountContract.endDate}"
 							allow-input-toggle="true" show-date="true" show-icon="true"
-							use-current="true" label="End Date"
-						/>
+							use-current="true" label="End Date" id="contractEndDate"
+							 validator="EmptyFieldValidator"
+						>
+						<f:ajax event="change" render="@form" execute="@form" />
+						</b:dateTimePicker>
+						<b:message id="contractEndDateValidationMessage" for="contractEndDate" />
 					</b:column>
 				</b:row>
 
@@ -108,9 +140,13 @@
 
 						<b:inputText type="number" label="Contacts Limit"
 							value="#{accountController.accountContract.contactsLimit}"
-							min="0"
-						></b:inputText>
-
+							min="0" id="contractContactsLimit" validator="EmptyFieldValidator"
+						>
+						
+						<f:ajax event="change" render="@form" execute="@form" />
+						
+						</b:inputText>
+								<b:message id="contractContactsLimitValidationMessage" for="contractContactsLimit" />
 					</b:column>
 				</b:row>
 
@@ -118,7 +154,13 @@
 					<b:column>
 						<b:inputText type="number" label="Logins Limit"
 							value="#{accountController.accountContract.loginsLimit}" min="0"
-						></b:inputText>
+							id="contractLoginsLimit" validator="EmptyFieldValidator"
+						>
+						
+						<f:ajax event="change" render="@form" execute="@form" />
+						</b:inputText>
+						
+						<b:message id="contractLoginsLimitValidationMessage" for="contractLoginsLimit" />
 					</b:column>
 				</b:row>
 
@@ -130,6 +172,7 @@
 					<b:commandButton value="Add New Account"
 						action="#{accountController.addAccount()}" look="success"
 						style="width:100%"
+						disabled="#{not facesContext.postback or facesContext.validationFailed}"
 					/>
 				</b:column>
 			</b:row>
@@ -149,8 +192,16 @@
 						<b:dateTimePicker
 							value="#{accountController.accountContract.startDate}"
 							allow-input-toggle="true" show-date="true" show-icon="true"
-							use-current="true" label="Start Date"
-						/>
+							use-current="true" label="Start Date" id="newContractStartDate"
+							validator="EmptyFieldValidator"
+						>
+						
+						 <f:ajax event="change" render="@form" execute="@form" />
+						
+						</b:dateTimePicker>
+						
+						<b:message id="newContractStartDateValidationMessage" for="newContractStartDate" />
+						
 					</b:column>
 				</b:row>
 
@@ -159,8 +210,13 @@
 						<b:dateTimePicker
 							value="#{accountController.accountContract.endDate}"
 							allow-input-toggle="true" show-date="true" show-icon="true"
-							use-current="true" label="End Date"
-						/>
+							use-current="true" label="End Date" id="newContractEndDate"
+							validator="EmptyFieldValidator"
+						>
+						<f:ajax event="change" render="@form" execute="@form" />
+						</b:dateTimePicker>
+						
+						<b:message id="newContractEndDateValidationMessage" for="newContractEndDate" />
 					</b:column>
 				</b:row>
 
@@ -169,17 +225,29 @@
 
 						<b:inputText type="number" label="Contacts Limit"
 							value="#{accountController.accountContract.contactsLimit}"
-							min="0"
-						></b:inputText>
+							min="0" id="newContractContactsLimit"
+							validator="EmptyFieldValidator"
+						>
+						
+						<f:ajax event="change" render="@form" execute="@form" />
+						</b:inputText>
 
+						<b:message id="newContractContactsLimitValidationMessage" for="newContractContactsLimit" />
 					</b:column>
 				</b:row>
 
 				<b:row>
 					<b:column>
 						<b:inputText type="number" label="Logins Limit"
-							value="#{accountController.accountContract.loginsLimit}" min="0"
-						></b:inputText>
+							value="#{accountController.accountContract.loginsLimit}" min="0" id="newContractLoginsLimit"
+							validator="EmptyFieldValidator"
+						>
+						
+						<f:ajax event="change" render="@form" execute="@form" />
+						</b:inputText>
+						
+						<b:message id="newContractLoginsLimitValidationMessage" for="newContractLoginsLimit" />
+						
 					</b:column>
 				</b:row>
 
@@ -209,6 +277,7 @@
 					<b:commandButton value="Add New Contract"
 						action="#{accountController.addNewContract()}" look="success"
 						style="width:100%"
+						disabled="#{not facesContext.postback or facesContext.validationFailed}"
 					/>
 				</b:column>
 			</b:row>
@@ -267,7 +336,7 @@
 									</f:facet>
 								</b:inputText>
 
-								<h:outputText value="@#{account.emailDomain}"
+								<h:outputText value="#{account.emailDomain}"
 									rendered="#{not account.editable}"
 								/>
 							</b:dataTableColumn>
@@ -287,17 +356,24 @@
 									target="_blank" class="btn btn-primary btn-small"
 								>View Contacts</a>
 							</b:dataTableColumn>
+							
+							
+							<b:dataTableColumn label="Contract Id">
+							
+							<h:outputText value="#{account.accountContract.contractId}" />
+							
+							</b:dataTableColumn>
 
 
 							<b:dataTableColumn label="">
 
 
-								<b:icon name="remove-sign" size="lg">
-									<f:ajax event="click" execute="@form"
-										listener="#{accountController.deleteAccount(account.accountId)}"
-										render="editableAccountTable"
-									/>
-								</b:icon>
+							
+								
+								<b:icon name="remove-sign" size="lg" ajax="true"
+									update="@(.editableAccountTable)"
+									onclick="ajax:accountController.deleteAccount(account.accountId)"
+								/>
 
 								<b:icon name="edit" size="lg" ajax="true"
 									update="@(.editableAccountTable)"

@@ -21,7 +21,7 @@
 		<property name="loginsLimit" type="java.lang.Integer" column="logins_limit" />
 		
 		<!-- One to One relation between Account and AccountContract -->
-		 <many-to-one name="account" column="accountId" unique="true"  class="com.entities.Account" not-null="true" lazy="false" />
+		 <many-to-one name="account" column="accountId" unique="true"  class="com.entities.Account" not-null="true"  />
 		
 	</class>
 

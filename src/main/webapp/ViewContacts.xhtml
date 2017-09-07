@@ -6,14 +6,12 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:composite="http://java.sun.com/jsf/composite">
-<h:head>
+    <h:head>
 	<title>View Contacts :: Quick Rescue</title>
 	<meta name="author" content="Faizan Saleem"></meta>
 </h:head>
-
-
 <f:metadata>
-    <f:event type="postAddToView" listener="#{accountController.getContacts()}" />
+	<f:viewAction action="#{errorController.checkForPageAccess}"/>
 </f:metadata>
 
 <h:body>
@@ -21,29 +19,623 @@
 		<ui:insert name="header" >
 		  <ui:include src="WEB-INF/templates/common/commonHeader.xhtml" />
 		</ui:insert>
-
-
-	<b:container> 
 	
- <h:form id="contactListForm" style="padding-top:50px">
- <h:panelGroup id="contactListDT">
-    <b:dataTable value="#{accountController.contactsList}" var="contact" page-length="5" page-length-menu="5,10,20">
-        <b:dataTableColumn value="#{contact.contactId}" label="Contact ID"  />
-        <b:dataTableColumn value="#{contact.firstName}" label="First Name"  />
-        <b:dataTableColumn value="#{contact.lastName}" label="Last Name"  />
-        <b:dataTableColumn value="#{contact.emailAddress}" label="Email Address"  />
-        <b:dataTableColumn value="#{contact.gender}" label="Gender"  />
-        <b:dataTableColumn value="#{contact.phone}" label="Phone"  />
-        <b:dataTableColumn value="#{contact.status}" label="Status"  />
-        <b:dataTableColumn value="#{contact.streetAddress}" label="Street"  />
-        <b:dataTableColumn value="#{contact.city}" label="City"  />
-        <b:dataTableColumn value="#{contact.state}" label="State"  />
-        <b:dataTableColumn value="#{contact.country}" label="Country"  />
-        <b:dataTableColumn value="#{contact.hasLogin}" label="hasLogin"  />
-    </b:dataTable>
-    </h:panelGroup>
-</h:form>
+	<b:modal id="AddNewContactModal" title="Add New Contact" styleClass="modalPseudoClass">
+		<b:form id="addContactForm">
+				<b:panel title="Add New Contact" look="primary">
+				
+				<b:row>
+					<b:column>
+						<b:inputText placeholder="First Name"
+							value="#{viewContactsController.newContact.firstName}"
+							autocomplete="false"
+							label="First Name">
+							
+							
+							</b:inputText>
+					</b:column>
+				</b:row>
+
+				<b:row>
+					<b:column>
+						<b:inputText placeholder="Last Name"
+							value="#{viewContactsController.newContact.lastName}"
+							autocomplete="false"
+							label="Last Name">
+						</b:inputText>
+					</b:column>
+				</b:row>
+
+				<b:row>
+					<b:column>
+						<b:inputText id="contactEmailAddress" placeholder="Email"
+							value="#{viewContactsController.newContact.emailAddress}"
+							autocomplete="true"
+							label="Email Address"
+							validator="ContactEmailValidator">
+							
+							<f:facet name="append">
+								<h:outputText value="@#{viewContactsController.account.emailDomain}" />
+							</f:facet> 
+							
+    							<f:attribute name="account" value="#{viewContactsController.account}" />
+    							<f:ajax event="change" render="@form" execute="@form" />
+    							
+							</b:inputText>
+							
+							<b:message id="contactEmailAddressValidationMessage" for="contactEmailAddress" />
+							
+							
+							
+					</b:column>
+				</b:row>
+
+				<b:row>
+					<b:column>
+					
+					
+					 <b:selectOneMenu value="#{viewContactsController.newContact.gender}" label="Gender:" labelColMd="1">
+            <f:selectItem itemLabel="Male" itemValue="M" />
+            <f:selectItem itemLabel="Female" itemValue="F" />
+        </b:selectOneMenu>
+					
+
+					</b:column>
+				</b:row>
+
+
+				<b:row>
+					<b:column>
+						<b:inputText placeholder="Phone"
+							value="#{viewContactsController.newContact.phone}"
+							autocomplete="false"
+							label="Phone">
+							
+							</b:inputText>
+					</b:column>
+				</b:row>
+
+				<b:row>
+					<b:column>
+						<b:inputText placeholder="Street Address"
+							value="#{viewContactsController.newContact.streetAddress}"
+							autocomplete="false"
+							label="Street Address"
+						/>
+					</b:column>
+				</b:row>
+
+
+				<b:row>
+					<b:column>
+						<b:inputText placeholder="City"
+							value="#{viewContactsController.newContact.city}"
+							autocomplete="false"
+							label="City"
+						/>
+					</b:column>
+				</b:row>
+
  
+				<b:row>
+					<b:column>
+						<b:inputText placeholder="State"
+							value="#{viewContactsController.newContact.state}"
+							autocomplete="false"
+							label="State"
+						/>
+					</b:column> 
+				</b:row>
+
+				<b:row>
+					<b:column>
+						<b:inputText placeholder="Country"
+							value="#{viewContactsController.newContact.country}"
+							autocomplete="false"
+							label="Country"
+						/>
+					</b:column>
+				</b:row>
+
+				<b:row>
+					<b:column>
+						<b:selectBooleanCheckbox value="#{viewContactsController.newContact.hasLogin}" caption="HasLogin?" label="HasLogin?" />
+						
+					</b:column>
+				</b:row>
+				
+				<b:row>
+						<b:column>
+						<b:commandButton value="Add New Contact"
+							action="#{viewContactsController.addContact()}" look="success"
+							style="width:100%"
+							disabled="#{not facesContext.postback or facesContext.validationFailed}"
+							id="addNewContactSubmit"
+						/>
+					</b:column>
+					</b:row> 
+					
+					
+					
+					
+				</b:panel>
+		</b:form>
+	</b:modal>
+	
+	
+	<!-- Add New Alert Profile  -->
+
+	<b:modal id="AddNewAlertProfileModal"
+		title="Add New Alert Profile Modal" styleClass="modalPseudoClass"
+	>
+		<h:form id="addAlertProfileForm">
+			<b:panel title="Add New Alert Profile" look="primary">
+
+				<b:row>
+					<b:column>
+						<b:inputText placeholder="Profile Name"
+							value="#{viewContactsController.alertProfile.profileName}"
+							autocomplete="false" label="Profile Name"
+						>
+						</b:inputText>
+					</b:column>
+				</b:row>
+
+
+				<!--  -->
+				<b:row>
+					<b:column>
+					
+					
+							<!-- Labels of city, country input fields  -->
+							<b:row>
+								<b:column col-md="5">
+									<h:outputLabel value="City" />
+								</b:column>
+
+								<b:column col-md="5">
+									<h:outputLabel value="Country" />
+								</b:column>
+
+								<b:column col-md="2">
+								</b:column>
+							</b:row>
+					 
+							<b:row>
+								<b:column col-md="5">
+									<b:inputText placeholder="City"
+										value="#{viewContactsController.location.city}"
+										autocomplete="false" id="locationCity"
+									>
+									</b:inputText>
+								</b:column>
+
+								<b:column col-md="5">
+									<b:inputText placeholder="Country"
+										value="#{viewContactsController.location.country}"
+										autocomplete="false" id="locationCountry"
+									>
+									</b:inputText>
+								</b:column>
+
+								<b:column col-md="2">
+									<b:icon name="plus" ajax="true"
+										onclick="ajax:viewContactsController.addLocation(viewContactsController.location)" process="@form"
+										update="editableAlertProfileLocationListTable"
+									/>
+								</b:column>
+							</b:row>
+							
+							<!-- Datatable to show saved locations with alert profile  -->
+							<b:row>
+								<b:column>
+								<b:dataTable value="#{viewContactsController.locations}" var="loc" class="editableAlertProfileLocationListTable"
+									id="editableAlertProfileLocationListTable" searching="false" paginated="false" display="inline-block" >
+
+									<b:dataTableColumn label="City">
+										<h:outputText value="#{loc.city}" />
+									</b:dataTableColumn>
+
+									<b:dataTableColumn label="Country">
+										<h:outputText value="#{loc.country}" />
+									</b:dataTableColumn>
+
+
+									<b:dataTableColumn label="Action">
+										<b:icon name="remove-sign" size="lg" ajax="true"
+											onclick="ajax:viewContactsController.deleteLocation(loc)"
+											update="@form"
+										/>
+										
+
+									</b:dataTableColumn>
+
+								</b:dataTable>
+								
+								</b:column>
+								</b:row>
+								
+								
+					</b:column>
+				</b:row>
+				<!--  -->
+
+
+
+				<b:row>
+					<b:column>
+						<b:commandButton value="Add New Alert Profile"
+							action="#{viewContactsController.addAlertProfile()}" look="success"
+							style="width:100%"
+						/>
+					</b:column>
+				</b:row>
+
+
+
+
+			</b:panel>
+		</h:form>
+	</b:modal>
+
+
+
+
+	<b:container fluid="true">
+	
+	    <b:label severity="danger" text="#{viewContactsController.account.name} (#{viewContactsController.account.accountId})" medium-screen="2" offset-md="10" />
+	
+	
+	
+	<h:form style="padding-top:25px">
+	
+		<b:commandButton action="#{utilsController.logout()}" value="Log Out" look="danger" style="float:right" />
+	
+		<b:tabView pills="true"
+			contentStyle="border: 1px solid #ddd; padding:10px"
+		>
+			<b:tab title="Contacts">
+
+
+				<b:row>
+					<b:column>
+						<button id="btrigger" style="float: right;"
+							class="btn btn-success btn-sm" data-target="#AddNewContactModal"
+							data-toggle="modal" type="button"
+						>Add New Contact</button>
+					</b:column>
+
+				</b:row>
+
+
+
+
+				
+					<h:panelGroup id="contactListDT">
+						<b:dataTable value="#{viewContactsController.contactsList}"
+							var="contact" page-length="5" page-length-menu="5,10,20"
+							class="editableContactListTable" id="editableContactListTable"
+						>
+							<b:dataTableColumn value="#{contact.contactId}"
+								label="Contact ID"
+							/>
+
+							<b:dataTableColumn label="First Name">
+								<b:inputText value="#{contact.firstName}"
+									rendered="#{contact.editable}"
+								/>
+								<h:outputText value="#{contact.firstName}"
+									rendered="#{not contact.editable}"
+								></h:outputText>
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="Last Name">
+								<b:inputText value="#{contact.lastName}"
+									rendered="#{contact.editable}"
+								/>
+								<h:outputText value="#{contact.lastName}"
+									rendered="#{not contact.editable}"
+								></h:outputText>
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="Email Address">
+								<b:inputText value="#{contact.emailAddress}"
+									rendered="#{contact.editable}"
+								>
+									<f:facet name="append">
+										<h:outputText value="@#{contact.account.emailDomain}" />
+									</f:facet>
+								</b:inputText>
+
+								<h:outputText
+									value="#{contact.emailAddress}@#{contact.account.emailDomain}"
+									rendered="#{not contact.editable}"
+								/>
+							</b:dataTableColumn>
+
+
+							<b:dataTableColumn label="Gender">
+								<b:inputText value="#{contact.gender}"
+									rendered="#{contact.editable}"
+								/>
+								<h:outputText value="#{contact.gender}"
+									rendered="#{not contact.editable}"
+								></h:outputText>
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="Phone">
+								<b:inputText value="#{contact.phone}"
+									rendered="#{contact.editable}"
+								/>
+								<h:outputText value="#{contact.phone}"
+									rendered="#{not contact.editable}"
+								></h:outputText>
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="Status">
+								<b:selectBooleanCheckbox value="#{contact.status}"
+									rendered="#{contact.editable}"
+								/>
+
+								<h:outputText value="#{contact.status}"
+									rendered="#{not contact.editable}"
+								></h:outputText>
+
+
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="Street Address">
+								<b:inputText value="#{contact.streetAddress}"
+									rendered="#{contact.editable}"
+								/>
+								<h:outputText value="#{contact.streetAddress}"
+									rendered="#{not contact.editable}"
+								></h:outputText>
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="City">
+								<b:inputText value="#{contact.city}"
+									rendered="#{contact.editable}"
+								/>
+								<h:outputText value="#{contact.city}"
+									rendered="#{not contact.editable}"
+								></h:outputText>
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="State">
+								<b:inputText value="#{contact.state}"
+									rendered="#{contact.editable}"
+								/>
+								<h:outputText value="#{contact.state}"
+									rendered="#{not contact.editable}"
+								></h:outputText>
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="Country">
+								<b:inputText value="#{contact.country}"
+									rendered="#{contact.editable}"
+								/>
+								<h:outputText value="#{contact.country}"
+									rendered="#{not contact.editable}"
+								></h:outputText>
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="HasLogin?">
+								<b:selectBooleanCheckbox value="#{contact.hasLogin}"
+									rendered="#{contact.editable}"
+								/>
+
+
+								<h:outputText value="#{contact.hasLogin}"
+									rendered="#{not contact.editable}"
+								></h:outputText>
+								<h:outputText value=" (#{contact.loginDetails.contactLoginId})"
+									rendered="#{contact.hasLogin}"
+								/>
+
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="">
+
+
+								<b:icon name="remove-sign" size="lg">
+									<f:ajax event="click" execute="@form"
+										listener="#{viewContactsController.deleteContact(contact.contactId)}"
+										render="editableContactListTable"
+									/>
+								</b:icon>
+
+								<b:icon name="edit" size="lg" ajax="true"
+									update="@(.editableContactListTable)"
+									onclick="ajax:viewContactsController.contactEditAction(contact)"
+								/>
+
+							</b:dataTableColumn>
+
+						</b:dataTable>
+					</h:panelGroup>
+
+
+
+
+			</b:tab>
+
+			<b:tab title="Alert Profiles">
+				<b:row>
+
+					<b:column>
+						<button style="float: right;" id="btrigger"
+							class="btn btn-warning btn-sm"
+							data-target="#AddNewAlertProfileModal" data-toggle="modal" type="button"
+						>Add New Alert Profile</button>
+					</b:column>
+				</b:row>
+
+
+
+
+
+
+
+					<h:panelGroup id="alertProfilesListListDT">
+						<b:dataTable value="#{viewContactsController.alertProfiles}"
+							var="profile" page-length="5" page-length-menu="5,10,20"
+							class="editableAlertProfileListTable"
+							id="editableAlertProfileListTable"
+						>
+							<b:dataTableColumn value="#{profile.profileId}"
+								label="Profile ID"
+							/>
+
+							<b:dataTableColumn label="Profile Name">
+								<b:inputText value="#{profile.profileName}" rendered="#{profile.editable}" />
+								<h:outputText value="#{profile.profileName}" rendered="#{not profile.editable}" />
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="Locations">
+								<ui:repeat value="#{profile.locations}" var="location" rendered="#{not profile.editable}">
+									<h:outputText value="#{location.city}, #{location.country} | " />
+								</ui:repeat>
+								
+								
+								
+								
+								<!-- Locations in case of editing  -->
+
+								<b:row rendered="#{profile.editable}">
+									<b:column>
+										<!-- Labels of city, country input fields  -->
+										<b:row>
+											<b:column col-md="5">
+												<h:outputLabel value="City"  />
+											</b:column>
+
+											<b:column col-md="5">
+												<h:outputLabel value="Country"  />
+											</b:column>
+
+											<b:column col-md="2">
+											</b:column>
+										</b:row>
+
+										<b:row>
+											<b:column col-md="5">
+												<b:inputText placeholder="City"
+													value="#{viewContactsController.editedLocation.city}"
+													autocomplete="false" id="editedLocationCity" 
+												>
+												</b:inputText>
+											</b:column>
+
+											<b:column col-md="5">
+												<b:inputText placeholder="Country"
+													value="#{viewContactsController.editedLocation.country}"
+													autocomplete="false" id="editedLocationCountry" 
+												>
+												</b:inputText>
+											</b:column>
+
+											<b:column col-md="2">
+												<b:icon name="plus" ajax="true"
+													onclick="ajax:viewContactsController.addLocationFromEditedProfile(profile, viewContactsController.editedLocation)"
+													process="@form"
+													update="editableAlertProfileLocationListTable_edit" />
+											</b:column>
+										</b:row>
+
+										<!-- Datatable to show saved locations with alert profile  -->
+										<b:row>
+											<b:column>
+												<b:dataTable value="#{profile.locations}"
+													var="loc1" class="editableAlertProfileLocationListTable_edit"
+													id="editableAlertProfileLocationListTable_edit"
+													searching="false" paginated="false" display="inline-block"
+												>
+
+													<b:dataTableColumn label="City">
+														<h:outputText value="#{loc1.city}" />
+													</b:dataTableColumn>
+
+													<b:dataTableColumn label="Country">
+														<h:outputText value="#{loc1.country}" />
+													</b:dataTableColumn>
+
+
+													<b:dataTableColumn label="Action">
+														<b:icon name="remove-sign" size="lg" ajax="true"
+															onclick="ajax:viewContactsController.deleteLocationFromEditedProfile(profile, loc1)"
+															update="@form"
+														/>
+
+
+													</b:dataTableColumn>
+
+												</b:dataTable>
+
+											</b:column>
+										</b:row>
+
+
+									</b:column>
+								</b:row>
+
+
+
+
+
+
+
+							</b:dataTableColumn>
+
+
+
+							<b:dataTableColumn label="">
+
+
+								<b:icon name="remove-sign" size="lg">
+									<f:ajax event="click" execute="@form"
+										listener="#{viewContactsController.deleteAlertProfile(profile.profileId)}"
+										render="editableAlertProfileListTable"
+									/>
+								</b:icon>
+
+								<b:icon name="edit" size="lg" ajax="true"
+									update="@(.editableAlertProfileListTable)"
+									onclick="ajax:viewContactsController.alertProfileEditAction(profile)"
+								/>
+
+							</b:dataTableColumn>
+
+						</b:dataTable>
+					</h:panelGroup>
+				
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			</b:tab>
+		</b:tabView>
+</h:form>
 	</b:container>
 
 </h:body>

@@ -22,9 +22,9 @@ import com.services.AccountService;
 import com.services.ContactService;
 import com.utils.Utils;
 
-@ManagedBean(name = "contactController")
+@ManagedBean(name = "viewContactsController")
 @ViewScoped
-public class ContactController implements Serializable {
+public class ViewContactsController implements Serializable {
 
 	/**
 	 *
@@ -43,8 +43,6 @@ public class ContactController implements Serializable {
 	private Contact newContact;
 	private Account account;
 
-	private Integer contactsLeft, loginsLeft;
-	
 	private AlertProfile alertProfile;
 	private Location location;
 	private ArrayList<Location> locations;
@@ -59,8 +57,6 @@ public class ContactController implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		// list = accountService.getAllAccounts();
-		// list.add(new Account("FaizanSaleem", "faizan.com", "Taxila"));
 		System.out.println("in Init of ContactController");
 
 		newContact = new Contact();
@@ -73,21 +69,19 @@ public class ContactController implements Serializable {
 		editedLocation = new Location();
 
 		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+
 		HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
 
 		if (request.getRequestedSessionId() != null && request.isRequestedSessionIdValid()) {
 		
-		this.accountId = (Integer) Utils.getFromSession("accountId");
+		this.accountId = Integer.valueOf(Utils.getFromRequest("accountId"));
 
 		if(this.accountId == -1 || this.accountId == null) {
 			throw new NoSuchElementException("Couldn't get accountId from Session.");
 		}
 		else {
-			System.out.println("Got from Session - accountId = " + accountId);
+			System.out.println("Got from Request - accountId = " + accountId);
 			this.account = accountService.findAccountById(accountId);
-			
-			this.countContactAndLoginLimit();
-			
 			alertProfiles = this.account.getAlertProfiles();
 			getAccountContacts();
 		}
@@ -186,7 +180,6 @@ public class ContactController implements Serializable {
 		    		else {
 			    		contactLoginDetails = Utils.createLogin(account, newContact);
 			    		newContact.setLoginDetails(contactLoginDetails);
-			    		contactService.addLoginDetails(newContact, contactLoginDetails);
 		    		}
 		    	}
 
@@ -195,6 +188,7 @@ public class ContactController implements Serializable {
 		    	System.out.println("Contact Added with Id=" + contactId);
 
 		    	// Add Contact to ContactLoginDetails for bi-directional purpose.
+		    	contactService.addLoginDetails(newContact, contactLoginDetails);
 
 		    	if(contactsList.add(newContact)) {
 					System.out.println("Contact successfully added to contacts list");
@@ -205,16 +199,10 @@ public class ContactController implements Serializable {
 
 	    	newContact = new Contact(); // Reset placeholder.
 //			Utils.redirectTo("ViewAllContacts.xhtml");
-	    	return "ViewAllContacts?faces-redirect=true";
+	    	return "ViewContacts?accountId="+this.accountId+"&?faces-redirect=true";
 	    }
 
 
-	public void countContactAndLoginLimit() {
-		contactsLeft = account.getAccountContract().getContactsLimit() - account.getContacts().size();
-		loginsLeft = (account.getAccountContract().getLoginsLimit() - (int) account.getContacts().stream().filter(x->x.getHasLogin()).count());
-		
-	}
-	
 
 	 // Method to delete a contact from ViewAllContacts.xhtml page.
     public void deleteContact(Integer contactId) {
@@ -223,10 +211,8 @@ public class ContactController implements Serializable {
     	contactsList.remove(contactService.findContactById(contactId));
     	contactService.deleteContactById(contactId);
 
-//    	Utils.redirectTo("ViewAllContacts.xhtml");
-//    	return "ViewAllContacts?faces-redirect=true";
-    	Utils.redirectTo("ViewContacts.xhtml");
-
+    	Utils.redirectTo("ViewContacts.xhtml?accountId="+this.accountId);
+//    	return "ViewContacts?accountId="+this.accountId+"&?faces-redirect=true";
     }
 
     // Method to get the details of an editable account and display in EditAccount.xhtml page.
@@ -269,7 +255,7 @@ public class ContactController implements Serializable {
 		editCounter--;
 
 		// Utils.redirectTo("ViewAllContacts.xhtml");
-		return "ViewAllContacts?faces-redirect=true";
+		return "ViewContacts?accountId="+this.accountId+"&?faces-redirect=true";
     }
 
 
@@ -286,7 +272,6 @@ public class ContactController implements Serializable {
 
 	public String contactSaveAction(Contact contact) {
 		Contact con = null;
-		ContactLoginDetails contactLoginDetails = null;
 		con = contactService.findContactById(contact.getContactId());
 		//get all existing value but set "editable" to false
 
@@ -295,23 +280,23 @@ public class ContactController implements Serializable {
 
 			// As the contact now has "hasLogin" true, so we need to create its login details.
 			if(contact.getHasLogin()) {
-				 contactLoginDetails = new ContactLoginDetails();
+
 				if(!this.checkAccountLoginsLimit(this.account)) {
 					System.out.println("Login NOT created - Account's LOGINS Limit Exceeded." );
 				} else {
 					 
 					
-					 contactLoginDetails = Utils.createLogin(account, contact);
-					 contact.setLoginDetails(contactLoginDetails);
-					 contactLoginDetails.setContact(contact);
-					 contactService.addLoginDetails(contact, contactLoginDetails);
+					ContactLoginDetails contactLoginDetails = Utils.createLogin(account, con);
+					con.setLoginDetails(contactLoginDetails);
 					
+					contactLoginDetails.setContact(con);
+					
+//					contactService.addLoginDetails(contact, contactLoginDetails);
 				}
 			}
 
-			contactService.updateContact(contact);
-			this.checkForAlertProfileMatch(contact, this.account);
-			this.countContactAndLoginLimit();
+			contactService.updateContact(con);
+			this.checkForAlertProfileMatch(con, this.account);
 
 		//return to current page
 		return null;
@@ -393,7 +378,7 @@ public class ContactController implements Serializable {
     	accountService.addAlertProfile(alertProfile, this.account);
     	alertProfile = new AlertProfile();
 
-    	Utils.redirectTo("ViewAllContacts.xhtml");
+    	Utils.redirectTo("ViewContacts.xhtml?accountId="+this.accountId+"");
     }
 
     public void deleteAlertProfile(Integer profileId) {
@@ -402,7 +387,7 @@ public class ContactController implements Serializable {
     	alertProfiles.remove(contactService.findAlertProfileById(profileId));
     	contactService.deleteAlertProfileById(profileId);
 
-    	Utils.redirectTo("ViewAllContacts.xhtml");
+    	Utils.redirectTo("ViewContacts.xhtml?accountId="+this.accountId+"");
     }
 
 
@@ -527,22 +512,6 @@ public class ContactController implements Serializable {
 
 	public void setEditedLocation(Location editedLocation) {
 		this.editedLocation = editedLocation;
-	}
-
-	public Integer getContactsLeft() {
-		return contactsLeft;
-	}
-
-	public void setContactsLeft(Integer contactsLeft) {
-		this.contactsLeft = contactsLeft;
-	}
-
-	public Integer getLoginsLeft() {
-		return loginsLeft;
-	}
-
-	public void setLoginsLeft(Integer loginsLeft) {
-		this.loginsLeft = loginsLeft;
 	}
 
 
