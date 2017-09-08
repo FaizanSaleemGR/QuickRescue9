@@ -277,6 +277,118 @@
 			</b:panel>
 		</h:form>
 	</b:modal>
+<b:modal id="AddNewContractModal" title="Add New Contract"
+		styleClass="modalPseudoClass"
+	>
+		<b:form id="addContractForm">
+		
+		
+		<b:message for="addNewContractSubmit" id="viewContactAddNewContractMessages" />
+		
+		
+			<b:panel title="Add New Contract" look="info">
+
+				<b:row>
+					<b:column>
+						<b:dateTimePicker
+							value="#{viewContactsController.accountContract.startDate}"
+							allow-input-toggle="true" show-date="true" show-icon="true"
+							use-current="true" label="Start Date" id="newContractStartDate"
+							validator="EmptyFieldValidator"
+						>
+						
+						 <f:ajax event="blur" render="@form" execute="@this" />
+						
+						</b:dateTimePicker>
+						
+						<b:message id="newContractStartDateValidationMessage" for="newContractStartDate" />
+						
+					</b:column>
+				</b:row>
+
+				<b:row>
+					<b:column>
+						<b:dateTimePicker
+							value="#{viewContactsController.accountContract.endDate}"
+							allow-input-toggle="true" show-date="true" show-icon="true"
+							use-current="true" label="End Date" id="newContractEndDate"
+							validator="EmptyFieldValidator"
+						>
+						<f:ajax event="blur" render="@form" execute="@this" />
+						</b:dateTimePicker>
+						
+						<b:message id="newContractEndDateValidationMessage" for="newContractEndDate" />
+					</b:column>
+				</b:row>
+
+				<b:row>
+					<b:column>
+
+						<b:inputText type="number" label="Contacts Limit"
+							value="#{viewContactsController.accountContract.contactsLimit}"
+							min="0" id="newContractContactsLimit"
+							validator="EmptyFieldValidator"
+						>
+						
+						<f:ajax event="blur" render="@form" execute="@this" />
+						</b:inputText>
+
+						<b:message id="newContractContactsLimitValidationMessage" for="newContractContactsLimit" />
+					</b:column>
+				</b:row>
+
+				<b:row>
+					<b:column>
+						<b:inputText type="number" label="Logins Limit"
+							value="#{viewContactsController.accountContract.loginsLimit}" min="0" id="newContractLoginsLimit"
+							validator="EmptyFieldValidator"
+						>
+						
+						<f:ajax event="blur" render="@form" execute="@this" />
+						</b:inputText>
+						
+						<b:message id="newContractLoginsLimitValidationMessage" for="newContractLoginsLimit" />
+						
+					</b:column>
+				</b:row>
+
+
+				<b:row>
+					<b:column>
+
+						<b:selectOneMenu
+							value="#{viewContactsController.accountIdForNewContract}"
+							label="Select an Account"
+						>
+							<f:selectItems
+								value="#{viewContactsController.accountsNamesList.entrySet()}"
+								var="entry" itemValue="#{entry.key}"
+								itemLabel="#{entry.key} - #{entry.value}"
+							/>
+						</b:selectOneMenu>
+					</b:column>
+				</b:row>
+
+
+			</b:panel>
+
+
+			<b:row>
+				<b:column>
+					<b:commandButton value="Add New Contract" id="addNewContractSubmit"
+						action="#{viewContactsController.addNewContract()}" look="success"
+						style="width:100%"
+						disabled="#{not facesContext.postback or facesContext.validationFailed}"
+					>
+						<f:ajax event="click" render="@form" execute="@form" />
+					</b:commandButton>
+				</b:column>
+			</b:row>
+
+
+
+		</b:form>
+	</b:modal>
 
 
 
@@ -289,10 +401,8 @@
 	
 	<h:form style="padding-top:25px">
 	
-		<b:commandButton action="#{utilsController.logout()}" value="Log Out" look="danger" style="float:right" />
-	
-		<b:tabView pills="true"
-			contentStyle="border: 1px solid #ddd; padding:10px"
+		<b:tabView 
+			contentStyle="border-right: 1px solid #ddd; border-left: 1px solid #ddd; border-bottom: 1px solid #ddd;padding:10px"
 		>
 			<b:tab title="Contacts">
 
@@ -634,6 +744,115 @@
 
 
 			</b:tab>
+		
+		
+			<b:tab title="Contracts">
+
+					<b:row>
+						<b:column>
+							<button id="btrigger" style="float: right"
+								class="btn btn-info btn-sm"
+								data-target="#AddNewContractModal" data-toggle="modal"
+								type="button"
+							>Add New Contract</button>
+						</b:column>
+					</b:row>
+
+					<h:panelGroup id="contractListDT">
+						<b:dataTable value="#{viewContactsController.activeContract}"
+							class="editableContractTable" var="contract" page-length="5"
+							page-length-menu="5,10,20"
+						>
+							<b:dataTableColumn value="#{contract.contractId}"
+								label="Contract ID" order="asc"
+							/>
+
+
+							<b:dataTableColumn label="Start Date">
+
+								<b:dateTimePicker value="#{contract.startDate}"
+									allow-input-toggle="true" show-date="true" show-icon="true"
+									use-current="true" rendered="#{contract.editable}"
+									format="YYYY-MM-DD"
+								/>
+
+								<h:outputText value="#{contract.startDate}"
+									rendered="#{not contract.editable}"
+								>
+									<f:convertDateTime pattern="yyyy-MM-dd" />
+								</h:outputText>
+
+
+							</b:dataTableColumn>
+
+
+							<b:dataTableColumn label="End Date">
+
+								<b:dateTimePicker value="#{contract.endDate}"
+									allow-input-toggle="true" show-date="true" show-icon="true"
+									use-current="true" rendered="#{contract.editable}"
+									minDate="#{viewContactsController.minDate}" format="YYYY-MM-DD"
+								/>
+
+								<h:outputText value="#{contract.endDate}"
+									rendered="#{not contract.editable}"
+								>
+									<f:convertDateTime pattern="yyyy-MM-dd" />
+								</h:outputText>
+
+
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="Contacts Limit">
+
+								<b:touchSpin value="#{contract.contactsLimit}"
+									min="#{viewContactsController.getCurrentNumberOfContactsOfAccount(contract.account)}"
+									rendered="#{contract.editable}"
+								/>
+
+								<h:outputText value="#{contract.contactsLimit}"
+									rendered="#{not contract.editable}"
+								/>
+
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="Logins Limit">
+
+								<b:touchSpin value="#{contract.loginsLimit}"
+									min="#{viewContactsController.getCurrentNumberOfLoginsOfAccount(contract.account)}"
+									rendered="#{contract.editable}"
+								/>
+
+								<h:outputText value="#{contract.loginsLimit}"
+									rendered="#{not contract.editable}"
+								/>
+
+
+
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="Account">
+								<h:outputText
+									value="#{contract.account.name} (#{contract.account.accountId})"
+								/>
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="Action">
+
+
+								<b:icon name="edit" size="lg" ajax="true"
+									update="@(.editableContractTable)"
+									onclick="ajax:viewContactsController.contractEditAction(contract)"
+								/>
+							</b:dataTableColumn>
+
+						</b:dataTable>
+					</h:panelGroup>
+
+				</b:tab>
+		
+		
+		
 		</b:tabView>
 </h:form>
 	</b:container>

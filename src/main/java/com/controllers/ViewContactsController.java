@@ -1,12 +1,17 @@
 package com.controllers;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
@@ -14,6 +19,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
 import com.entities.Account;
+import com.entities.AccountContract;
 import com.entities.AlertProfile;
 import com.entities.Contact;
 import com.entities.ContactLoginDetails;
@@ -55,6 +61,15 @@ public class ViewContactsController implements Serializable {
 
 	private int editContactId = -1;
 
+	private Map<Integer, String> accountsNamesList;
+	private Integer accountIdForNewContract;
+	private AccountContract accountContract;
+
+	private List<AccountContract> activeContract;
+	private List<AccountContract> inactiveContacts;
+
+	String minDate;
+
 	@PostConstruct
 	public void init() {
 		System.out.println("in Init of ContactController");
@@ -65,15 +80,24 @@ public class ViewContactsController implements Serializable {
 		location = new Location();
 		locations = new ArrayList<>();
 		editCounter = 0;
+		accountContract = new AccountContract();
+
+		activeContract = new ArrayList<>(1);
+		inactiveContacts = new ArrayList<>();
+
+
 
 		editedLocation = new Location();
+
+
+		minDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 
 		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 
 		HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
 
 		if (request.getRequestedSessionId() != null && request.isRequestedSessionIdValid()) {
-		
+
 		this.accountId = Integer.valueOf(Utils.getFromRequest("accountId"));
 
 		if(this.accountId == -1 || this.accountId == null) {
@@ -84,9 +108,80 @@ public class ViewContactsController implements Serializable {
 			this.account = accountService.findAccountById(accountId);
 			alertProfiles = this.account.getAlertProfiles();
 			getAccountContacts();
+
+			ArrayList<Account> accNameList = new ArrayList<>();
+			accNameList.add(account);
+			accountsNamesList = accNameList.stream().collect(Collectors.toMap(Account::getAccountId, Account::getName));
+			activeContract.add(this.account.getAccountContract());
+			inactiveContacts.addAll(accountService.getInactiveContracts(account));
 		}
 		}
 
+	}
+
+	public Integer getCurrentNumberOfContactsOfAccount(Account account) {
+		return (account != null && account.getContacts() != null) ? account.getContacts().size() : 0;
+	}
+
+	public Integer getCurrentNumberOfLoginsOfAccount(Account account) {
+		Integer loginsCount = 0;
+
+		if(getCurrentNumberOfContactsOfAccount(account) != 0) {
+			for(Contact contact : account.getContacts()) {
+				if(contact.getHasLogin()) {
+					loginsCount++;
+				}
+			}
+		}
+
+		return loginsCount;
+	}
+
+
+	public void addNewContract() {
+
+		System.out.println("In addNewContract()");
+
+
+		AccountContract currentContract = this.account.getAccountContract();
+
+		// Assuming an account can not be created without a contract.
+		if(new Date().compareTo(currentContract.getEndDate()) <= 0)
+		{
+			Utils.addFacesMessage("Active Contract Found", "An active contract is already associated with this account.", FacesMessage.SEVERITY_INFO);
+		}
+		else {
+
+		accountContract.setAccount(this.account);
+		this.account.setAccountContract(accountContract);
+//		accountContract.setAccount(acc);
+
+		accountService.updateAccount(this.account);
+		}
+
+//		Utils.navigateTo("ViewAllAccounts.xhtml");
+	}
+
+
+	public String contractEditAction(AccountContract contract) {
+
+		if(!contract.getEditable()) {
+			contract.setEditable(true);
+		} else {
+			contractSaveAction(contract);
+		}
+
+
+		return "";
+	}
+
+
+	public String contractSaveAction(AccountContract contract) {
+
+		contract.setEditable(false);
+		accountService.updateContract(contract);
+
+		return "";
 	}
 
 	// Method to fetch contacts list using an account id received via POST parameters on ViewAllContacts.xhtml
@@ -272,7 +367,6 @@ public class ViewContactsController implements Serializable {
 
 	public String contactSaveAction(Contact contact) {
 		Contact con = null;
-		con = contactService.findContactById(contact.getContactId());
 		//get all existing value but set "editable" to false
 
 			// Set editable to false
@@ -284,22 +378,24 @@ public class ViewContactsController implements Serializable {
 				if(!this.checkAccountLoginsLimit(this.account)) {
 					System.out.println("Login NOT created - Account's LOGINS Limit Exceeded." );
 				} else {
-					 
-					
-					ContactLoginDetails contactLoginDetails = Utils.createLogin(account, con);
-					con.setLoginDetails(contactLoginDetails);
-					
-					contactLoginDetails.setContact(con);
-					
-//					contactService.addLoginDetails(contact, contactLoginDetails);
+
+					ContactLoginDetails contactLoginDetails = null;
+					if((contactLoginDetails = contactService.checkExistingLoginDetails(contact)) == null)
+					{
+						contactLoginDetails = Utils.createLogin(account, contact);
+					}
+					contact.setLoginDetails(contactLoginDetails);
+						contactLoginDetails.setContact(contact);
+
+						System.out.println("Login Updated/Created for contact " + contact.getFirstName() + " " + contact.getLastName() + " (" + contact.getContactId() + ") - " + contactLoginDetails.getUsername() + ":" + contactLoginDetails.getPassword() + " - id=" + contactLoginDetails.getContactLoginId());
 				}
 			}
 
-			contactService.updateContact(con);
-			this.checkForAlertProfileMatch(con, this.account);
+			contactService.updateContact(contact);
+			this.checkForAlertProfileMatch(contact, this.account);
 
 		//return to current page
-		return null;
+		return "";
 	}
 
 
@@ -512,6 +608,54 @@ public class ViewContactsController implements Serializable {
 
 	public void setEditedLocation(Location editedLocation) {
 		this.editedLocation = editedLocation;
+	}
+
+	public Map<Integer, String> getAccountsNamesList() {
+		return accountsNamesList;
+	}
+
+	public void setAccountsNamesList(Map<Integer, String> accountsNamesList) {
+		this.accountsNamesList = accountsNamesList;
+	}
+
+	public Integer getAccountIdForNewContract() {
+		return accountIdForNewContract;
+	}
+
+	public void setAccountIdForNewContract(Integer accountIdForNewContract) {
+		this.accountIdForNewContract = accountIdForNewContract;
+	}
+
+	public AccountContract getAccountContract() {
+		return accountContract;
+	}
+
+	public void setAccountContract(AccountContract accountContract) {
+		this.accountContract = accountContract;
+	}
+
+	public List<AccountContract> getActiveContract() {
+		return activeContract;
+	}
+
+	public void setActiveContract(List<AccountContract> activeContract) {
+		this.activeContract = activeContract;
+	}
+
+	public List<AccountContract> getInactiveContacts() {
+		return inactiveContacts;
+	}
+
+	public void setInactiveContacts(List<AccountContract> inactiveContacts) {
+		this.inactiveContacts = inactiveContacts;
+	}
+
+	public String getMinDate() {
+		return minDate;
+	}
+
+	public void setMinDate(String minDate) {
+		this.minDate = minDate;
 	}
 
 

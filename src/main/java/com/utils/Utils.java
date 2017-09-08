@@ -5,8 +5,11 @@ import java.io.Serializable;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
 import java.util.Random;
+import java.util.ResourceBundle;
 
 import javax.faces.application.ConfigurableNavigationHandler;
+import javax.faces.application.FacesMessage;
+import javax.faces.application.FacesMessage.Severity;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
@@ -37,6 +40,20 @@ public class Utils implements Serializable {
 //				response.reset();
 //				response.resetBuffer();
 				externalContext.redirect(url);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void forwardTo(String url) {
+//		FacesContext.getCurrentInstance().getApplication().getNavigationHandler().handleNavigation(FacesContext.getCurrentInstance(), null, url);
+		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+		try {
+//				response.reset();
+//				response.resetBuffer();
+				externalContext.redirect(url);
+				externalContext.dispatch(url);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -158,4 +175,18 @@ public class Utils implements Serializable {
 
 		return (loggedInCheck == null) ? false : loggedInCheck;
 	}
+
+
+	public static String getFromResourceBundle(String bundleName, String key) {
+		ResourceBundle mybundle = ResourceBundle.getBundle(bundleName);
+		return mybundle.getString(key);
+
+	}
+
+	public static void addFacesMessage(String msgTitle, String msgDetail, Severity severity) {
+		FacesMessage msg = new FacesMessage(msgTitle, msgDetail);
+		msg.setSeverity(severity);
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+	}
+
 }

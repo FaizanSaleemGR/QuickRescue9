@@ -15,6 +15,7 @@ public class AccountContract implements Serializable {
 	private Date endDate;
 	private Integer contactsLimit;
 	private Integer loginsLimit;
+	private Boolean active;
 
 	private Account account;
 
@@ -64,6 +65,12 @@ public class AccountContract implements Serializable {
 	}
 	public void setAccount(Account account) {
 		this.account = account;
+	}
+	public Boolean getActive() {
+		return active;
+	}
+	public void setActive(Boolean active) {
+		this.active = active;
 	}
 
 

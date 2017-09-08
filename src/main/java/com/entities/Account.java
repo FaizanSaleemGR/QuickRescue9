@@ -1,6 +1,7 @@
 package com.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -18,12 +19,14 @@ public class Account implements Serializable{
 	private List<AlertProfile> alertProfiles; // One to Many relation between Account and AlertProfile
 
 	private AccountContract accountContract; // One to one relation between Account and AccountContract
+	private List<AccountContract> inactiveContracts;
 
 
 	private boolean editable;
 
 	public Account() {
 		super();
+		inactiveContracts = new ArrayList<>();
 	}
 
 	public Account(Integer accountId, String name, String emailDomain, String timeZoneCity, Set<Contact> contacts,
@@ -107,6 +110,14 @@ public class Account implements Serializable{
 
 	public void setAlertProfiles(List<AlertProfile> alertProfiles) {
 		this.alertProfiles = alertProfiles;
+	}
+
+	public List<AccountContract> getInactiveContracts() {
+		return inactiveContracts;
+	}
+
+	public void setInactiveContracts(List<AccountContract> inactiveContracts) {
+		this.inactiveContracts = inactiveContracts;
 	}
 
 

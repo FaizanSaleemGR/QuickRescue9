@@ -2,6 +2,7 @@ package com.dao.impl;
 
 import java.util.List;
 
+import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 
@@ -441,6 +442,39 @@ public class ContactDaoImpl implements ContactDao {
 	}
 
 	@Override
+	public ContactLoginDetails checkExistingLoginDetails(Contact contact) {
+		Session session = factory.openSession();
+		Transaction tx = null;
+		ContactLoginDetails singleContactDetails = null;
+		try {
+			tx = session.beginTransaction();
+
+			DetachedCriteria criteria = DetachedCriteria.forClass(ContactLoginDetails.class, "a");
+			criteria.add(Restrictions.eq("a.contact", contact));
+
+
+			if (null != criteria.getExecutableCriteria(session).list() && criteria.getExecutableCriteria(session).list().size() > 0) {
+				singleContactDetails = (ContactLoginDetails) criteria.getExecutableCriteria(session).list().get(0);
+			}
+
+			tx.commit();
+		} catch (Throwable e) {
+
+			if(tx != null) {
+				tx.rollback();
+				System.out.println("EJB Transaction Rolled Back Exception: " + e.getMessage());
+			}
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+		return singleContactDetails;
+	}
+
+
+
+	@Override
 	public ContactLoginDetails getContactLogin(String username, String password) {
 
 		Session session = factory.openSession();
@@ -461,13 +495,16 @@ public class ContactDaoImpl implements ContactDao {
 			}
 
 			tx.commit();
-		} catch (HibernateException e) {
+		} catch (Throwable e) {
 
-			System.out.println(e.getMessage());
+//			throw new HibernateException("Hibernate Exception: " + e.getMessage());
 
-			if (tx != null) {
+			if(tx != null) {
 				tx.rollback();
 			}
+
+			throw new EJBTransactionRolledbackException("EJB Transaction Rolled Back Exception: " + e.getMessage());
+
 		} finally {
 			if (session != null) {
 				session.close();

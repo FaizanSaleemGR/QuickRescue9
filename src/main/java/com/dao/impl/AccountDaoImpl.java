@@ -1,9 +1,11 @@
 package com.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
 
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -60,10 +62,26 @@ public class AccountDaoImpl implements AccountDao {
     	try {
     		tx = session.beginTransaction();
 
-    		accountList = (List<Account>) session.createCriteria(Account.class)
-    			    .list();
+			Criteria criteria = session.createCriteria(Account.class).createCriteria("accountContract");
 
-    		tx.commit();
+			// query.setResultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP);
+			if(criteria.list() != null && criteria.list().size() > 0) {
+				accountList = (List<Account>) criteria.list();
+			}
+
+			tx.commit();
+
+
+
+
+
+
+
+
+
+
+
+
 
     	}
     	catch(HibernateException e) {
@@ -334,13 +352,11 @@ public class AccountDaoImpl implements AccountDao {
 
 	@Override
 	public Boolean deleteAccountByName(String accountName) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Boolean deleteAccountById(Integer accountId) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -465,6 +481,44 @@ public class AccountDaoImpl implements AccountDao {
 		}
 
 		return alertProfiles;
+	}
+
+	@Override
+	public List<AccountContract> getInactiveContracts(Account account) {
+		Session session = factory.openSession();
+		Transaction tx = null;
+		List<AccountContract> inactiveContracts = new ArrayList<>();
+
+		try {
+			tx = session.beginTransaction();
+
+
+
+    		SQLQuery query = session.createSQLQuery("Select * from account_contracts where accountId=:accountId and active=0");
+    		query.setParameter("accountId", account.getAccountId());
+
+//			query.setResultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP);
+			query.addEntity(AccountContract.class);
+
+			if (null != query.list() && query.list().size()>0) {
+				inactiveContracts.addAll(query.list());
+			}
+
+			tx.commit();
+		} catch (HibernateException e) {
+
+			System.out.println(e.getMessage());
+
+			if (tx != null) {
+				tx.rollback();
+			}
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+
+		return inactiveContracts;
 	}
 
 }

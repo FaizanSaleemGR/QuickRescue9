@@ -39,25 +39,34 @@ public class ContactLoginController implements Serializable {
 	}
 
 	public String loginContact(String contactUsername, String contactPassword) {
-		FacesContext context = FacesContext.getCurrentInstance();
-		System.out.println("in loginContact(String, String)");
-		Boolean loginCheck = null;
-		String redirectTo = null;
+		String redirectTo = "";
 
-		// Check if login is not found i.e. it's null as per the logic in ContactServiceImpl.loginContact(...)
-		if((redirectTo=contactService.loginContact(contactUsername, contactPassword))==null) {
-			context.addMessage(null, new FacesMessage("Unknown login, try again"));
-			loginCheck = false;
-		} else { // If login is found.
-			Utils.setSessionTimeOutInMinutes(60);	//Set session timeout to 60 mins.
-			loginCheck = true;
+		try {
+			FacesContext context = FacesContext.getCurrentInstance();
+			System.out.println("in loginContact(String, String)");
+			Boolean loginCheck = null;
+
+			// Check if login is not found i.e. it's null as per the logic in ContactServiceImpl.loginContact(...)
+			if((redirectTo=contactService.loginContact(contactUsername, contactPassword))==null) {
+				redirectTo = "";
+
+				FacesMessage msg = new FacesMessage(Utils.getFromResourceBundle("messages", "invalid_login"), Utils.getFromResourceBundle("messages", "invalid_login_error"));
+				msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+				context.addMessage(null, msg);
+				loginCheck = false;
+
+
+			} else { // If login is found.
+				Utils.setSessionTimeOutInMinutes(60);	//Set session timeout to 60 mins.
+				loginCheck = true;
+			}
+
+		}
+		catch(Exception e) {
+			System.err.println("redirectTo is empty in ContactLoginController.loginContact(String contactUsername, String contactPassword) -> " + e.getLocalizedMessage());
 		}
 
-		if(!loginCheck) {
-			Utils.logout();
-		}
 
-//		Utils.redirectTo(redirectTo);
 		return redirectTo.replaceAll(".xhtml", "")+"?faces-redirect=true";
 	}
 

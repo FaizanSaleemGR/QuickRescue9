@@ -31,4 +31,6 @@ public interface AccountDao extends BaseDao<Account> {
 	AccountContract findContractById(Integer contractId);
 	void addAlertProfile(AlertProfile alertProfile, Account account);
 	List<AlertProfile> getAlertProfiles(Account account);
+
+	List<AccountContract> getInactiveContracts(Account account);
 }

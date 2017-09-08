@@ -328,7 +328,7 @@ public class AccountController implements Serializable {
 		}
 
 		return null;
-	}
+		}
 
 
 	public String accountSaveAction(Account account) {

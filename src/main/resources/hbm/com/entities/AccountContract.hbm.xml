@@ -19,9 +19,11 @@
 		<property name="endDate" type="date" column="end_date" />
 		<property name="contactsLimit" type="java.lang.Integer" column="contacts_limit" />
 		<property name="loginsLimit" type="java.lang.Integer" column="logins_limit" />
+		<property name="active" type="java.lang.Boolean" column="active" />
+		
 		
 		<!-- One to One relation between Account and AccountContract -->
-		 <many-to-one name="account" column="accountId" unique="true"  class="com.entities.Account" not-null="true"  />
+		 <many-to-one name="account" column="accountId" unique="true"  class="com.entities.Account" not-null="true" lazy="false"  />
 		
 	</class>
 

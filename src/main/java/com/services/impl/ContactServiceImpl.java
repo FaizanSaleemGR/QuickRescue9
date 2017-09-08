@@ -93,55 +93,75 @@ public class ContactServiceImpl implements ContactService, Serializable {
 	}
 
 	@Override
+	public ContactLoginDetails checkExistingLoginDetails(Contact contact) {
+		return contactDao.checkExistingLoginDetails(contact);
+	}
+
+	@Override
 	public String loginContact(String contactUsername, String contactPassword) {
-		Boolean check = null;
-		String redirectTo = null;
+		String redirectTo = "";
+
+		try {
+
+			Boolean check = null;
 
 
-		ContactLoginDetails contactLoginDetails = contactDao.getContactLogin(contactUsername, contactPassword);
-			if(contactLoginDetails == null) {
-				return null;
-			}
-		Contact contact = contactLoginDetails.getContact();
+			ContactLoginDetails contactLoginDetails = contactDao.getContactLogin(contactUsername, contactPassword);
+				if(contactLoginDetails == null) {
+					return null;
+				}
+			Contact contact = contactLoginDetails.getContact();
 
-		if(contact != null) {
-			if(contact.getHasLogin()) {
-				if(contactUsername.equals(contactLoginDetails.getUsername()) && contactPassword.equals(contactLoginDetails.getPassword())) {
+			if(contact != null) {
+				if(contact.getHasLogin()) {
+					if(contactUsername.equals(contactLoginDetails.getUsername()) && contactPassword.equals(contactLoginDetails.getPassword())) {
 
-					// Redirect contact to ViewAllAccounts if it's a contact of QuickRescue account.
-					if(contact.getAccount().getName().equals("QuickRescue")) {
-						loggedIn = true;
-						Utils.addToSession(
-								new SimpleEntry<>("accountId", contact.getAccount().getAccountId()),
-								new SimpleEntry<>("contact", contact),
-								new SimpleEntry<>("loggedIn", loggedIn)
-								);
+						// Redirect contact to ViewAllAccounts if it's a contact of QuickRescue account.
+						if(contact.getAccount().getName().equals("QuickRescue")) {
+							loggedIn = true;
+							Utils.addToSession(
+									new SimpleEntry<>("accountId", contact.getAccount().getAccountId()),
+									new SimpleEntry<>("contact", contact),
+									new SimpleEntry<>("loggedIn", loggedIn)
+									);
 
 
-						redirectTo = "ViewAllAccounts.xhtml";
+							redirectTo = "ViewAllAccounts.xhtml";
+						}
+						// Redirect contact to ViewAllContacts if it's NOT a contact of QuickRescue account.
+						else {
+							System.out.println("Contact is not member of QuickRescue Account");
+
+							loggedIn = true;
+							Utils.addToSession(
+									new SimpleEntry<>("accountId", contact.getAccount().getAccountId()),
+									new SimpleEntry<>("contact", contact),
+									new SimpleEntry<>("loggedIn", loggedIn)
+									);
+
+							redirectTo = "ViewAllContacts.xhtml";
+						}
+
+
+
 					}
-					// Redirect contact to ViewAllContacts if it's NOT a contact of QuickRescue account.
-					else {
-						System.out.println("Contact is not member of QuickRescue Account");
-
-						loggedIn = true;
-						Utils.addToSession(
-								new SimpleEntry<>("accountId", contact.getAccount().getAccountId()),
-								new SimpleEntry<>("contact", contact),
-								new SimpleEntry<>("loggedIn", loggedIn)
-								);
-
-						redirectTo = "ViewAllContacts.xhtml";
-					}
-
-
-
 				}
 			}
+
+			loggedIn = false;
+
+			if(redirectTo.isEmpty() || redirectTo.length() == 0) {
+				throw new Exception("redirectTo is empty -> Either provided login details are not associated with any contact OR contact is not found with provided login details OR user or password is invalid" );
+			}
+
+
+		}
+		catch(Exception e) {
+			System.err.println(e.getMessage());
 		}
 
-		loggedIn = false;
 		return redirectTo;
+
 	}
 
 	public Boolean isLoggedIn() {

@@ -301,30 +301,34 @@
 
 
 	<b:container fluid="true">
-	
-	    <b:label severity="danger" text="#{contactController.account.name} (#{contactController.account.accountId})" medium-screen="2" offset-md="10" />
-	
-	<b:alert severity="info">
-	<b:row>
-	
-	<b:column col-md="3">
-	<h:outputText value="#{contactController.account.name} (#{contactController.account.accountId})" />
-	</b:column>
-	
-	<b:column col-md="3">
-	<h:outputText value="Contacts: #{contactController.contactsLeft} / #{contactController.account.accountContract.contactsLimit}" />
-	</b:column>
 
-	<b:column col-md="3">
-	<h:outputText value="Logins: #{contactController.loginsLeft} / #{contactController.account.accountContract.loginsLimit}" />
-	</b:column>
-	
-	</b:row>
-	</b:alert>
-	
-	
-	
-	<h:form style="padding-top:25px">
+		<b:alert>
+			<b:row>
+				<b:column col-md="3">
+					<h:outputText
+						value="#{contactController.account.name} (#{contactController.account.accountId})"
+					/>
+				</b:column>
+			</b:row>
+			<b:row>
+				<b:column col-md="3">
+					<h:outputText
+						value="Contacts: #{contactController.contactsLeft} / #{contactController.account.accountContract.contactsLimit}"
+					/>
+				</b:column>
+			</b:row>
+			<b:row>
+				<b:column col-md="3">
+					<h:outputText
+						value="Logins: #{contactController.loginsLeft} / #{contactController.account.accountContract.loginsLimit}"
+					/>
+				</b:column>
+			</b:row>
+		</b:alert>
+
+
+
+		<h:form style="padding-top:25px">
 	
 		<b:tabView pills="true"
 			contentStyle="border: 1px solid #ddd; padding:10px"

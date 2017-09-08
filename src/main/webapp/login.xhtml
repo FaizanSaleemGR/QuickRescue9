@@ -27,14 +27,16 @@
 		  <ui:include src="WEB-INF/templates/common/commonHeader.xhtml" />
 		</ui:insert>
  
-
+<f:loadBundle var="msg" basename="messages" />
 <b:container>
 	<div class="wrapper">
 		<b:form class="form-signin" name="Login_Form">   
 		
 		<h:outputLabel id="messages" value="#{contactLoginController.errorMsg}"></h:outputLabel>
 		
-		    <h3 class="form-signin-heading">Welcome Back! Please Sign In</h3>
+		
+		
+		    <h3 class="form-signin-heading"><h:outputText value="#{msg.login_welcome_message}"/></h3>
 			  <hr class="colorgraph" /><br />
 			  
 			 <b:inputText placeholder="Username" class="form-control" required="true" value="#{contactLoginController.contactUsername}">
@@ -49,8 +51,8 @@
 					</f:facet>
 				</b:inputSecret>
 					
-					<b:commandButton value="Login" style="width:100%" look="primary" action="#{contactLoginController.loginContact(contactLoginController.contactUsername, contactLoginController.contactPassword)}"  />
-					
+					<b:commandButton value="Login" style="width:100%" look="primary" action="#{contactLoginController.loginContact(contactLoginController.contactUsername, contactLoginController.contactPassword)}" update="loginErrorMessage"  />
+					<b:messages id="loginErrorMessage" />
 		</b:form>			
 	</div>
 	</b:container>

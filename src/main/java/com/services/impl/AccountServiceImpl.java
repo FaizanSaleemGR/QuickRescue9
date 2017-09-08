@@ -78,6 +78,12 @@ public class AccountServiceImpl implements AccountService, Serializable   {
 	}
 
 	@Override
+	public List<AccountContract> getInactiveContracts(Account account) {
+		return accountDao.getInactiveContracts(account);
+	}
+
+
+	@Override
 	public void updateContract(AccountContract contract) {
 		accountDao.updateContract(contract);
 	}

@@ -290,8 +290,6 @@ public class ContactController implements Serializable {
 
 	public String contactSaveAction(Contact contact) {
 		Contact con = null;
-		ContactLoginDetails contactLoginDetails = null;
-		con = contactService.findContactById(contact.getContactId());
 		//get all existing value but set "editable" to false
 
 			// Set editable to false
@@ -299,26 +297,28 @@ public class ContactController implements Serializable {
 
 			// As the contact now has "hasLogin" true, so we need to create its login details.
 			if(contact.getHasLogin()) {
-				 contactLoginDetails = new ContactLoginDetails();
+
 				if(!this.checkAccountLoginsLimit(this.account)) {
 					System.out.println("Login NOT created - Account's LOGINS Limit Exceeded." );
 				} else {
 
+					ContactLoginDetails contactLoginDetails = null;
+					if((contactLoginDetails = contactService.checkExistingLoginDetails(contact)) == null)
+					{
+						contactLoginDetails = Utils.createLogin(account, contact);
+					}
+					contact.setLoginDetails(contactLoginDetails);
+						contactLoginDetails.setContact(contact);
 
-					 contactLoginDetails = Utils.createLogin(account, contact);
-					 contact.setLoginDetails(contactLoginDetails);
-					 contactLoginDetails.setContact(contact);
-					 contactService.addLoginDetails(contact, contactLoginDetails);
-
+						System.out.println("Login Updated/Created for contact " + contact.getFirstName() + " " + contact.getLastName() + " (" + contact.getContactId() + ") - " + contactLoginDetails.getUsername() + ":" + contactLoginDetails.getPassword() + " - id=" + contactLoginDetails.getContactLoginId());
 				}
 			}
 
 			contactService.updateContact(contact);
 			this.checkForAlertProfileMatch(contact, this.account);
-			this.countContactAndLoginLimit();
 
 		//return to current page
-		return null;
+		return "";
 	}
 
 
@@ -559,7 +559,7 @@ public class ContactController implements Serializable {
 
 	public void contactsAndLoginsLimitCheck() {
 
-		System.out.println("In ContactController - contactsAndLoginsLimitCheck()");
+//		System.out.println("In ContactController - contactsAndLoginsLimitCheck()");
 
 		this.contactsAndLoginsLimit = "You can create "+contactsLeft+" more contacts and "+loginsLeft+" more logins";
 	}

@@ -24,4 +24,5 @@ public interface ContactService {
 	void updateAlertProfile(AlertProfile profile);
 	AlertProfile findAlertProfileById(Integer profileId);
 	Boolean deleteAlertProfileById(Integer profileId);
+	ContactLoginDetails checkExistingLoginDetails(Contact contact);
 }

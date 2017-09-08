@@ -21,6 +21,8 @@ public interface AccountService {
 	Boolean checkIfAccountExists(Account account);
 	void updateAccount(Account account);
 
+	List<AccountContract> getInactiveContracts(Account account);
+
 
 	void deleteAccount(Account account);
 	void updateContract(AccountContract contract);
