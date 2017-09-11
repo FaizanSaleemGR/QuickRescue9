@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:b="http://bootsfaces.net/ui"
 	xmlns:f="http://java.sun.com/jsf/core"
@@ -99,10 +100,19 @@
 
 
 
+				<b:switch value="#num;{accountController.enableContractPanel}"
+                    id="enabledContractPanelButton"
+                    caption="click to enable contract panel"
+                    label="Add Contract"
+                    >
+                    
+                    <f:ajax event="change" immediate="true" render="newContractPanel" execute="@form" listener="#{accountController.enableContractPanelButton}" />
+                    
+                    </b:switch>
+    <b:message />
 
 
-
-			<b:panel title="Add Account Contract" look="info">
+			<b:panel title="Add Account Contract" id="newContractPanel" look="info"  rendered="#{accountController.enableContractPanel}">
 
 				<b:row>
 					<b:column>
@@ -110,7 +120,8 @@
 							value="#{accountController.accountContract.startDate}"
 							allow-input-toggle="true" show-date="true" show-icon="true"
 							use-current="true" label="Start Date" id="contractStartDate"
-							 validator="EmptyFieldValidator">
+							 validator="EmptyFieldValidator"
+							 format="YYYY-MM-DD">
 							 
 							 
 							 <f:ajax event="change" render="@form" execute="@form" />
@@ -127,7 +138,8 @@
 							value="#{accountController.accountContract.endDate}"
 							allow-input-toggle="true" show-date="true" show-icon="true"
 							use-current="true" label="End Date" id="contractEndDate"
-							 validator="EmptyFieldValidator"
+							 validator="EmptyFieldValidator" minDate="#{accountController.minDate}"
+							 format="YYYY-MM-DD"
 						>
 						<f:ajax event="change" render="@form" execute="@form" />
 						</b:dateTimePicker>
@@ -185,6 +197,10 @@
 		styleClass="modalPseudoClass"
 	>
 		<b:form id="addContractForm">
+		<b:fetchBeanInfos />
+		
+		
+		
 			<b:panel title="Add New Contract" look="info">
 
 				<b:row>
@@ -193,7 +209,7 @@
 							value="#{accountController.accountContract.startDate}"
 							allow-input-toggle="true" show-date="true" show-icon="true"
 							use-current="true" label="Start Date" id="newContractStartDate"
-							validator="EmptyFieldValidator"
+							validator="EmptyFieldValidator" format="YYYY-MM-DD"
 						>
 						
 						 <f:ajax event="change" render="@form" execute="@form" />
@@ -211,7 +227,7 @@
 							value="#{accountController.accountContract.endDate}"
 							allow-input-toggle="true" show-date="true" show-icon="true"
 							use-current="true" label="End Date" id="newContractEndDate"
-							validator="EmptyFieldValidator"
+							validator="EmptyFieldValidator" format="YYYY-MM-DD" minDate="#{accountController.minDate}"
 						>
 						<f:ajax event="change" render="@form" execute="@form" />
 						</b:dateTimePicker>
@@ -226,8 +242,9 @@
 						<b:inputText type="number" label="Contacts Limit"
 							value="#{accountController.accountContract.contactsLimit}"
 							min="0" id="newContractContactsLimit"
-							validator="EmptyFieldValidator"
 						>
+							<f:validator validatorId="EmptyFieldValidator" />
+						<f:validator validatorId="ContractLimitValidator" />
 						
 						<f:ajax event="change" render="@form" execute="@form" />
 						</b:inputText>
@@ -240,8 +257,9 @@
 					<b:column>
 						<b:inputText type="number" label="Logins Limit"
 							value="#{accountController.accountContract.loginsLimit}" min="0" id="newContractLoginsLimit"
-							validator="EmptyFieldValidator"
 						>
+						<f:validator validatorId="EmptyFieldValidator" />
+						<f:validator validatorId="ContractLimitValidator" />
 						
 						<f:ajax event="change" render="@form" execute="@form" />
 						</b:inputText>
@@ -274,11 +292,17 @@
 
 			<b:row>
 				<b:column>
-					<b:commandButton value="Add New Contract"
-						action="#{accountController.addNewContract()}" look="success"
+					<b:commandButton
+						value="Add New Contract"
+						look="success"
 						style="width:100%"
+						id="addNewContractSubmit"
 						disabled="#{not facesContext.postback or facesContext.validationFailed}"
-					/>
+						action="#{accountController.addNewContract()}"
+						>
+						<f:ajax event="click" render="@form" execute="@form" />
+					</b:commandButton>
+					<b:message for="addNewContractSubmit"  id="addNewContractMessage" />
 				</b:column>
 			</b:row>
 
@@ -402,7 +426,6 @@
 							>Add New Contract</button>
 						</b:column>
 					</b:row>
-
 					<h:panelGroup id="contractListDT">
 						<b:dataTable value="#{accountController.contractsList}"
 							class="editableContractTable" var="contract" page-length="5"

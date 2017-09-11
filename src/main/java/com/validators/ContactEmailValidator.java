@@ -33,12 +33,12 @@ public class ContactEmailValidator implements Validator, Serializable {
 	public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException 	{
 
 		if(value != null) {
-		
+
 		Account acc = (Account) component.getAttributes().get("account");
 		String email = value.toString();
 		Boolean doesExist = false;
 		Boolean invalidPattern = false;
-		
+
 
 		if(email.contains("@")) {
 			invalidPattern = true;
@@ -46,9 +46,10 @@ public class ContactEmailValidator implements Validator, Serializable {
 			msg.setSeverity(FacesMessage.SEVERITY_ERROR);
 			throw new ValidatorException(msg);
 		}
-		
-		
+
+
 		if(!invalidPattern) {
+			email = email.concat("@"+acc.getEmailDomain());
 		for (Contact contact : acc.getContacts()) {
 			if(contact.getEmailAddress().toLowerCase().equals(email.toLowerCase())) {
 				doesExist = true;

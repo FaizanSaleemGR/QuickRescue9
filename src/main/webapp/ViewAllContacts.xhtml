@@ -163,6 +163,13 @@
 					</b:column>
 				</b:row>
 				
+				
+				<b:row>
+					<b:column>
+						<b:selectBooleanCheckbox value="#{contactController.newContact.status}" caption="Status?" label="Status?" />
+					</b:column>
+				</b:row>
+				
 				<b:row>
 						<b:column>
 						<b:commandButton value="Add New Contact"
@@ -303,27 +310,66 @@
 	<b:container fluid="true">
 
 		<b:alert>
+		
+		<b:row>
+			<b:column col-md="6">
 			<b:row>
-				<b:column col-md="3">
+				<b:column>
 					<h:outputText
 						value="#{contactController.account.name} (#{contactController.account.accountId})"
 					/>
 				</b:column>
 			</b:row>
 			<b:row>
-				<b:column col-md="3">
+				<b:column>
 					<h:outputText
-						value="Contacts: #{contactController.contactsLeft} / #{contactController.account.accountContract.contactsLimit}"
+						value="Contacts: #{contactController.contactsLeft} (left) / #{contactController.account.accountContract.contactsLimit} (total)"
 					/>
 				</b:column>
 			</b:row>
 			<b:row>
-				<b:column col-md="3">
+				<b:column>
 					<h:outputText
-						value="Logins: #{contactController.loginsLeft} / #{contactController.account.accountContract.loginsLimit}"
+						value="Logins: #{contactController.loginsLeft} (left) / #{contactController.account.accountContract.loginsLimit} (total)"
 					/>
 				</b:column>
 			</b:row>
+			
+		</b:column>
+		
+		
+		<b:column col-md="6">
+		
+					<b:row>
+						<b:column>
+							<h:outputText
+								value="Welcome, #{contactController.loggedInContact.firstName} #{contactController.loggedInContact.lastName}"
+							/>
+						</b:column>
+					</b:row>
+
+					<b:row>
+						<b:column>
+							<h:outputText
+								value="#{contactController.loggedInContact.emailAddress}"
+							/>
+						</b:column>
+					</b:row>
+					
+								<b:row>
+						<b:column>
+							<h:outputText
+								value="#{contactController.loggedInContact.city}, #{contactController.loggedInContact.state}, #{contactController.loggedInContact.country}"
+							/>
+						</b:column>
+					</b:row>
+		
+		
+		</b:column>
+		
+		</b:row>	
+			
+			
 		</b:alert>
 
 
@@ -381,13 +427,10 @@
 								<b:inputText value="#{contact.emailAddress}"
 									rendered="#{contact.editable}"
 								>
-									<f:facet name="append">
-										<h:outputText value="@#{contact.account.emailDomain}" />
-									</f:facet>
 								</b:inputText>
 
 								<h:outputText
-									value="#{contact.emailAddress}@#{contact.account.emailDomain}"
+									value="#{contact.emailAddress}"
 									rendered="#{not contact.editable}"
 								/>
 							</b:dataTableColumn>
@@ -673,6 +716,117 @@
 
 
 			</b:tab>
+		
+		
+		
+			<b:tab title="Contracts">
+
+<h2>Active Contract</h2>
+
+					<h:panelGroup id="contractListDT">
+						<b:dataTable value="#{contactController.activeContract}"
+							class="editableContractTable" var="contract" paginated="false" searching="false"
+						>
+						
+
+
+							<b:dataTableColumn label="Start Date">
+								<h:outputText value="#{contract.startDate}"
+									rendered="#{not contract.editable}"
+								>
+									<f:convertDateTime pattern="yyyy-MM-dd" />
+								</h:outputText>
+
+
+							</b:dataTableColumn>
+
+
+							<b:dataTableColumn label="End Date">
+								<h:outputText value="#{contract.endDate}"
+									rendered="#{not contract.editable}"
+								>
+									<f:convertDateTime pattern="yyyy-MM-dd" />
+								</h:outputText>
+
+
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="Contacts Limit">
+
+
+								<h:outputText value="#{contract.contactsLimit}"
+									rendered="#{not contract.editable}"
+								/>
+
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="Logins Limit">
+								<h:outputText value="#{contract.loginsLimit}"
+									rendered="#{not contract.editable}"
+								/>
+
+							</b:dataTableColumn>
+
+						</b:dataTable>
+					</h:panelGroup>
+
+
+<h2>Expired Contracts</h2>
+
+<h:panelGroup id="expiredContractListDT">
+						<b:dataTable value="#{contactController.inactiveContacts}"
+							class="editableExpiredContractTable" var="contract" paginated="false" searching="false"
+						>
+						
+
+
+							<b:dataTableColumn label="Start Date">
+								<h:outputText value="#{contract.startDate}"
+									rendered="#{not contract.editable}"
+								>
+									<f:convertDateTime pattern="yyyy-MM-dd" />
+								</h:outputText>
+
+
+							</b:dataTableColumn>
+
+
+							<b:dataTableColumn label="End Date">
+								<h:outputText value="#{contract.endDate}"
+									rendered="#{not contract.editable}"
+								>
+									<f:convertDateTime pattern="yyyy-MM-dd" />
+								</h:outputText>
+
+
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="Contacts Limit">
+
+
+								<h:outputText value="#{contract.contactsLimit}"
+									rendered="#{not contract.editable}"
+								/>
+
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="Logins Limit">
+								<h:outputText value="#{contract.loginsLimit}"
+									rendered="#{not contract.editable}"
+								/>
+
+							</b:dataTableColumn>
+
+						</b:dataTable>
+					</h:panelGroup>
+
+
+
+				</b:tab>
+		
+		
+		
+		
 		</b:tabView>
 </h:form>
 	</b:container>

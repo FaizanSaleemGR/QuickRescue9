@@ -130,7 +130,7 @@ public class Utils implements Serializable {
 
 	public static ContactLoginDetails createLogin(Account account, Contact contact) {
 		ContactLoginDetails contactLoginDetails = new ContactLoginDetails();
-		contactLoginDetails.setUsername(contact.getEmailAddress() + "@" + account.getEmailDomain());
+		contactLoginDetails.setUsername(contact.getEmailAddress());
 		contactLoginDetails.setPassword(Utils.generateRandomPassword(8));
 
 		return contactLoginDetails;
@@ -150,8 +150,6 @@ public class Utils implements Serializable {
 //		navigateTo("login");
 		externalContext.invalidateSession();
 		redirectTo("login.xhtml");
-//		return "login?faces-redirect=true";
-//		navigateTo("login");
     }
 
 	public static String getCurrentPageName() {
@@ -159,28 +157,15 @@ public class Utils implements Serializable {
 		return ((HttpServletRequest)externalContext.getRequest()).getServletPath().replaceAll("/", "").replaceAll(".xhtml", "");
 	}
 
-	public static void flushResponseBuffer() {
-		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-
-		if ( externalContext.isResponseCommitted() ) {
-			//
-		}
-	}
-
-	public static boolean checkLoggedIn() {
-
-		Boolean loggedInCheck = (Boolean) getFromSession("loggedIn");
-
-
-
-		return (loggedInCheck == null) ? false : loggedInCheck;
-	}
-
-
 	public static String getFromResourceBundle(String bundleName, String key) {
 		ResourceBundle mybundle = ResourceBundle.getBundle(bundleName);
 		return mybundle.getString(key);
 
+	}
+
+	public static boolean checkLoggedIn() {
+		Boolean loggedInCheck = (Boolean) getFromSession("loggedIn");
+		return (loggedInCheck == null) ? false : loggedInCheck;
 	}
 
 	public static void addFacesMessage(String msgTitle, String msgDetail, Severity severity) {

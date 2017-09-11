@@ -116,6 +116,9 @@ public class ContactServiceImpl implements ContactService, Serializable {
 				if(contact.getHasLogin()) {
 					if(contactUsername.equals(contactLoginDetails.getUsername()) && contactPassword.equals(contactLoginDetails.getPassword())) {
 
+						if(contact.getStatus()) {
+
+
 						// Redirect contact to ViewAllAccounts if it's a contact of QuickRescue account.
 						if(contact.getAccount().getName().equals("QuickRescue")) {
 							loggedIn = true;
@@ -143,7 +146,10 @@ public class ContactServiceImpl implements ContactService, Serializable {
 						}
 
 
-
+						}
+						else {
+							redirectTo = "inactive";
+						}
 					}
 				}
 			}

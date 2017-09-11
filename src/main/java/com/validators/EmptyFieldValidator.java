@@ -31,11 +31,11 @@ public class EmptyFieldValidator implements Validator, Serializable {
 	@Override
 	public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException 	{
 
-		if(value == null) {
+		if(value == null || value.toString().isEmpty() || value.toString().length() == 0) {
 			FacesMessage msg = new FacesMessage("Empty Field.", "This field must not be empty.");
 			msg.setSeverity(FacesMessage.SEVERITY_ERROR);
 			throw new ValidatorException(msg);
 		}
-	
+
 	}
 }

@@ -144,6 +144,12 @@
 					</b:column>
 				</b:row>
 				
+					<b:row>
+					<b:column>
+						<b:selectBooleanCheckbox value="#{viewContactsController.newContact.status}" caption="Status?" label="Status?" />
+					</b:column>
+				</b:row>
+				
 				<b:row>
 						<b:column>
 						<b:commandButton value="Add New Contact"
@@ -312,7 +318,7 @@
 							value="#{viewContactsController.accountContract.endDate}"
 							allow-input-toggle="true" show-date="true" show-icon="true"
 							use-current="true" label="End Date" id="newContractEndDate"
-							validator="EmptyFieldValidator"
+							validator="EmptyFieldValidator" minDate="#{viewContactsController.minDate}"
 						>
 						<f:ajax event="blur" render="@form" execute="@this" />
 						</b:dateTimePicker>
@@ -330,7 +336,7 @@
 							validator="EmptyFieldValidator"
 						>
 						
-						<f:ajax event="blur" render="@form" execute="@this" />
+						<f:ajax event="blur" render="@this" execute="@this" />
 						</b:inputText>
 
 						<b:message id="newContractContactsLimitValidationMessage" for="newContractContactsLimit" />
@@ -344,7 +350,7 @@
 							validator="EmptyFieldValidator"
 						>
 						
-						<f:ajax event="blur" render="@form" execute="@this" />
+						<f:ajax event="blur" render="@this" execute="@this" />
 						</b:inputText>
 						
 						<b:message id="newContractLoginsLimitValidationMessage" for="newContractLoginsLimit" />
@@ -395,7 +401,68 @@
 
 	<b:container fluid="true">
 	
-	    <b:label severity="danger" text="#{viewContactsController.account.name} (#{viewContactsController.account.accountId})" medium-screen="2" offset-md="10" />
+	<b:alert>
+		
+		<b:row>
+			<b:column col-md="6">
+			<b:row>
+				<b:column>
+					<h:outputText
+						value="#{viewContactsController.account.name} (#{viewContactsController.account.accountId})"
+					/>
+				</b:column>
+			</b:row>
+			<b:row>
+				<b:column>
+					<h:outputText
+						value="Contacts: #{viewContactsController.contactsLeft} (left) / #{viewContactsController.account.accountContract.contactsLimit} (total)"
+					/>
+				</b:column>
+			</b:row>
+			<b:row>
+				<b:column>
+					<h:outputText
+						value="Logins: #{viewContactsController.loginsLeft} (left) / #{viewContactsController.account.accountContract.loginsLimit} (total)"
+					/>
+				</b:column>
+			</b:row>
+			
+		</b:column>
+		
+		
+		<b:column col-md="6">
+		
+					<b:row>
+						<b:column>
+							<h:outputText
+								value="Welcome, #{viewContactsController.loggedInContact.firstName} #{viewContactsController.loggedInContact.lastName}"
+							/>
+						</b:column>
+					</b:row>
+
+					<b:row>
+						<b:column>
+							<h:outputText
+								value="#{viewContactsController.loggedInContact.emailAddress}"
+							/>
+						</b:column>
+					</b:row>
+					
+								<b:row>
+						<b:column>
+							<h:outputText
+								value="#{viewContactsController.loggedInContact.city}, #{viewContactsController.loggedInContact.state}, #{viewContactsController.loggedInContact.country}"
+							/>
+						</b:column>
+					</b:row>
+		
+		
+		</b:column>
+		
+		</b:row>	
+			
+			
+		</b:alert>
 	
 	
 	
@@ -756,8 +823,8 @@
 								type="button"
 							>Add New Contract</button>
 						</b:column>
-					</b:row>
-
+					</b:row> 
+<h2>Active Contract</h2>
 					<h:panelGroup id="contractListDT">
 						<b:dataTable value="#{viewContactsController.activeContract}"
 							class="editableContractTable" var="contract" page-length="5"
@@ -844,6 +911,74 @@
 									update="@(.editableContractTable)"
 									onclick="ajax:viewContactsController.contractEditAction(contract)"
 								/>
+							</b:dataTableColumn>
+
+						</b:dataTable>
+					</h:panelGroup>
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					<h2>Expired Contracts</h2>
+					
+					<h:panelGroup id="expiredContractListDT">
+						<b:dataTable value="#{viewContactsController.inactiveContacts}"
+							class="editableExpiredContractTable" var="contract" page-length="5"
+							page-length-menu="5,10,20"
+						>
+							<b:dataTableColumn value="#{contract.contractId}"
+								label="Contract ID" order="asc"
+							/>
+
+
+							<b:dataTableColumn label="Start Date">
+
+								<h:outputText value="#{contract.startDate}"
+									rendered="#{not contract.editable}"
+								>
+									<f:convertDateTime pattern="yyyy-MM-dd" />
+								</h:outputText>
+
+
+							</b:dataTableColumn>
+
+
+							<b:dataTableColumn label="End Date">
+
+
+								<h:outputText value="#{contract.endDate}"
+									rendered="#{not contract.editable}"
+								>
+									<f:convertDateTime pattern="yyyy-MM-dd" />
+								</h:outputText>
+
+
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="Contacts Limit">
+
+
+								<h:outputText value="#{contract.contactsLimit}"
+									rendered="#{not contract.editable}"
+								/>
+
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="Logins Limit">
+
+
+								<h:outputText value="#{contract.loginsLimit}"
+									rendered="#{not contract.editable}"
+								/>
+
+
+
 							</b:dataTableColumn>
 
 						</b:dataTable>

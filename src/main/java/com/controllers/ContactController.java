@@ -14,6 +14,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
 import com.entities.Account;
+import com.entities.AccountContract;
 import com.entities.AlertProfile;
 import com.entities.Contact;
 import com.entities.ContactLoginDetails;
@@ -59,6 +60,11 @@ public class ContactController implements Serializable {
 
 	private int editContactId = -1;
 
+	private List<AccountContract> activeContract;
+	private List<AccountContract> inactiveContacts;
+
+	private Contact loggedInContact;
+
 	@PostConstruct
 	public void init() {
 		// list = accountService.getAllAccounts();
@@ -74,7 +80,9 @@ public class ContactController implements Serializable {
 
 		editedLocation = new Location();
 
-
+		activeContract = new ArrayList<>(1);
+		inactiveContacts = new ArrayList<>();
+		loggedInContact = new Contact();
 
 		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 		HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
@@ -94,6 +102,11 @@ public class ContactController implements Serializable {
 
 			alertProfiles = this.account.getAlertProfiles();
 			getAccountContacts();
+
+			activeContract.add(this.account.getAccountContract());
+			inactiveContacts.addAll(accountService.getInactiveContracts(account));
+
+			loggedInContact = (Contact) Utils.getFromSession("contact");
 		}
 		}
 
@@ -177,28 +190,38 @@ public class ContactController implements Serializable {
 	public String addContact() {
 	    	System.out.println("In Add New Contact");
 
+			Account acc = accountService.findAccountById(account.getAccountId());
+
+
 	    	if(!this.checkAccountContactsLimit(this.account)) {
 				System.out.println("Contact NOT added - Account's CONTACTS Limit Exceeded." );
 			} else {
 		    	ContactLoginDetails contactLoginDetails = new ContactLoginDetails();
 
-		    	// Adding ContactLoginDetails to a contact
-		    	if(this.newContact.getHasLogin()) {
-		    		if(!this.checkAccountLoginsLimit(this.account)) {
-						System.out.println("Contact NOT added - Account's LOGINS Limit Exceeded." );
-					}
-		    		else {
-			    		contactLoginDetails = Utils.createLogin(account, newContact);
-			    		newContact.setLoginDetails(contactLoginDetails);
-			    		contactService.addLoginDetails(newContact, contactLoginDetails);
-		    		}
-		    	}
+
+		    	newContact.setEmailAddress(newContact.getEmailAddress().concat("@"+this.account.getEmailDomain()));
 
 		    	// Adding contact to the associated account
 		    	Integer contactId = contactService.addContact(this.account, this.newContact);
 		    	System.out.println("Contact Added with Id=" + contactId);
 
-		    	// Add Contact to ContactLoginDetails for bi-directional purpose.
+		    	// Adding ContactLoginDetails to a contact
+		    	if(this.newContact.getHasLogin()) {
+		    		if(!this.checkAccountLoginsLimit(acc)) {
+						System.out.println("Contact NOT added - Account's LOGINS Limit Exceeded." );
+					}
+		    		else {
+			    		contactLoginDetails = Utils.createLogin(account, newContact);
+//			    		newContact.setLoginDetails(contactLoginDetails);
+//			    		contactLoginDetails.setContact(newContact);
+			    		// Add Contact to ContactLoginDetails for bi-directional purpose.
+				    	contactService.addLoginDetails(newContact, contactLoginDetails);
+		    		}
+		    	}
+
+
+//		    	contactService.updateContact(this.newContact);
+
 
 		    	if(contactsList.add(newContact)) {
 					System.out.println("Contact successfully added to contacts list");
@@ -289,8 +312,7 @@ public class ContactController implements Serializable {
 	}
 
 	public String contactSaveAction(Contact contact) {
-		Contact con = null;
-		//get all existing value but set "editable" to false
+		Account acc = accountService.findAccountById(account.getAccountId());
 
 			// Set editable to false
 			contact.setEditable(false);
@@ -298,17 +320,22 @@ public class ContactController implements Serializable {
 			// As the contact now has "hasLogin" true, so we need to create its login details.
 			if(contact.getHasLogin()) {
 
-				if(!this.checkAccountLoginsLimit(this.account)) {
+				if(!this.checkAccountLoginsLimit(acc)) {
 					System.out.println("Login NOT created - Account's LOGINS Limit Exceeded." );
 				} else {
 
-					ContactLoginDetails contactLoginDetails = null;
+					ContactLoginDetails contactLoginDetails;
 					if((contactLoginDetails = contactService.checkExistingLoginDetails(contact)) == null)
 					{
 						contactLoginDetails = Utils.createLogin(account, contact);
-					}
-					contact.setLoginDetails(contactLoginDetails);
+						contact.setLoginDetails(contactLoginDetails);
 						contactLoginDetails.setContact(contact);
+						contactService.addLoginDetails(contact, contactLoginDetails);
+					}
+					else {
+						contact.setLoginDetails(contactLoginDetails);
+						contactLoginDetails.setContact(contact);
+					}
 
 						System.out.println("Login Updated/Created for contact " + contact.getFirstName() + " " + contact.getLastName() + " (" + contact.getContactId() + ") - " + contactLoginDetails.getUsername() + ":" + contactLoginDetails.getPassword() + " - id=" + contactLoginDetails.getContactLoginId());
 				}
@@ -562,6 +589,30 @@ public class ContactController implements Serializable {
 //		System.out.println("In ContactController - contactsAndLoginsLimitCheck()");
 
 		this.contactsAndLoginsLimit = "You can create "+contactsLeft+" more contacts and "+loginsLeft+" more logins";
+	}
+
+	public List<AccountContract> getActiveContract() {
+		return activeContract;
+	}
+
+	public void setActiveContract(List<AccountContract> activeContract) {
+		this.activeContract = activeContract;
+	}
+
+	public List<AccountContract> getInactiveContacts() {
+		return inactiveContacts;
+	}
+
+	public void setInactiveContacts(List<AccountContract> inactiveContacts) {
+		this.inactiveContacts = inactiveContacts;
+	}
+
+	public Contact getLoggedInContact() {
+		return loggedInContact;
+	}
+
+	public void setLoggedInContact(Contact loggedInContact) {
+		this.loggedInContact = loggedInContact;
 	}
 
 
