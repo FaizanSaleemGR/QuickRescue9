@@ -6,6 +6,6 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
         <property name="context-root" value="QuickRescue9"/>
         <property name="java-output-path" value="/QuickRescue9/target/classes"/>
-        <property name="component.exclusion.patterns" value="**/dom4j-1.6.1.jar"/>
+        <property name="component.exclusion.patterns"/>
     </wb-module>
 </project-modules>

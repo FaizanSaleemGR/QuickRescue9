@@ -10,7 +10,6 @@
 	<name>QuickRescue9</name>
 	<url>http://maven.apache.org</url>
 
-<!--  
 	<repositories>
 		<repository>
 			<id>central</id>
@@ -23,7 +22,6 @@
 			</snapshots>
 		</repository>
 	</repositories>
--->
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<version.org.jboss.as.plugins.maven.plugin>7.1.Final</version.org.jboss.as.plugins.maven.plugin>
@@ -114,6 +112,20 @@
     <version>6.1</version>
     <scope>compile</scope>
 </dependency>
+
+<dependency>
+    <groupId>org.primefaces.themes</groupId>
+    <artifactId>bootstrap</artifactId>
+    <version>1.0.10</version>
+</dependency>
+
+<dependency>
+    <groupId>org.primefaces.themes</groupId>
+    <artifactId>smoothness</artifactId>
+    <version>1.0.10</version>
+</dependency>
+
+
 
 		<!-- https://mvnrepository.com/artifact/org.primefaces.themes/bootstrap -->
 	</dependencies>

@@ -73,6 +73,7 @@ public class ViewContactsController implements Serializable {
 	private Contact loggedInContact;
 
 	String minDate;
+	Date maxDate;
 
 	@PostConstruct
 	public void init() {
@@ -96,6 +97,7 @@ public class ViewContactsController implements Serializable {
 
 
 		minDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		maxDate = new Date();
 
 		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 
@@ -180,16 +182,13 @@ public class ViewContactsController implements Serializable {
 	}
 
 
-	public String contractEditAction(AccountContract contract) {
+	public void contractEditAction(AccountContract contract) {
 
 		if(!contract.getEditable()) {
 			contract.setEditable(true);
 		} else {
 			contractSaveAction(contract);
 		}
-
-
-		return "";
 	}
 
 
@@ -720,6 +719,14 @@ public class ViewContactsController implements Serializable {
 
 	public void setLoggedInContact(Contact loggedInContact) {
 		this.loggedInContact = loggedInContact;
+	}
+
+	public Date getMaxDate() {
+		return maxDate;
+	}
+
+	public void setMaxDate(Date maxDate) {
+		this.maxDate = maxDate;
 	}
 
 

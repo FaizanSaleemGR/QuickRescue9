@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
 	xmlns:b="http://bootsfaces.net/ui"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
@@ -75,12 +76,15 @@
 					<b:column>
 					
 					
-					 <b:selectOneMenu value="#{viewContactsController.newContact.gender}" label="Gender:" labelColMd="1">
+        
+        <h:outputLabel value="Gender:" />
+        <br />
+		<p:selectOneButton value="#{viewContactsController.newContact.gender}">
             <f:selectItem itemLabel="Male" itemValue="M" />
             <f:selectItem itemLabel="Female" itemValue="F" />
-        </b:selectOneMenu>
-					
-
+        </p:selectOneButton>
+        
+        
 					</b:column>
 				</b:row>
 
@@ -140,14 +144,27 @@
 
 				<b:row>
 					<b:column>
-						<b:selectBooleanCheckbox value="#{viewContactsController.newContact.hasLogin}" caption="HasLogin?" label="HasLogin?" />
+						 <b:switch
+        value="#{viewContactsController.newContact.hasLogin}"
+        on-color="success" on-text="Yes"
+        off-color="danger" off-text="No"
+        label="Does this contact has a login?"
+         />
+						
 						
 					</b:column>
 				</b:row>
 				
 					<b:row>
 					<b:column>
-						<b:selectBooleanCheckbox value="#{viewContactsController.newContact.status}" caption="Status?" label="Status?" />
+						 <b:switch
+        value="#{viewContactsController.newContact.status}"
+        on-color="success" on-text="Yes"
+        off-color="danger" off-text="No"
+        label="Is this contact active?"
+         />
+						
+						
 					</b:column>
 				</b:row>
 				
@@ -297,16 +314,25 @@
 
 				<b:row>
 					<b:column>
-						<b:dateTimePicker
+					
+					<h:outputLabel value="Start Date" />
+						<p:calendar
 							value="#{viewContactsController.accountContract.startDate}"
-							allow-input-toggle="true" show-date="true" show-icon="true"
-							use-current="true" label="Start Date" id="newContractStartDate"
-							validator="EmptyFieldValidator" format="YYYY-MM-DD"
-						>
+							pattern="yyyy-MM-dd"
+							maxdate="#{accountController.maxDate}"
+							id="newContractStartDate"
+							label="Start Date"
+							effect="drop"
+							inputStyleClass="form-control"
+							pagedate="#{viewContactsController.maxDate}"
+							title="Select Contract's Start Date"
+							validator="EmptyFieldValidator"
+						 >
 						
-						 <f:ajax event="change" render="@form" execute="@form" />
 						
-						</b:dateTimePicker>
+						 <f:ajax event="blur" render="@form" execute="@form" />
+						
+						</p:calendar>
 						
 						<b:message id="newContractStartDateValidationMessage" for="newContractStartDate" />
 						
@@ -315,15 +341,25 @@
 
 				<b:row>
 					<b:column>
-						<b:dateTimePicker
-							value="#{viewContactsController.accountContract.endDate}"
-							allow-input-toggle="true" show-date="true" show-icon="true"
-							use-current="true" label="End Date" id="newContractEndDate"
-							validator="EmptyFieldValidator" minDate="#{viewContactsController.minDate}"
-							format="YYYY-MM-DD"
-						>
-						<f:ajax event="change" render="@form" execute="@form" />
-						</b:dateTimePicker>
+					
+					<h:outputLabel value="End Date" />
+						<p:calendar
+									value="#{viewContactsController.accountContract.endDate}"
+									pattern="yyyy-MM-dd"
+									mindate="#{viewContactsController.minDate}"
+									id="newContractEndDate"
+									label="End Date"
+									effect="drop"
+									inputStyleClass="form-control"
+									pagedate="#{viewContactsController.minDate}"
+									title="Select Contract's End Date"
+									validator="EmptyFieldValidator"
+									
+									 >
+						
+						
+						<f:ajax event="blur" render="@form" execute="@form" />
+						</p:calendar>
 						
 						<b:message id="newContractEndDateValidationMessage" for="newContractEndDate" />
 					</b:column>
@@ -338,7 +374,7 @@
 							validator="EmptyFieldValidator"
 						>
 						
-						<f:ajax event="blur" render="@form" execute="@form" />
+						<f:ajax event="blur" render="@this" execute="@form" />
 						</b:inputText>
 
 						<b:message id="newContractContactsLimitValidationMessage" for="newContractContactsLimit" />
@@ -352,7 +388,7 @@
 							validator="EmptyFieldValidator"
 						>
 						
-						<f:ajax event="blur" render="@form" execute="@form" />
+						<f:ajax event="blur" render="@this" execute="@form" />
 						</b:inputText>
 						
 						<b:message id="newContractLoginsLimitValidationMessage" for="newContractLoginsLimit" />
@@ -382,7 +418,13 @@
 				
 				<b:row>
 					<b:column>
-						<b:selectBooleanCheckbox value="#{viewContactsController.accountContract.active}" caption="Is Contract Active?" label="Is Contract Active?" />
+        <b:switch
+        id="newContractActive"
+        value="#{viewContactsController.accountContract.active}"
+        on-color="success" on-text="Yes"
+        off-color="danger" off-text="No"
+        label="Is Contract Active?"
+         />
 						
 					</b:column>
 				</b:row>
@@ -572,22 +614,20 @@
 								<b:inputText value="#{contact.emailAddress}"
 									rendered="#{contact.editable}"
 								>
-									<f:facet name="append">
-										<h:outputText value="@#{contact.account.emailDomain}" />
-									</f:facet>
 								</b:inputText>
 
 								<h:outputText
-									value="#{contact.emailAddress}@#{contact.account.emailDomain}"
+									value="#{contact.emailAddress}"
 									rendered="#{not contact.editable}"
 								/>
 							</b:dataTableColumn>
 
 
 							<b:dataTableColumn label="Gender">
-								<b:inputText value="#{contact.gender}"
-									rendered="#{contact.editable}"
-								/>
+								<p:selectOneButton rendered="#{contact.editable}" value="#{contact.gender}">
+						            <f:selectItem itemLabel="Male" itemValue="M" />
+						            <f:selectItem itemLabel="Female" itemValue="F" />
+						        </p:selectOneButton>
 								<h:outputText value="#{contact.gender}"
 									rendered="#{not contact.editable}"
 								></h:outputText>
@@ -602,17 +642,7 @@
 								></h:outputText>
 							</b:dataTableColumn>
 
-							<b:dataTableColumn label="Status">
-								<b:selectBooleanCheckbox value="#{contact.status}"
-									rendered="#{contact.editable}"
-								/>
-
-								<h:outputText value="#{contact.status}"
-									rendered="#{not contact.editable}"
-								></h:outputText>
-
-
-							</b:dataTableColumn>
+							
 
 							<b:dataTableColumn label="Street Address">
 								<b:inputText value="#{contact.streetAddress}"
@@ -651,17 +681,23 @@
 							</b:dataTableColumn>
 
 							<b:dataTableColumn label="HasLogin?">
-								<b:selectBooleanCheckbox value="#{contact.hasLogin}"
-									rendered="#{contact.editable}"
-								/>
-
-
+<b:switch switchsize="mini" value="#{contact.hasLogin}" display="inline-block" offColor="danger" offText="No" onColor="success" onText="Yes" rendered="#{contact.editable}"  />
 								<h:outputText value="#{contact.hasLogin}"
 									rendered="#{not contact.editable}"
 								></h:outputText>
 								<h:outputText value=" (#{contact.loginDetails.contactLoginId})"
 									rendered="#{contact.hasLogin}"
 								/>
+
+							</b:dataTableColumn>
+							
+							<b:dataTableColumn label="Status">
+								<b:switch switchsize="mini" value="#{contact.status}" display="inline-block" offColor="danger" offText="No" onColor="success" onText="Yes" rendered="#{contact.editable}"  />
+
+								<h:outputText value="#{contact.status}"
+									rendered="#{not contact.editable}"
+								></h:outputText>
+
 
 							</b:dataTableColumn>
 
@@ -919,11 +955,27 @@
 
 							<b:dataTableColumn label="Start Date">
 
-								<b:dateTimePicker value="#{contract.startDate}"
-									allow-input-toggle="true" show-date="true" show-icon="true"
-									use-current="true" rendered="#{contract.editable}"
-									format="YYYY-MM-DD"
-								/>
+<!-- 								<b:dateTimePicker value="#{contract.startDate}"
+									rendered="#{contract.editable}"
+									maxDate="#{viewContactsController.maxDate}"
+									/> -->
+									
+									
+									 
+									 <p:calendar
+									value="#{contract.startDate}"
+									pattern="yyyy-MM-dd"
+									maxdate="#{viewContactsController.maxDate}"
+									id="contractStartDate"
+									label="End Date"
+									effect="drop"
+									inputStyleClass="form-control"
+									pagedate="#{viewContactsController.minDate}"
+									title="Select Contract's Start Date"
+									rendered="#{contract.editable}"
+									 />
+									 
+									 
 
 								<h:outputText value="#{contract.startDate}"
 									rendered="#{not contract.editable}"
@@ -937,11 +989,22 @@
 
 							<b:dataTableColumn label="End Date">
 
-								<b:dateTimePicker value="#{contract.endDate}"
-									allow-input-toggle="true" show-date="true" show-icon="true"
-									use-current="true" rendered="#{contract.editable}"
-									minDate="#{viewContactsController.minDate}" format="YYYY-MM-DD"
-								/>
+								<p:calendar
+									value="#{contract.endDate}"
+									pattern="yyyy-MM-dd"
+									mindate="#{viewContactsController.minDate}"
+									id="contractEndDate"
+									label="End Date"
+									effect="drop"
+									inputStyleClass="form-control"
+									pagedate="#{viewContactsController.minDate}"
+									title="Select Contract's End Date"
+									rendered="#{contract.editable}"
+									 />
+								
+								
+								
+								
 
 								<h:outputText value="#{contract.endDate}"
 									rendered="#{not contract.editable}"

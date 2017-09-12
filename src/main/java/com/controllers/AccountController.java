@@ -70,13 +70,13 @@ public class AccountController implements Serializable {
 //	private String currentPageName = requestUrl.getServletPath().replaceAll("/", "").replaceAll(".xhtml", "");
 
 	Date minDateTime;
-	String minDate = null;
-	String maxDate = null;
+	String minDate;
+	Date maxDate;
 
 	public AccountController() {
 		minDateTime = new Date();
 		minDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-		maxDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		maxDate = new Date();
 
 		accountsList = new ArrayList<>();
 		contractsList = new ArrayList<>();
@@ -303,7 +303,7 @@ public class AccountController implements Serializable {
 		}
 
 
-		return null;
+		return "";
 	}
 
 
@@ -548,13 +548,13 @@ public class AccountController implements Serializable {
 
 
 
-	public String getMaxDate() {
+	public Date getMaxDate() {
 		return maxDate;
 	}
 
 
 
-	public void setMaxDate(String maxDate) {
+	public void setMaxDate(Date maxDate) {
 		this.maxDate = maxDate;
 	}
 
