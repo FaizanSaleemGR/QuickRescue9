@@ -1,10 +1,13 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:b="http://bootsfaces.net/ui"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:composite="http://java.sun.com/jsf/composite"
 >
 <h:head>
@@ -96,77 +99,6 @@
 
 			</b:panel>
 
-
-
-
-
-
-
-			<b:panel title="Add Account Contract" look="info">
-
-				<b:row>
-					<b:column>
-						<b:dateTimePicker
-							value="#{accountController.accountContract.startDate}"
-							allow-input-toggle="true" show-date="true" show-icon="true"
-							use-current="true" label="Start Date" id="contractStartDate"
-							 validator="EmptyFieldValidator">
-							 
-							 
-							 <f:ajax event="change" render="@form" execute="@form" />
-							 </b:dateTimePicker>
-						
-						<b:message id="contractStartDateValidationMessage" for="contractStartDate" />
-						
-					</b:column>
-				</b:row>
-
-				<b:row>
-					<b:column>
-						<b:dateTimePicker
-							value="#{accountController.accountContract.endDate}"
-							allow-input-toggle="true" show-date="true" show-icon="true"
-							use-current="true" label="End Date" id="contractEndDate"
-							 validator="EmptyFieldValidator"
-						>
-						<f:ajax event="change" render="@form" execute="@form" />
-						</b:dateTimePicker>
-						<b:message id="contractEndDateValidationMessage" for="contractEndDate" />
-					</b:column>
-				</b:row>
-
-				<b:row>
-					<b:column>
-
-						<b:inputText type="number" label="Contacts Limit"
-							value="#{accountController.accountContract.contactsLimit}"
-							min="0" id="contractContactsLimit" validator="EmptyFieldValidator"
-						>
-						
-						<f:ajax event="change" render="@form" execute="@form" />
-						
-						</b:inputText>
-								<b:message id="contractContactsLimitValidationMessage" for="contractContactsLimit" />
-					</b:column>
-				</b:row>
-
-				<b:row>
-					<b:column>
-						<b:inputText type="number" label="Logins Limit"
-							value="#{accountController.accountContract.loginsLimit}" min="0"
-							id="contractLoginsLimit" validator="EmptyFieldValidator"
-						>
-						
-						<f:ajax event="change" render="@form" execute="@form" />
-						</b:inputText>
-						
-						<b:message id="contractLoginsLimitValidationMessage" for="contractLoginsLimit" />
-					</b:column>
-				</b:row>
-
-			</b:panel>
-
-
 			<b:row>
 				<b:column>
 					<b:commandButton value="Add New Account"
@@ -185,6 +117,10 @@
 		styleClass="modalPseudoClass"
 	>
 		<b:form id="addContractForm">
+		<b:fetchBeanInfos />
+		
+		
+		
 			<b:panel title="Add New Contract" look="info">
 
 				<b:row>
@@ -193,7 +129,7 @@
 							value="#{accountController.accountContract.startDate}"
 							allow-input-toggle="true" show-date="true" show-icon="true"
 							use-current="true" label="Start Date" id="newContractStartDate"
-							validator="EmptyFieldValidator"
+							validator="EmptyFieldValidator" format="YYYY-MM-DD"
 						>
 						
 						 <f:ajax event="change" render="@form" execute="@form" />
@@ -211,7 +147,7 @@
 							value="#{accountController.accountContract.endDate}"
 							allow-input-toggle="true" show-date="true" show-icon="true"
 							use-current="true" label="End Date" id="newContractEndDate"
-							validator="EmptyFieldValidator"
+							validator="EmptyFieldValidator" format="YYYY-MM-DD" minDate="#{accountController.minDate}"
 						>
 						<f:ajax event="change" render="@form" execute="@form" />
 						</b:dateTimePicker>
@@ -226,10 +162,11 @@
 						<b:inputText type="number" label="Contacts Limit"
 							value="#{accountController.accountContract.contactsLimit}"
 							min="0" id="newContractContactsLimit"
-							validator="EmptyFieldValidator"
 						>
+							<f:validator validatorId="EmptyFieldValidator" />
+						<f:validator validatorId="ContractLimitValidator" />
 						
-						<f:ajax event="change" render="@form" execute="@form" />
+						<f:ajax event="blur" render="@form" execute="@form" />
 						</b:inputText>
 
 						<b:message id="newContractContactsLimitValidationMessage" for="newContractContactsLimit" />
@@ -240,10 +177,11 @@
 					<b:column>
 						<b:inputText type="number" label="Logins Limit"
 							value="#{accountController.accountContract.loginsLimit}" min="0" id="newContractLoginsLimit"
-							validator="EmptyFieldValidator"
 						>
+						<f:validator validatorId="EmptyFieldValidator" />
+						<f:validator validatorId="ContractLimitValidator" />
 						
-						<f:ajax event="change" render="@form" execute="@form" />
+						<f:ajax event="blur" render="@form" execute="@form" />
 						</b:inputText>
 						
 						<b:message id="newContractLoginsLimitValidationMessage" for="newContractLoginsLimit" />
@@ -267,6 +205,14 @@
 						</b:selectOneMenu>
 					</b:column>
 				</b:row>
+				
+				
+					<b:row>
+					<b:column>
+						<b:selectBooleanCheckbox value="#{accountController.accountContract.active}" caption="Is Contract Active?" label="Is Contract Active?" />
+						
+					</b:column>
+				</b:row>
 
 
 			</b:panel>
@@ -274,11 +220,15 @@
 
 			<b:row>
 				<b:column>
-					<b:commandButton value="Add New Contract"
-						action="#{accountController.addNewContract()}" look="success"
+					<b:commandButton
+						value="Add New Contract"
+						look="success"
 						style="width:100%"
+						id="addNewContractSubmit"
 						disabled="#{not facesContext.postback or facesContext.validationFailed}"
-					/>
+						action="#{accountController.addNewContract()}"
+						>
+					</b:commandButton>
 				</b:column>
 			</b:row>
 
@@ -367,7 +317,7 @@
 							
 								
 								<b:icon name="remove-sign" size="lg" ajax="true"
-									update="@(.editableAccountTable)"
+									update="@(.editableAccountTable) @(.editableContractTable)"
 									onclick="ajax:accountController.deleteAccount(account.accountId)"
 								/>
 
@@ -394,15 +344,52 @@
 
 				<b:tab title="All Contracts">
 
+
 					<b:row>
 						<b:column>
-							<button id="btrigger" style="float: right"
-								class="btn btn-warning btn-sm"
-								data-target="#AddNewContractModal" data-toggle="modal" type="button"
-							>Add New Contract</button>
+							
+							<c:choose>
+								<c:when test="#{accountController.getNumberOfAccounstWithOutContract() eq 0}">
+									<button id="btrigger" style="float: right"
+										class="btn btn-warning btn-sm"
+										data-target="#AddNewContractModal" data-toggle="modal" type="button"
+										disabled="disabled"
+									>Add New Contract</button>
+								</c:when>
+								
+								<c:otherwise>
+								
+									<button id="btrigger" style="float: right"
+										class="btn btn-warning btn-sm"
+										data-target="#AddNewContractModal" data-toggle="modal" type="button"
+									>Add New Contract</button>
+								
+								</c:otherwise>
+							
+							
+							
+							</c:choose>
+							
+							
+							
+							
+							
+							
+							
+							
 						</b:column>
 					</b:row>
-
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
 					<h:panelGroup id="contractListDT">
 						<b:dataTable value="#{accountController.contractsList}"
 							class="editableContractTable" var="contract" page-length="5"
@@ -476,6 +463,23 @@
 
 
 							</b:dataTableColumn>
+							
+							
+							
+							<b:dataTableColumn label="Active?">
+								<b:selectBooleanCheckbox value="#{contract.active}"
+									rendered="#{contract.editable}"
+								/>
+
+								<h:outputText value="#{contract.active}"
+									rendered="#{not contract.editable}"
+								></h:outputText>
+
+
+							</b:dataTableColumn>
+							
+							
+							
 
 							<b:dataTableColumn label="Account">
 								<h:outputText

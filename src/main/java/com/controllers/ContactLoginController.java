@@ -50,11 +50,18 @@ public class ContactLoginController implements Serializable {
 			if((redirectTo=contactService.loginContact(contactUsername, contactPassword))==null) {
 				redirectTo = "";
 
-				FacesMessage msg = new FacesMessage(Utils.getFromResourceBundle("messages", "invalid_login"), Utils.getFromResourceBundle("messages", "invalid_login_error"));
+				FacesMessage msg = new FacesMessage(Utils.getFromResourceBundle("messages", "invalid_login"), Utils.getFromResourceBundle("messages", "invalid_login_detail"));
 				msg.setSeverity(FacesMessage.SEVERITY_ERROR);
 				context.addMessage(null, msg);
 				loginCheck = false;
+			}
+			else if (redirectTo.equals("inactive")) {
+				redirectTo = "";
 
+				FacesMessage msg = new FacesMessage(Utils.getFromResourceBundle("messages", "invalid_login"), Utils.getFromResourceBundle("messages", "inactive_login_detail"));
+				msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+				context.addMessage(null, msg);
+				loginCheck = false;
 
 			} else { // If login is found.
 				Utils.setSessionTimeOutInMinutes(60);	//Set session timeout to 60 mins.
@@ -73,25 +80,24 @@ public class ContactLoginController implements Serializable {
 
 	public void checkForLogin() {
 
-		System.out.println("In checkForLogin()");
 		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 		HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
 
+		if (request.getRequestedSessionId() != null && request.isRequestedSessionIdValid()) {
+			// Session has been invalidated during the previous request.
+
+			System.out.println("In checkForLogin()");
 			Contact contact = (Contact) Utils.getFromSession("contact");
 
 			if (contact != null) {
 				if (contact.getAccount().getName().equals("QuickRescue")) {
 					Utils.navigateTo("ViewAllAccounts.xhtml");
-//					return "ViewAllAccounts.xhtml?faces-redirect=true";
 				} else {
 					Utils.navigateTo("ViewAllContacts.xhtml");
-//					return "ViewAllContacts.xhtml?faces-redirect=true";
 				}
+			} else {
+				Utils.navigateTo("login.xhtml");
 			}
-		else {
-			Utils.navigateTo("login.xhtml");
-//			return "login.xhtml?faces-redirect=true";
-			// throw new NullPointerException("contact from Session is null");
 		}
 	}
 

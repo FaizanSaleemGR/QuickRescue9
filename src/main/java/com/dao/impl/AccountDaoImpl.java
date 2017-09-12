@@ -11,6 +11,7 @@ import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Restrictions;
 
 import com.dao.AccountDao;
 import com.entities.Account;
@@ -62,7 +63,7 @@ public class AccountDaoImpl implements AccountDao {
     	try {
     		tx = session.beginTransaction();
 
-			Criteria criteria = session.createCriteria(Account.class).createCriteria("accountContract");
+			Criteria criteria = session.createCriteria(Account.class).add(Restrictions.or(Restrictions.isNotNull("accountContract"), Restrictions.isNull("accountContract")));
 
 			// query.setResultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP);
 			if(criteria.list() != null && criteria.list().size() > 0) {

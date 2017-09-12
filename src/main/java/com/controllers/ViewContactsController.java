@@ -49,6 +49,8 @@ public class ViewContactsController implements Serializable {
 	private Contact newContact;
 	private Account account;
 
+	private Integer contactsLeft, loginsLeft;
+	private String contactsAndLoginsLimit;
 	private AlertProfile alertProfile;
 	private Location location;
 	private ArrayList<Location> locations;
@@ -68,6 +70,8 @@ public class ViewContactsController implements Serializable {
 	private List<AccountContract> activeContract;
 	private List<AccountContract> inactiveContacts;
 
+	private Contact loggedInContact;
+
 	String minDate;
 
 	@PostConstruct
@@ -81,6 +85,7 @@ public class ViewContactsController implements Serializable {
 		locations = new ArrayList<>();
 		editCounter = 0;
 		accountContract = new AccountContract();
+		loggedInContact = new Contact();
 
 		activeContract = new ArrayList<>(1);
 		inactiveContacts = new ArrayList<>();
@@ -106,14 +111,26 @@ public class ViewContactsController implements Serializable {
 		else {
 			System.out.println("Got from Request - accountId = " + accountId);
 			this.account = accountService.findAccountById(accountId);
+
+
+			this.countContactAndLoginLimit();
+
 			alertProfiles = this.account.getAlertProfiles();
 			getAccountContacts();
 
 			ArrayList<Account> accNameList = new ArrayList<>();
 			accNameList.add(account);
 			accountsNamesList = accNameList.stream().collect(Collectors.toMap(Account::getAccountId, Account::getName));
-			activeContract.add(this.account.getAccountContract());
+
+			if(null != this.account.getAccountContract()) {
+				activeContract.add(this.account.getAccountContract());
+			}
+
 			inactiveContacts.addAll(accountService.getInactiveContracts(account));
+
+
+			loggedInContact = (Contact) Utils.getFromSession("contact");
+
 		}
 		}
 
@@ -146,7 +163,7 @@ public class ViewContactsController implements Serializable {
 		AccountContract currentContract = this.account.getAccountContract();
 
 		// Assuming an account can not be created without a contract.
-		if(new Date().compareTo(currentContract.getEndDate()) <= 0)
+		if(currentContract != null && new Date().compareTo(currentContract.getEndDate()) <= 0)
 		{
 			Utils.addFacesMessage("Active Contract Found", "An active contract is already associated with this account.", FacesMessage.SEVERITY_INFO);
 		}
@@ -157,9 +174,9 @@ public class ViewContactsController implements Serializable {
 //		accountContract.setAccount(acc);
 
 		accountService.updateAccount(this.account);
+		Utils.navigateTo("ViewContacts?accountId="+this.accountId+"&?faces-redirect=true");
 		}
 
-//		Utils.navigateTo("ViewAllAccounts.xhtml");
 	}
 
 
@@ -260,42 +277,45 @@ public class ViewContactsController implements Serializable {
 
 	// Method used to add Contact using Modal in ViewAllContacts.xhtml
 	public String addContact() {
-	    	System.out.println("In Add New Contact");
+    	System.out.println("In Add New Contact");
 
-	    	if(!this.checkAccountContactsLimit(this.account)) {
-				System.out.println("Contact NOT added - Account's CONTACTS Limit Exceeded." );
-			} else {
-		    	ContactLoginDetails contactLoginDetails = new ContactLoginDetails();
+		Account acc = accountService.findAccountById(account.getAccountId());
 
-		    	// Adding ContactLoginDetails to a contact
-		    	if(this.newContact.getHasLogin()) {
-		    		if(!this.checkAccountLoginsLimit(this.account)) {
-						System.out.println("Contact NOT added - Account's LOGINS Limit Exceeded." );
-					}
-		    		else {
-			    		contactLoginDetails = Utils.createLogin(account, newContact);
-			    		newContact.setLoginDetails(contactLoginDetails);
-		    		}
-		    	}
 
-		    	// Adding contact to the associated account
-		    	Integer contactId = contactService.addContact(this.account, this.newContact);
-		    	System.out.println("Contact Added with Id=" + contactId);
+    	if(!this.checkAccountContactsLimit(this.account)) {
+			System.out.println("Contact NOT added - Account's CONTACTS Limit Exceeded." );
+		} else {
+	    	ContactLoginDetails contactLoginDetails = new ContactLoginDetails();
 
-		    	// Add Contact to ContactLoginDetails for bi-directional purpose.
-		    	contactService.addLoginDetails(newContact, contactLoginDetails);
 
-		    	if(contactsList.add(newContact)) {
-					System.out.println("Contact successfully added to contacts list");
+	    	newContact.setEmailAddress(newContact.getEmailAddress().concat("@"+this.account.getEmailDomain()));
+
+	    	// Adding contact to the associated account
+	    	Integer contactId = contactService.addContact(this.account, this.newContact);
+	    	System.out.println("Contact Added with Id=" + contactId);
+
+	    	// Adding ContactLoginDetails to a contact
+	    	if(this.newContact.getHasLogin()) {
+	    		if(!this.checkAccountLoginsLimit(acc)) {
+					System.out.println("Contact NOT added - Account's LOGINS Limit Exceeded." );
 				}
-
-		    	this.checkForAlertProfileMatch(this.newContact, this.account);
+	    		else {
+		    		contactLoginDetails = Utils.createLogin(account, newContact);
+		    		// Add Contact to ContactLoginDetails for bi-directional purpose.
+			    	contactService.addLoginDetails(newContact, contactLoginDetails);
+	    		}
 	    	}
 
-	    	newContact = new Contact(); // Reset placeholder.
-//			Utils.redirectTo("ViewAllContacts.xhtml");
-	    	return "ViewContacts?accountId="+this.accountId+"&?faces-redirect=true";
-	    }
+	    	if(contactsList.add(newContact)) {
+				System.out.println("Contact successfully added to contacts list");
+			}
+
+	    	this.checkForAlertProfileMatch(this.newContact, this.account);
+    	}
+
+    	newContact = new Contact(); // Reset placeholder.
+    	return "ViewContacts?accountId="+this.accountId+"&?faces-redirect=true";
+    }
 
 
 
@@ -366,8 +386,7 @@ public class ViewContactsController implements Serializable {
 	}
 
 	public String contactSaveAction(Contact contact) {
-		Contact con = null;
-		//get all existing value but set "editable" to false
+		Account acc = accountService.findAccountById(account.getAccountId());
 
 			// Set editable to false
 			contact.setEditable(false);
@@ -375,17 +394,22 @@ public class ViewContactsController implements Serializable {
 			// As the contact now has "hasLogin" true, so we need to create its login details.
 			if(contact.getHasLogin()) {
 
-				if(!this.checkAccountLoginsLimit(this.account)) {
+				if(!this.checkAccountLoginsLimit(acc)) {
 					System.out.println("Login NOT created - Account's LOGINS Limit Exceeded." );
 				} else {
 
-					ContactLoginDetails contactLoginDetails = null;
+					ContactLoginDetails contactLoginDetails;
 					if((contactLoginDetails = contactService.checkExistingLoginDetails(contact)) == null)
 					{
 						contactLoginDetails = Utils.createLogin(account, contact);
-					}
-					contact.setLoginDetails(contactLoginDetails);
+						contact.setLoginDetails(contactLoginDetails);
 						contactLoginDetails.setContact(contact);
+						contactService.addLoginDetails(contact, contactLoginDetails);
+					}
+					else {
+						contact.setLoginDetails(contactLoginDetails);
+						contactLoginDetails.setContact(contact);
+					}
 
 						System.out.println("Login Updated/Created for contact " + contact.getFirstName() + " " + contact.getLastName() + " (" + contact.getContactId() + ") - " + contactLoginDetails.getUsername() + ":" + contactLoginDetails.getPassword() + " - id=" + contactLoginDetails.getContactLoginId());
 				}
@@ -522,7 +546,15 @@ public class ViewContactsController implements Serializable {
 
 
 
+	public void countContactAndLoginLimit() {
 
+		if(account.getAccountContract() != null) {
+
+		contactsLeft = account.getAccountContract().getContactsLimit() - account.getContacts().size();
+		loginsLeft = (account.getAccountContract().getLoginsLimit() - (int) account.getContacts().stream().filter(x->x.getHasLogin()).count());
+		this.contactsAndLoginsLimit = "You can create "+contactsLeft+" more contacts and "+loginsLeft+" more logins";
+		}
+	}
 
 
 
@@ -656,6 +688,38 @@ public class ViewContactsController implements Serializable {
 
 	public void setMinDate(String minDate) {
 		this.minDate = minDate;
+	}
+
+	public Integer getContactsLeft() {
+		return contactsLeft;
+	}
+
+	public void setContactsLeft(Integer contactsLeft) {
+		this.contactsLeft = contactsLeft;
+	}
+
+	public Integer getLoginsLeft() {
+		return loginsLeft;
+	}
+
+	public void setLoginsLeft(Integer loginsLeft) {
+		this.loginsLeft = loginsLeft;
+	}
+
+	public String getContactsAndLoginsLimit() {
+		return contactsAndLoginsLimit;
+	}
+
+	public void setContactsAndLoginsLimit(String contactsAndLoginsLimit) {
+		this.contactsAndLoginsLimit = contactsAndLoginsLimit;
+	}
+
+	public Contact getLoggedInContact() {
+		return loggedInContact;
+	}
+
+	public void setLoggedInContact(Contact loggedInContact) {
+		this.loggedInContact = loggedInContact;
 	}
 
 

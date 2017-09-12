@@ -145,9 +145,9 @@
 					<webappDirectory>
 						${env.JBOSS_HOME}/standalone/deployments/${project.build.finalName}.war
 					</webappDirectory>
-					<warSourceExcludes>
+					<!-- <warSourceExcludes>
 						**/dom4j-1.6.1.jar
-					</warSourceExcludes>
+					</warSourceExcludes> -->
 				</configuration>
 				<executions>
 					<execution>

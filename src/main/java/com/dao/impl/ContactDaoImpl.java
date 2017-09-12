@@ -91,7 +91,7 @@ public class ContactDaoImpl implements ContactDao {
 			}
 		}
 
-		return contactId;
+		return contact.getContactId();
 
 	}
 

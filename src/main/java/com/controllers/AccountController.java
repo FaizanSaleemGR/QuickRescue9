@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
@@ -53,7 +54,7 @@ public class AccountController implements Serializable {
 	private AccountContract editedContract;
 
 	private String accountNameForNewContract;
-	private Integer accountIdForNewContract;
+	private Integer accountIdForNewContract = 0;
 
 	private int editCounter;
 	private int editContractCounter;
@@ -61,6 +62,7 @@ public class AccountController implements Serializable {
 	private int editedContractId;
 
 	private Map<Integer, String> accountsNamesList;
+	private Boolean enableContractPanel = false;
 
 	private AccountContract accountContract;
 	private List<AccountContract> contractsList;
@@ -104,23 +106,33 @@ public class AccountController implements Serializable {
 
 	}
 
+	public Integer getNumberOfAccounstWithOutContract() {
+		return accountsNamesList.size();
+	}
+
+	public void enableContractPanelButton() {
+		enableContractPanel = !enableContractPanel;
+	}
+
 	// Method used to add Account using Modal in ViewAllAccounts.xhtml
 	public void addAccount() {
 		System.out.println("In Add New Account");
 
 		Integer accId = accountService.addAccount(newAccount);
 
+		/*
 		Account acc = accountService.findAccountById(accId);
 		accountContract.setAccount(acc);
 		acc.setAccountContract(accountContract);
 
 		accountService.updateAccount(acc);
 
-		accountsList.add(newAccount);
 		contractsList.add(accountContract);
-
-		newAccount = new Account(); // Reset placeholder.
 		accountContract = new AccountContract();
+		 */
+
+		accountsList.add(newAccount);
+		newAccount = new Account(); // Reset placeholder.
 //		 return "/AllAccountsView.xhtml?faces-redirect=true";
 		Utils.navigateTo("ViewAllAccounts.xhtml");
 	}
@@ -217,6 +229,8 @@ public class AccountController implements Serializable {
 
 		System.out.println("In addNewContract()");
 
+		if(accountIdForNewContract != 0) {
+
 		Account acc = accountsList.stream().filter(x -> x.getAccountId().equals(accountIdForNewContract)).findFirst()
 				.get();
 
@@ -225,7 +239,11 @@ public class AccountController implements Serializable {
 //		accountContract.setAccount(acc);
 
 		accountService.updateAccount(acc);
-
+		}
+		else {
+			Utils.addFacesMessage("No Account Selected.", "Account Id of the account for which contract is being added is NULL.", FacesMessage.SEVERITY_ERROR);
+			System.out.println("Account Id of the account for which contract is being added is NULL.");
+		}
 		Utils.navigateTo("ViewAllAccounts.xhtml");
 	}
 
@@ -538,6 +556,18 @@ public class AccountController implements Serializable {
 
 	public void setMaxDate(String maxDate) {
 		this.maxDate = maxDate;
+	}
+
+
+
+	public Boolean getEnableContractPanel() {
+		return enableContractPanel;
+	}
+
+
+
+	public void setEnableContractPanel(Boolean enableContractPanel) {
+		this.enableContractPanel = enableContractPanel;
 	}
 
 }

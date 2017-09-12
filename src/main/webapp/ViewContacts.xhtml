@@ -5,6 +5,7 @@
 	xmlns:b="http://bootsfaces.net/ui"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:composite="http://java.sun.com/jsf/composite">
     <h:head>
 	<title>View Contacts :: Quick Rescue</title>
@@ -141,6 +142,12 @@
 					<b:column>
 						<b:selectBooleanCheckbox value="#{viewContactsController.newContact.hasLogin}" caption="HasLogin?" label="HasLogin?" />
 						
+					</b:column>
+				</b:row>
+				
+					<b:row>
+					<b:column>
+						<b:selectBooleanCheckbox value="#{viewContactsController.newContact.status}" caption="Status?" label="Status?" />
 					</b:column>
 				</b:row>
 				
@@ -294,10 +301,10 @@
 							value="#{viewContactsController.accountContract.startDate}"
 							allow-input-toggle="true" show-date="true" show-icon="true"
 							use-current="true" label="Start Date" id="newContractStartDate"
-							validator="EmptyFieldValidator"
+							validator="EmptyFieldValidator" format="YYYY-MM-DD"
 						>
 						
-						 <f:ajax event="blur" render="@form" execute="@this" />
+						 <f:ajax event="change" render="@form" execute="@form" />
 						
 						</b:dateTimePicker>
 						
@@ -312,9 +319,10 @@
 							value="#{viewContactsController.accountContract.endDate}"
 							allow-input-toggle="true" show-date="true" show-icon="true"
 							use-current="true" label="End Date" id="newContractEndDate"
-							validator="EmptyFieldValidator"
+							validator="EmptyFieldValidator" minDate="#{viewContactsController.minDate}"
+							format="YYYY-MM-DD"
 						>
-						<f:ajax event="blur" render="@form" execute="@this" />
+						<f:ajax event="change" render="@form" execute="@form" />
 						</b:dateTimePicker>
 						
 						<b:message id="newContractEndDateValidationMessage" for="newContractEndDate" />
@@ -330,7 +338,7 @@
 							validator="EmptyFieldValidator"
 						>
 						
-						<f:ajax event="blur" render="@form" execute="@this" />
+						<f:ajax event="blur" render="@form" execute="@form" />
 						</b:inputText>
 
 						<b:message id="newContractContactsLimitValidationMessage" for="newContractContactsLimit" />
@@ -344,13 +352,16 @@
 							validator="EmptyFieldValidator"
 						>
 						
-						<f:ajax event="blur" render="@form" execute="@this" />
+						<f:ajax event="blur" render="@form" execute="@form" />
 						</b:inputText>
 						
 						<b:message id="newContractLoginsLimitValidationMessage" for="newContractLoginsLimit" />
 						
 					</b:column>
 				</b:row>
+				
+				
+
 
 
 				<b:row>
@@ -366,6 +377,13 @@
 								itemLabel="#{entry.key} - #{entry.value}"
 							/>
 						</b:selectOneMenu>
+					</b:column>
+				</b:row>
+				
+				<b:row>
+					<b:column>
+						<b:selectBooleanCheckbox value="#{viewContactsController.accountContract.active}" caption="Is Contract Active?" label="Is Contract Active?" />
+						
 					</b:column>
 				</b:row>
 
@@ -395,7 +413,88 @@
 
 	<b:container fluid="true">
 	
-	    <b:label severity="danger" text="#{viewContactsController.account.name} (#{viewContactsController.account.accountId})" medium-screen="2" offset-md="10" />
+	<b:alert>
+		
+		<b:row>
+			<b:column col-md="6">
+			<b:row>
+				<b:column>
+					<h:outputText
+						value="#{viewContactsController.account.name} (#{viewContactsController.account.accountId})"
+					/>
+				</b:column>
+			</b:row>
+			<b:row>
+				<b:column>
+					<h:outputText
+						value="Contacts: #{viewContactsController.contactsLeft} (left) / #{viewContactsController.account.accountContract.contactsLimit} (total)"
+					/>
+				</b:column>
+			</b:row>
+			<b:row>
+				<b:column>
+					<h:outputText
+						value="Logins: #{viewContactsController.loginsLeft} (left) / #{viewContactsController.account.accountContract.loginsLimit} (total)"
+					/>
+				</b:column>
+			</b:row>
+			
+			<b:row>
+				<b:column>
+				
+				<c:choose>
+					<c:when test="#{viewContactsController.activeContract.size() eq 0}">
+						<b:label text="No Contract Found" severity="danger"/>
+					</c:when>
+				</c:choose>
+				
+						<c:choose>
+					<c:when test="#{viewContactsController.activeContract.size() gt 0 and not viewContactsController.activeContract.get(0).active}">
+						<b:label text="No Active Contract Found" severity="danger"/>
+					</c:when>
+				</c:choose>
+			
+			</b:column>
+			</b:row>
+			
+			
+			
+		</b:column>
+		
+		
+		<b:column col-md="6">
+		
+					<b:row>
+						<b:column>
+							<h:outputText
+								value="Welcome, #{viewContactsController.loggedInContact.firstName} #{viewContactsController.loggedInContact.lastName}"
+							/>
+						</b:column>
+					</b:row>
+
+					<b:row>
+						<b:column>
+							<h:outputText
+								value="#{viewContactsController.loggedInContact.emailAddress}"
+							/>
+						</b:column>
+					</b:row>
+					
+								<b:row>
+						<b:column>
+							<h:outputText
+								value="#{viewContactsController.loggedInContact.city}, #{viewContactsController.loggedInContact.state}, #{viewContactsController.loggedInContact.country}"
+							/>
+						</b:column>
+					</b:row>
+		
+		
+		</b:column>
+		
+		</b:row>	
+			
+			
+		</b:alert>
 	
 	
 	
@@ -409,10 +508,31 @@
 
 				<b:row>
 					<b:column>
+					
+					<c:choose>
+						<c:when test="#{viewContactsController.activeContract.size() gt 0 and viewContactsController.activeContract.get(0).active}">
+							<button id="btrigger" style="float: right;"
+								class="btn btn-success btn-sm" data-target="#AddNewContactModal"
+								data-toggle="modal" type="button"
+							>Add New Contact</button>
+						</c:when>
+
+
+						<c:otherwise>
 						<button id="btrigger" style="float: right;"
-							class="btn btn-success btn-sm" data-target="#AddNewContactModal"
-							data-toggle="modal" type="button"
-						>Add New Contact</button>
+								class="btn btn-success btn-sm" data-target="#AddNewContactModal"
+								data-toggle="modal" type="button" disabled="disabled"
+							>Add New Contact</button>
+						
+						</c:otherwise>
+						
+					
+					
+					</c:choose>
+					
+					
+					
+					
 					</b:column>
 
 				</b:row>
@@ -750,14 +870,43 @@
 
 					<b:row>
 						<b:column>
-							<button id="btrigger" style="float: right"
-								class="btn btn-info btn-sm"
-								data-target="#AddNewContractModal" data-toggle="modal"
-								type="button"
-							>Add New Contract</button>
+							
+							<c:choose>
+								<c:when test="#{viewContactsController.activeContract.size() eq 0}">
+									<button id="btrigger" style="float: right"
+										class="btn btn-info btn-sm"
+										data-target="#AddNewContractModal" data-toggle="modal"
+										type="button"
+									>Add New Contract</button>
+								</c:when>
+							
+								<c:otherwise>
+								
+								<button id="btrigger" style="float: right"
+										class="btn btn-info btn-sm"
+										data-target="#AddNewContractModal" data-toggle="modal"
+										type="button" disabled="disabled"
+									>Add New Contract</button>
+								
+								</c:otherwise>
+							
+							</c:choose>
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
 						</b:column>
-					</b:row>
-
+					</b:row> 
+<h3>Current/Active Contract</h3>
 					<h:panelGroup id="contractListDT">
 						<b:dataTable value="#{viewContactsController.activeContract}"
 							class="editableContractTable" var="contract" page-length="5"
@@ -830,6 +979,21 @@
 
 
 							</b:dataTableColumn>
+							
+							
+							
+													<b:dataTableColumn label="Active?">
+								<b:selectBooleanCheckbox value="#{contract.active}"
+									rendered="#{contract.editable}"
+								/>
+
+								<h:outputText value="#{contract.active}"
+									rendered="#{not contract.editable}"
+								></h:outputText>
+
+
+							</b:dataTableColumn>
+							
 
 							<b:dataTableColumn label="Account">
 								<h:outputText
@@ -841,9 +1005,85 @@
 
 
 								<b:icon name="edit" size="lg" ajax="true"
-									update="@(.editableContractTable)"
+									update="@(.editableContractTable) @(.editableExpiredContractTable)"
 									onclick="ajax:viewContactsController.contractEditAction(contract)"
 								/>
+							</b:dataTableColumn>
+
+						</b:dataTable>
+					</h:panelGroup>
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					<h3>Expired Contracts</h3>
+					
+					<h:panelGroup id="expiredContractListDT">
+						<b:dataTable value="#{viewContactsController.inactiveContacts}"
+							class="editableExpiredContractTable" var="contract" page-length="5"
+							page-length-menu="5,10,20"
+						>
+							<b:dataTableColumn value="#{contract.contractId}"
+								label="Contract ID" order="asc"
+							/>
+
+
+							<b:dataTableColumn label="Start Date">
+
+								<h:outputText value="#{contract.startDate}"
+									rendered="#{not contract.editable}"
+								>
+									<f:convertDateTime pattern="yyyy-MM-dd" />
+								</h:outputText>
+
+
+							</b:dataTableColumn>
+
+
+							<b:dataTableColumn label="End Date">
+
+
+								<h:outputText value="#{contract.endDate}"
+									rendered="#{not contract.editable}"
+								>
+									<f:convertDateTime pattern="yyyy-MM-dd" />
+								</h:outputText>
+
+
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="Contacts Limit">
+
+
+								<h:outputText value="#{contract.contactsLimit}"
+									rendered="#{not contract.editable}"
+								/>
+
+							</b:dataTableColumn>
+
+							<b:dataTableColumn label="Logins Limit">
+
+
+								<h:outputText value="#{contract.loginsLimit}"
+									rendered="#{not contract.editable}"
+								/>
+
+
+
+							</b:dataTableColumn>
+							
+							
+							<b:dataTableColumn label="Active?">
+								<h:outputText value="#{contract.active}"
+									rendered="#{not contract.editable}"
+								></h:outputText>
+
 							</b:dataTableColumn>
 
 						</b:dataTable>
